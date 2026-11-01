@@ -1,0 +1,23 @@
+# Python & Virtual Environments
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.venv/
+env/
+venv/
+.pytest_cache/
+
+# Local Caches & Intermediate Build Files
+cache/
+*.pdf
+
+# Secrets & Credentials
+.env
+credentials.json
+token.json
+*.keystore
+
+# System & OS Files
+.DS_Store
+Thumbs.db
