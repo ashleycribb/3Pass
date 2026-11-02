@@ -39,8 +39,8 @@ A doctoral student conducting a literature review rarely starts with fully forme
 ## Goals
 
 *   **Google Drive Integration**: Ingest the active corpus directly from the authoritative Google Drive folder:
-    *   URL: [`1QDeit0SKelUCf16VJOWyaO1FAnYOwL8X`](https://drive.google.com/drive/folders/1QDeit0SKelUCf16VJOWyaO1FAnYOwL8X)
-    *   Local Mount Path: `G:\My Drive\Portfolio Hub\Research Corpus` (721+ items).
+    *   URL: [`<drive_folder_id>`](https://drive.google.com/drive/folders/<drive_folder_id>)
+    *   Local Mount Path: `<drive_local_path>` (721+ items).
 *   **Automated 3-Pass Progression**:
     *   **Pass 1 (Automated Triage)**: Heuristic evaluation of title, abstract, and keywords; generates relevance scores (Evidence Evaluation, Learner Agency, Traceable Workflows) and marks Include/Maybe/Exclude in the master ledger.
     *   **Pass 2 (Deep Decomposition & Gaps)**: Extracts key methodology, tabular data, and claims; identifies unresolved questions and research gaps.
@@ -70,7 +70,7 @@ A doctoral student conducting a literature review rarely starts with fully forme
 ## Critical User Journeys (CUJs)
 
 ### CUJ 1: Automated Pass 1 Ingestion from Google Drive
-*   **Given**: 721+ papers in `G:\My Drive\Portfolio Hub\Research Corpus` (`1QDeit0SKelUCf16VJOWyaO1FAnYOwL8X`).
+*   **Given**: 721+ papers in `<drive_local_path>` (`<drive_folder_id>`).
 *   **When**: The user runs `python scripts/inventory_and_sync.py --config config/corpus_config.yaml`.
 *   **Then**: The pipeline inventories metadata, assigns stable Source IDs, hashes content, extracts abstracts, and populates `ledger/source_ledger.json` without generating auxiliary subdirectories.
 
@@ -93,7 +93,7 @@ A doctoral student conducting a literature review rarely starts with fully forme
 ```mermaid
 flowchart TD
     subgraph StorageLayer [1. Storage & Ingestion Layer]
-        GDrive["Google Drive Master: Portfolio Hub/Research Corpus (1QDeit0SKelUCf16VJOWyaO1FAnYOwL8X)"]
+        GDrive["Google Drive Master: Portfolio Hub/Research Corpus (<drive_folder_id>)"]
         Ledger["Source Ledger (ledger/source_ledger.json)"]
     end
 
@@ -215,7 +215,7 @@ The implementation is partitioned into 5 sequential, testable phases:
 
 *   **`config/corpus_config.yaml`** (`Create`):
     *   *Scope*: YAML Configuration.
-    *   *Content*: Configures `drive_folder_id: "1QDeit0SKelUCf16VJOWyaO1FAnYOwL8X"`, `drive_local_path: "G:\\My Drive\\Portfolio Hub\\Research Corpus"`, `s3a_binary_path: "C:\\Users\\Ashley\\Downloads\\s3a\\target\\debug\\s3a-cli.exe"`, `archive_path: "ledger/research_corpus.s3a"`, and `wiki_dir: "wiki"`.
+    *   *Content*: Configures `drive_folder_id: "<drive_folder_id>"`, `drive_local_path: "<drive_local_path>"`, `s3a_binary_path: "<path to s3a-cli>"`, `archive_path: "ledger/research_corpus.s3a"`, and `wiki_dir: "wiki"`.
 *   **`requirements.txt`** (`Create`):
     *   *Scope*: Python Dependency Manifest.
     *   *Content*: Defines `pyyaml>=6.0`, `pymupdf>=1.24.0`, `markitdown>=0.1.8`, and `pytest>=8.0.0`.
@@ -301,7 +301,7 @@ The implementation is partitioned into 5 sequential, testable phases:
 *   **S3A Integrity & Query Verification**:
     ```powershell
     # Inspect S3A archive headers, CRC32C checksums, and tile counts
-    & "C:\Users\Ashley\Downloads\s3a\target\debug\s3a-cli.exe" inspect ledger/research_corpus.s3a
+    & "<path to s3a-cli>" inspect ledger/research_corpus.s3a
 
     # Execute tri-modal queries
     python scripts/query_engine.py --mode rag --query "human AI synergy IRT"

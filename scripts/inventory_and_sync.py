@@ -9,18 +9,11 @@ from datetime import datetime
 import pymupdf  # PyMuPDF
 import yaml
 
-DEFAULT_CONFIG_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), "config", "corpus_config.yaml")
+try:
+    from scripts.corpus_common import DEFAULT_CONFIG_PATH, load_config, require_config_value
+except ImportError:  # run directly as `python scripts/<name>.py`
+    from corpus_common import DEFAULT_CONFIG_PATH, load_config, require_config_value
 
-def load_config(config_path=DEFAULT_CONFIG_PATH):
-    if os.path.exists(config_path):
-        with open(config_path, "r", encoding="utf-8") as f:
-            return yaml.safe_load(f)
-    return {
-        "drive_local_path": r"G:\My Drive\Portfolio Hub\Research Corpus",
-        "drive_folder_id": "1QDeit0SKelUCf16VJOWyaO1FAnYOwL8X",
-        "ledger_dir": r"ledger",
-        "cache_dir": r"cache"
-    }
 
 def compute_sha256(filepath):
     h = hashlib.sha256()
@@ -76,7 +69,7 @@ def extract_pdf_metadata(filepath):
     return info
 
 def reconcile_ledger(cfg):
-    target_dir = cfg.get("drive_local_path")
+    target_dir = require_config_value(cfg, "drive_local_path")
     ledger_dir = cfg.get("ledger_dir", "ledger")
     ledger_json_path = os.path.join(ledger_dir, "source_ledger.json")
     
@@ -191,12 +184,6 @@ def reconcile_ledger(cfg):
                 "title": title,
                 "author": meta.get("author", "Unknown"),
                 "year": meta.get("year", "Unknown"),
-                "triage_decision": "queued",
-                "relevance_scores": {
-                    "evidence_evaluation": None,
-                    "learner_agency": None,
-                    "traceable_workflows": None
-                },
                 "pass_status": "queued",
                 "living_doc_sections": [],
                 "provenance": f"{new_sid} | {fpath} | queued",
@@ -244,12 +231,12 @@ def reconcile_ledger(cfg):
         f.write(f"- **Total Unique Sources**: {len(sources)}\n")
         f.write(f"- **Total Deduplicated Aliases**: {total_aliases}\n")
         f.write(f"- **Last Reconciled**: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n")
-        f.write("| Source ID | Title | Year | Authors | Pages | Pass Status | Triage |\n")
-        f.write("|-----------|-------|------|---------|-------|-------------|--------|\n")
+        f.write("| Source ID | Title | Year | Authors | Pages | Pass Status |\n")
+        f.write("|-----------|-------|------|---------|-------|-------------|\n")
         for r in sources[:50]:
             title_clean = (r.get("title") or "Untitled").replace("|", "-").strip()[:50]
             auth_clean = (r.get("author") or "Unknown").replace("|", "-").strip()[:25]
-            f.write(f"| `{r['source_id']}` | {title_clean} | {r.get('year')} | {auth_clean} | {r.get('page_count')} | `{r.get('pass_status')}` | `{r.get('triage_decision')}` |\n")
+            f.write(f"| `{r['source_id']}` | {title_clean} | {r.get('year')} | {auth_clean} | {r.get('page_count')} | `{r.get('pass_status')}` |\n")
         if len(sources) > 50:
             f.write(f"\n*(Showing top 50 of {len(sources)} records. See `source_ledger.json` for full ledger)*\n")
     print(f"Updated Markdown ledger at {md_path}", flush=True)

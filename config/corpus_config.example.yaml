@@ -1,0 +1,34 @@
+# Copy to config/corpus_config.yaml (gitignored) and edit for this machine.
+# Never commit machine-specific paths, Drive IDs, or tokens.
+
+# Local mount of the research corpus PDFs
+drive_local_path: "/path/to/Research Corpus"
+# Optional: Drive folder ID of the corpus (leave empty if unused)
+drive_folder_id: ""
+# Optional: delta-sync source folder (scripts/sync_delta.py)
+drive_delta_path: "/path/to/Scholar Explorer/papers"
+# Optional: mirror for converted markdown (scripts/convert_markitdown.py)
+drive_markdown_mirror: ""
+
+# Path to the s3a-cli binary (or just "s3a-cli" if it is on PATH; env S3A_CLI also works)
+s3a_binary_path: "s3a-cli"
+
+archive_path: "ledger/research_corpus.s3a"
+wiki_dir: "wiki"
+cache_dir: "cache"
+ledger_dir: "ledger"
+intermediate_dir: "cache/s3a_intermediate"
+batch_size: 50
+
+# Optional override of tile IDs. Canonical values live in the s3a-storage
+# tile-type registry; see scripts/tile_ids.py. Leave unset unless the layout changes.
+# tile_ids:
+#   HUMAN_LRS: 10
+
+topics:
+  - name: "Learner Agency"
+    description: "Autonomy, self-regulation, scaffolding reduction, student initiative in AI-assisted learning environments"
+  - name: "Evidence Evaluation"
+    description: "Critical evaluation of AI-generated answers, error detection, citation scrutiny, hallucination identification"
+  - name: "Traceable Workflows"
+    description: "Step-by-step problem solving, intermediate reasoning audits, reproducible inquiry pathways"

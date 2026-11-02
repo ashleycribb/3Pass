@@ -2,10 +2,13 @@ import os
 import sys
 import json
 import hashlib
+import argparse
 from datetime import datetime
 
-TARGET_DIR = r"G:\My Drive\Scholar Explorer\papers"
-LEDGER_PATH = r"c:\Users\Ashley\Downloads\3Pass\ledger\source_ledger.json"
+try:
+    from scripts.corpus_common import DEFAULT_CONFIG_PATH, load_config, require_config_value
+except ImportError:  # run directly as `python scripts/<name>.py`
+    from corpus_common import DEFAULT_CONFIG_PATH, load_config, require_config_value
 
 def compute_sha256(filepath):
     h = hashlib.sha256()
@@ -14,7 +17,9 @@ def compute_sha256(filepath):
             h.update(chunk)
     return h.hexdigest()
 
-def detect_deltas():
+def detect_deltas(cfg):
+    TARGET_DIR = require_config_value(cfg, "drive_delta_path")
+    LEDGER_PATH = os.path.join(cfg.get("ledger_dir", "ledger"), "source_ledger.json")
     if not os.path.exists(LEDGER_PATH):
         print("No existing ledger found. Run full inventory first.")
         return
@@ -81,8 +86,6 @@ def detect_deltas():
                 "title": os.path.splitext(os.path.basename(fpath))[0],
                 "author": "Unknown",
                 "year": "Unknown",
-                "triage_decision": "queued",
-                "relevance_scores": {"evidence_evaluation": None, "learner_agency": None, "traceable_workflows": None},
                 "pass_status": "queued",
                 "living_doc_sections": [],
                 "provenance": f"{sid} | {fpath} | queued",
@@ -100,7 +103,7 @@ def detect_deltas():
 
     # Mark deleted
     for dp in deleted_files:
-        existing_by_path[dp]["triage_decision"] = "removed_from_drive"
+        existing_by_path[dp]["drive_status"] = "removed_from_drive"  # file existence only, not a judgment
 
     if new_files or modified_files or deleted_files:
         with open(LEDGER_PATH, "w", encoding="utf-8") as f:
@@ -108,4 +111,7 @@ def detect_deltas():
         print("Updated ledger with delta changes.")
 
 if __name__ == "__main__":
-    detect_deltas()
+    parser = argparse.ArgumentParser(description="Detect new/modified/removed PDFs in the delta folder")
+    parser.add_argument("--config", default=DEFAULT_CONFIG_PATH, help="Path to corpus_config.yaml")
+    args = parser.parse_args()
+    detect_deltas(load_config(args.config))
