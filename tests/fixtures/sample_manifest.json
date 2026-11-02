@@ -18,20 +18,26 @@
       "title": "Empirical Evaluation of AI Reasoning in Educational Question Answering",
       "author": "Alice Test; Bob Sample",
       "year": "2025",
-      "triage_decision": "include",
-      "relevance_scores": {
-        "evidence_evaluation": 5,
-        "learner_agency": 3,
-        "traceable_workflows": 4
-      },
       "pass_status": "P2 done",
       "living_doc_sections": [],
       "provenance": "SRC-9001 | tests/fixtures/mock_corpus/test_paper_1.pdf | P2 done",
       "last_synced_from_drive": "2026-11-01T08:00:00",
       "abstract_excerpt": "We present a comprehensive empirical benchmark validating AI reasoning accuracy...",
-      "theoretical_frameworks": ["Cognitive Load Theory", "Human-AI Synergy"],
-      "candidate_gaps": ["Unexplored trade-off between automated scaffolding and student agency."],
-      "aliases": []
+      "theoretical_frameworks": [
+        "Cognitive Load Theory",
+        "Human-AI Synergy"
+      ],
+      "candidate_gaps": [
+        "Unexplored trade-off between automated scaffolding and student agency."
+      ],
+      "aliases": [],
+      "researcher_selection": {
+        "selected_by": "researcher",
+        "selected_at": "2026-11-01T08:00:00",
+        "pass": 2,
+        "via": "fixture"
+      },
+      "pass2_ai_draft": true
     },
     {
       "source_id": "SRC-9002",
@@ -47,18 +53,12 @@
       "title": "Learner Agency and Metacognitive Scaffolding in Intelligent Tutoring",
       "author": "Carol Mentor; Dave Scholar",
       "year": "2024",
-      "triage_decision": "include",
-      "relevance_scores": {
-        "evidence_evaluation": 2,
-        "learner_agency": 5,
-        "traceable_workflows": 3
-      },
-      "pass_status": "P1 done",
+      "pass_status": "queued",
       "living_doc_sections": [],
-      "provenance": "SRC-9002 | tests/fixtures/mock_corpus/test_paper_2.pdf | P1 done",
+      "provenance": "SRC-9002 | tests/fixtures/mock_corpus/test_paper_2.pdf | queued",
       "last_synced_from_drive": "2026-11-01T08:00:00",
       "abstract_excerpt": "Investigates student autonomy and self-regulated learning in adaptive classrooms...",
-      "theoretical_frameworks": ["Self-Regulated Learning"],
+      "theoretical_frameworks": [],
       "candidate_gaps": [],
       "aliases": []
     },
@@ -76,15 +76,9 @@
       "title": "Fall Course Syllabus and Schedule Form",
       "author": "Unknown",
       "year": "2023",
-      "triage_decision": "exclude",
-      "relevance_scores": {
-        "evidence_evaluation": 1,
-        "learner_agency": 1,
-        "traceable_workflows": 1
-      },
-      "pass_status": "P1 done",
+      "pass_status": "queued",
       "living_doc_sections": [],
-      "provenance": "SRC-9003 | tests/fixtures/mock_corpus/test_syllabus.pdf | P1 done",
+      "provenance": "SRC-9003 | tests/fixtures/mock_corpus/test_syllabus.pdf | queued",
       "last_synced_from_drive": "2026-11-01T08:00:00",
       "abstract_excerpt": "Course policy, grading scale, and weekly meeting calendar...",
       "theoretical_frameworks": [],

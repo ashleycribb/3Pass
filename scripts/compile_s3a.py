@@ -12,22 +12,18 @@ import json
 import re
 import zlib
 import argparse
+import shutil
 import subprocess
 from datetime import datetime
 import yaml
 
-DEFAULT_CONFIG_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), "config", "corpus_config.yaml")
+try:
+    from scripts.corpus_common import DEFAULT_CONFIG_PATH, load_config
+    from scripts.tile_ids import load_tile_ids
+except ImportError:  # run directly as `python scripts/<name>.py`
+    from corpus_common import DEFAULT_CONFIG_PATH, load_config
+    from tile_ids import load_tile_ids
 
-def load_config(config_path=DEFAULT_CONFIG_PATH):
-    if os.path.exists(config_path):
-        with open(config_path, "r", encoding="utf-8") as f:
-            return yaml.safe_load(f)
-    return {
-        "ledger_dir": "ledger",
-        "archive_path": "ledger/research_corpus.s3a",
-        "intermediate_dir": "cache/s3a_intermediate",
-        "s3a_binary_path": r"C:\Users\Ashley\Downloads\s3a\target\debug\s3a-cli.exe"
-    }
 
 def hilbert_3d_index(x, y, z, order=8):
     """
@@ -63,6 +59,7 @@ def generate_intermediate_files(cfg):
     ledger_path = os.path.join(ledger_dir, "source_ledger.json")
 
     os.makedirs(inter_dir, exist_ok=True)
+    tile_ids = load_tile_ids(cfg)  # canonical IDs: see scripts/tile_ids.py
 
     if not os.path.exists(ledger_path):
         print(f"Error: Ledger file not found at {ledger_path}")
@@ -108,7 +105,9 @@ def generate_intermediate_files(cfg):
         sid_match = re.search(r"SRC-(\d+)", s["source_id"])
         pid = int(sid_match.group(1)) if sid_match else idx
 
-        scores = s.get("relevance_scores", {})
+        # Topic coordinates come only from researcher-entered scores. Legacy
+        # keyword scores (`relevance_scores`) were AI output and are ignored.
+        scores = s.get("researcher_scores") or {}
         ee = scores.get("evidence_evaluation") or 1
         la = scores.get("learner_agency") or 1
         tw = scores.get("traceable_workflows") or 1
@@ -156,37 +155,39 @@ def generate_intermediate_files(cfg):
             }
             edges_file.write(json.dumps(edge) + "\n")
 
-        # Human LRS Records (Triage decisions)
-        decision = s.get("triage_decision", "maybe")
-        decision_val = 5.0 if decision == "include" else (3.0 if decision == "maybe" else 1.0)
-        human_rec = {
-            "session_high": 1001,
-            "session_low": 2002,
-            "timestamp_sec": base_time + idx * 3600,
-            "actor_hash": hash_string_u64("Doctoral_Researcher"),
-            "verb_id": 1 if decision == "include" else 2,
-            "decision_score": decision_val,
-            "object_hash": pid,
-            "ai_tile": 11,
-            "ai_record": idx
-        }
-        human_file.write(json.dumps(human_rec) + "\n")
+        # Human LRS record: written only when the researcher selected this paper.
+        # Papers that were skimmed and skipped get no record.
+        if s.get("researcher_selection"):
+            human_rec = {
+                "session_high": 1001,
+                "session_low": 2002,
+                "timestamp_sec": base_time + idx * 3600,
+                "actor_hash": hash_string_u64("Doctoral_Researcher"),
+                "verb_id": 1,  # 1: selected for deeper pass
+                "decision_score": float(s.get("researcher_rating") or 0.0),
+                "object_hash": pid,
+                "ai_tile": tile_ids["AI_TRACE_LOG"],
+                "ai_record": idx
+            }
+            human_file.write(json.dumps(human_rec) + "\n")
 
-        # AI Trace Records (Automated pass reasoning steps)
-        ai_rec = {
-            "session_high": 1001,
-            "session_low": 2002,
-            "timestamp_sec": base_time + idx * 3600,
-            "agent_id": 1,
-            "step_index": 1 if s.get("pass_status") == "P1 done" else 2,
-            "action_type": 1,
-            "prompt_tokens": 512,
-            "completion_tokens": 128,
-            "cost_micro_usd": 0,
-            "thought_hash": hash_string_u64(s.get("abstract_excerpt", "")[:100]),
-            "tool_call_hash": hash_string_u64(s.get("provenance", ""))
-        }
-        ai_file.write(json.dumps(ai_rec) + "\n")
+        # AI trace record: only for papers where the AI produced a Pass 2 draft.
+        # Token/cost fields are 0 because they are not measured here.
+        if s.get("pass2_ai_draft"):
+            ai_rec = {
+                "session_high": 1001,
+                "session_low": 2002,
+                "timestamp_sec": base_time + idx * 3600,
+                "agent_id": 1,
+                "step_index": 2,
+                "action_type": 1,
+                "prompt_tokens": 0,
+                "completion_tokens": 0,
+                "cost_micro_usd": 0,
+                "thought_hash": hash_string_u64((s.get("abstract_excerpt") or "")[:100]),
+                "tool_call_hash": hash_string_u64(s.get("provenance", ""))
+            }
+            ai_file.write(json.dumps(ai_rec) + "\n")
 
     papers_file.close()
     edges_file.close()
@@ -198,11 +199,11 @@ def generate_intermediate_files(cfg):
 def compile_s3a_archive(cfg, fresh=True):
     generate_intermediate_files(cfg)
 
-    s3a_bin = cfg.get("s3a_binary_path")
+    s3a_bin = cfg.get("s3a_binary_path")  # from local config / S3A_CLI env
     inter_dir = cfg.get("intermediate_dir", "cache/s3a_intermediate")
     archive_path = cfg.get("archive_path", "ledger/research_corpus.s3a")
 
-    if not os.path.exists(s3a_bin):
+    if not (shutil.which(s3a_bin) or os.path.exists(s3a_bin)):
         print(f"Error: s3a-cli binary not found at {s3a_bin}")
         sys.exit(1)
 

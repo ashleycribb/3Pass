@@ -16,17 +16,13 @@ import argparse
 from datetime import datetime
 import yaml
 
-DEFAULT_CONFIG_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), "config", "corpus_config.yaml")
+try:
+    from scripts.corpus_common import DEFAULT_CONFIG_PATH, load_config
+    from scripts.tile_ids import AI_DRAFT_LABEL
+except ImportError:  # run directly as `python scripts/<name>.py`
+    from corpus_common import DEFAULT_CONFIG_PATH, load_config
+    from tile_ids import AI_DRAFT_LABEL
 
-def load_config(config_path=DEFAULT_CONFIG_PATH):
-    if os.path.exists(config_path):
-        with open(config_path, "r", encoding="utf-8") as f:
-            return yaml.safe_load(f)
-    return {
-        "ledger_dir": "ledger",
-        "wiki_dir": "wiki",
-        "cache_dir": "cache"
-    }
 
 def sanitize_slug(text):
     clean = re.sub(r"[^a-zA-Z0-9_-]", "-", text.lower())
@@ -45,7 +41,7 @@ def build_paper_page(rec, cache_dir, wiki_dir):
     year = rec.get("year", "Unknown")
     drive_path = rec.get("drive_path", "")
     pass_status = rec.get("pass_status", "P1 done")
-    scores = rec.get("relevance_scores", {})
+    scores = rec.get("researcher_scores") or {}
     theories = rec.get("theoretical_frameworks", [])
     gaps = rec.get("candidate_gaps", [])
     abstract = rec.get("abstract_excerpt", "")
@@ -79,7 +75,7 @@ theories: [{', '.join(f'"{t}"' for t in theories)}]
 **Authors**: {authors}  
 **Year**: {year}  
 **Provenance**: `[{sid} | {drive_path} | {pass_status}]`  
-**Triage Scores**: EE: `{scores.get('evidence_evaluation', '-')}` | LA: `{scores.get('learner_agency', '-')}` | TW: `{scores.get('traceable_workflows', '-')}`  
+**Researcher Scores**: EE: `{scores.get('evidence_evaluation', '-')}` | LA: `{scores.get('learner_agency', '-')}` | TW: `{scores.get('traceable_workflows', '-')}`  
 **Theoretical Frameworks**: {theories_links}  
 
 ---
@@ -92,12 +88,12 @@ theories: [{', '.join(f'"{t}"' for t in theories)}]
 - **[[topics/learner-agency|Learner Agency]]**: Pedagogical scaffolding, student autonomy, cognitive load balancing.
 - **[[topics/traceable-workflows|Traceable Workflows]]**: Reproducibility, audit trails, intermediate reasoning verification.
 
-## Identified Literature Gaps & Open Questions
+## Candidate Literature Gaps & Open Questions ({AI_DRAFT_LABEL})
 {gaps_content}
 
 ---
 
-## Detailed Pass 2 Extraction
+## Pass 2 Extraction ({AI_DRAFT_LABEL})
 {deep_analysis_text or 'Pass 2 deep analysis pending for this source.'}
 
 ---
@@ -126,10 +122,10 @@ def sync_all_wiki(cfg):
 
     sources = ledger.get("sources", [])
     p2_sources = [s for s in sources if s.get("pass_status") == "P2 done"]
-    included_sources = [s for s in sources if s.get("triage_decision") == "include"]
+    included_sources = [s for s in sources if s.get("researcher_selection")]  # researcher-selected only
     gap_sources = [s for s in sources if s.get("candidate_gaps")]
 
-    print(f"Building wiki pages for {len(p2_sources)} Pass 2 papers and {len(included_sources)} included papers...", flush=True)
+    print(f"Building wiki pages for {len(p2_sources)} Pass 2 papers and {len(included_sources)} researcher-selected papers...", flush=True)
 
     paper_pages_created = 0
     target_set = p2_sources + included_sources + gap_sources
@@ -153,7 +149,7 @@ def sync_all_wiki(cfg):
         t_path = os.path.join(wiki_dir, "topics", f"{t_slug}.md")
         t_sources = []
         for s in sources:
-            scores = s.get("relevance_scores", {})
+            scores = s.get("researcher_scores") or {}
             score_key = t_slug.replace("-", "_")
             if scores.get(score_key, 0) and scores[score_key] >= 3:
                 t_sources.append(s)
@@ -187,11 +183,13 @@ def sync_all_wiki(cfg):
 
     gaps_content = f"""# Literature Gap Register
 
-This register documents unexamined empirical questions, theoretical tensions, and methodological limitations identified across the corpus. These gaps serve as the foundation for doctoral research question formulation.
+> **{AI_DRAFT_LABEL}.** Rows below are sentences automatically extracted from papers. Whether a row is a real gap is the researcher's judgment.
 
-| Source ID | Paper Title | Identified Gap / Open Research Question | Status |
+This register collects candidate unexamined empirical questions, theoretical tensions, and methodological limitations from papers the researcher selected.
+
+| Source ID | Paper Title | Candidate Gap (AI draft) | Status |
 |-----------|-------------|------------------------------------------|--------|
-{chr(10).join(gaps_table_rows) if gaps_table_rows else "| `[[papers/SRC-0002|SRC-0002]]` | Bridging LLMs and Symbolic Reasoning | Evaluation in high-stakes university policy contexts lacks empirical benchmarks | Investigating |"}
+{chr(10).join(gaps_table_rows) if gaps_table_rows else "| - | - | No candidate gaps extracted yet | - |"}
 
 ---
 
@@ -277,10 +275,9 @@ Welcome to the interactive 3-pass literature review wiki. This repository compil
 
 ## Corpus Status & Statistics
 - **Total Registered Sources**: `{total_sources}`
-- **Pass 1 Triage Included**: `{inc_count}`
+- **Researcher-Selected Papers**: `{inc_count}`
 - **Pass 2 Deep Analyzed**: `{p2_count}`
 - **Active Backend**: Native S3A Storage Engine (`ledger/research_corpus.s3a`)
-- **Authoritative Google Drive**: `G:\\My Drive\\Portfolio Hub\\Research Corpus`
 
 ---
 

@@ -1,12 +1,14 @@
 """
 Pass 2 Deep Analysis CLI
 
-Orchestrates Pass 2 deep extraction across prioritized corpus papers:
-  - Filters by topic, specific Source ID, or highest triage score (EE/LA/TW >= 4)
-  - Extracts core methodology, architectural claims, and empirical metrics
-  - Identifies candidate literature gaps and theoretical framework links
-  - Generates structured Markdown synthesis cards in cache/markdown/
-  - Marks pass_status as 'P2 done' with cryptographic provenance headers
+Runs Pass 2 text extraction ONLY on papers the researcher explicitly selects
+with --id. Nothing is auto-selected, ranked or scored.
+
+  - Extracts methodology / findings / limitation passages and candidate gap sentences
+  - Generates Markdown cards in cache/markdown/, every one labelled
+    "AI draft \u2014 needs researcher judgment"
+  - Records the researcher's selection (the only way a paper gets a record)
+  - Humans judge; the script only extracts text and checks whether records exist
 """
 
 import os
@@ -18,16 +20,13 @@ from datetime import datetime
 import pymupdf
 import yaml
 
-DEFAULT_CONFIG_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), "config", "corpus_config.yaml")
+try:
+    from scripts.corpus_common import DEFAULT_CONFIG_PATH, load_config
+    from scripts.tile_ids import AI_DRAFT_LABEL
+except ImportError:  # run directly as `python scripts/<name>.py`
+    from corpus_common import DEFAULT_CONFIG_PATH, load_config
+    from tile_ids import AI_DRAFT_LABEL
 
-def load_config(config_path=DEFAULT_CONFIG_PATH):
-    if os.path.exists(config_path):
-        with open(config_path, "r", encoding="utf-8") as f:
-            return yaml.safe_load(f)
-    return {
-        "ledger_dir": "ledger",
-        "cache_dir": "cache"
-    }
 
 def sanitize_filename(name):
     clean = re.sub(r'[\\/*?:"<>|]', "", name)
@@ -107,7 +106,9 @@ def extract_structured_sections(pdf_path):
 
     return sections
 
-def run_pass2_analysis(cfg, topic=None, target_id=None, limit=10):
+def run_pass2_analysis(cfg, target_ids, limit=None):
+    if not target_ids:
+        raise SystemExit("Pass 2 only runs on papers you select: pass one or more --id SRC-XXXX.")
     ledger_dir = cfg.get("ledger_dir", "ledger")
     cache_dir = cfg.get("cache_dir", "cache")
     ledger_path = os.path.join(ledger_dir, "source_ledger.json")
@@ -122,26 +123,18 @@ def run_pass2_analysis(cfg, topic=None, target_id=None, limit=10):
         ledger = json.load(f)
 
     sources = ledger.get("sources", [])
-    candidates = []
-
-    if target_id:
-        candidates = [s for s in sources if s.get("source_id", "").upper() == target_id.upper()]
-    elif topic:
-        topic_lower = topic.lower()
-        for s in sources:
-            text = (s.get("title", "") + " " + s.get("abstract_excerpt", "")).lower()
-            if topic_lower in text:
-                candidates.append(s)
-    else:
-        # Prioritize included papers with highest combined scores
-        included = [s for s in sources if s.get("triage_decision") == "include"]
-        included.sort(key=lambda s: sum(s.get("relevance_scores", {}).values() or [0]), reverse=True)
-        candidates = included
-
-    targets = candidates[:limit]
+    by_id = {x.get("source_id", "").upper(): x for x in sources}
+    targets = []
+    for tid in target_ids or []:
+        rec = by_id.get(tid.upper())
+        if rec is None:
+            print(f"Warning: {tid} is not in the ledger; skipping.", flush=True)
+            continue
+        targets.append(rec)
+    targets = targets[:limit] if limit else targets
 
     print("=" * 60, flush=True)
-    print(f"Executing Pass 2 Deep Synthesis (Limit: {limit})", flush=True)
+    print("Executing Pass 2 extraction on researcher-selected papers", flush=True)
     print(f"Selected Targets: {len(targets)}", flush=True)
     print("=" * 60, flush=True)
 
@@ -174,17 +167,21 @@ year: "{s.get('year', 'Unknown')}"
 drive_path: "{pdf_path}"
 provenance: "{sid} | {pdf_path} | P2 done"
 analyzed_at: "{datetime.now().isoformat()}"
+ai_draft: true
+ai_draft_label: "{AI_DRAFT_LABEL}"
 theoretical_frameworks: [{', '.join(f'"{t}"' for t in sections['theory_mentions'])}]
 candidate_gaps_count: {len(sections['candidate_gaps'])}
 ---
 
-# Pass 2 Deep Analysis: {title}
+# Pass 2 Extraction: {title}
+
+> **{AI_DRAFT_LABEL}.** Text below was extracted automatically from the PDF. It is not a finding, rating or judgment.
 
 **Source ID**: `{sid}`  
 **Authors**: {s.get('author', 'Unknown')}  
 **Year**: {s.get('year', 'Unknown')}  
 **Local PDF**: `{pdf_path}`  
-**Theoretical Frameworks**: {theories_list}  
+**Theoretical Frameworks (keyword matches, AI draft)**: {theories_list}  
 
 ---
 
@@ -197,23 +194,28 @@ candidate_gaps_count: {len(sections['candidate_gaps'])}
 ## 3. Key Findings & Empirical Results
 {sections['findings'] or 'Empirical results integrated across sections. See full document.'}
 
-## 4. Candidate Literature Gaps & Future Work
+## 4. Candidate Literature Gaps & Future Work ({AI_DRAFT_LABEL})
 {gaps_list}
 
 ## 5. Limitations & Threats to Validity
 {sections['limitations'] or 'Limitations not isolated to a discrete header.'}
 
-## 6. Synthesis & Doctoral Implications
-- **Evidence Evaluation**: Assesses empirical robustness, benchmark comparisons, and potential failure modes.
-- **Learner Agency**: Evaluates how human or agent autonomy is preserved versus automated.
-- **Traceable Workflows**: Verifies audit trails, reproducibility, and intermediate reasoning transparency.
+## 6. Researcher Notes
+_To be completed by the researcher. Whether and how this paper matters is your judgment._
 """
 
         with open(card_path, "w", encoding="utf-8") as f:
             f.write(card_md)
 
         # Update record
+        s["researcher_selection"] = {
+            "selected_by": "researcher",
+            "selected_at": datetime.now().isoformat(),
+            "pass": 2,
+            "via": "run_pass2.py --id",
+        }
         s["pass_status"] = "P2 done"
+        s["pass2_ai_draft"] = True  # extraction only; researcher has not reviewed it yet
         s["pass2_card_path"] = card_path
         s["candidate_gaps"] = sections["candidate_gaps"]
         s["theoretical_frameworks"] = sections["theory_mentions"]
@@ -233,10 +235,9 @@ candidate_gaps_count: {len(sections['candidate_gaps'])}
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Pass 2 Deep Analysis CLI")
     parser.add_argument("--config", default=DEFAULT_CONFIG_PATH, help="Path to corpus_config.yaml")
-    parser.add_argument("--topic", help="Filter papers by topic string")
-    parser.add_argument("--id", help="Analyze specific Source ID (e.g. SRC-0002)")
-    parser.add_argument("--limit", type=int, default=5, help="Number of papers to analyze")
+    parser.add_argument("--id", nargs="+", required=True, dest="ids", help="Researcher-selected Source ID(s) (e.g. SRC-0002)")
+    parser.add_argument("--limit", type=int, default=None, help="Optional cap on number of papers")
     args = parser.parse_args()
 
     cfg = load_config(args.config)
-    run_pass2_analysis(cfg, topic=args.topic, target_id=args.id, limit=args.limit)
+    run_pass2_analysis(cfg, args.ids, limit=args.limit)

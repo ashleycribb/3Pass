@@ -21,3 +21,11 @@ token.json
 # System & OS Files
 .DS_Store
 Thumbs.db
+
+# Research data & machine-local config: never commit (kept locally, untracked)
+ledger/research_corpus.s3a
+ledger/source_ledger.*
+ledger/aliases.json
+wiki/papers/
+*.s3a
+config/corpus_config.yaml

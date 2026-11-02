@@ -16,16 +16,11 @@ import pymupdf
 from markitdown import MarkItDown
 import yaml
 
-DEFAULT_CONFIG_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), "config", "corpus_config.yaml")
+try:
+    from scripts.corpus_common import DEFAULT_CONFIG_PATH, load_config
+except ImportError:  # run directly as `python scripts/<name>.py`
+    from corpus_common import DEFAULT_CONFIG_PATH, load_config
 
-def load_config(config_path=DEFAULT_CONFIG_PATH):
-    if os.path.exists(config_path):
-        with open(config_path, "r", encoding="utf-8") as f:
-            return yaml.safe_load(f)
-    return {
-        "ledger_dir": "ledger",
-        "cache_dir": "cache"
-    }
 
 def sanitize_filename(name):
     clean = re.sub(r'[\\/*?:"<>|]', "", name)
@@ -155,7 +150,6 @@ def main():
     parser.add_argument("--config", default=DEFAULT_CONFIG_PATH, help="Path to corpus_config.yaml")
     parser.add_argument("--id", help="Convert specific source ID (e.g. SRC-0002)")
     parser.add_argument("--status", help="Convert papers with specific pass status (e.g. 'P2 done')")
-    parser.add_argument("--decision", help="Convert papers with specific triage decision (e.g. 'include')")
     parser.add_argument("--limit", type=int, default=10, help="Maximum number of papers to convert")
     args = parser.parse_args()
 
@@ -164,7 +158,7 @@ def main():
     cache_dir = cfg.get("cache_dir", "cache")
     ledger_path = os.path.join(ledger_dir, "source_ledger.json")
     cache_md_dir = os.path.join(cache_dir, "markdown")
-    drive_md_dir = r"G:\My Drive\AcademicPapers_Markdown"
+    drive_md_dir = cfg.get("drive_markdown_mirror") or None  # optional mirror, set in local config
 
     if not os.path.exists(ledger_path):
         print(f"Ledger not found at {ledger_path}")
@@ -180,13 +174,9 @@ def main():
         targets = [s for s in sources if s["source_id"].upper() == args.id.upper()]
     elif args.status:
         targets = [s for s in sources if s.get("pass_status") == args.status]
-    elif args.decision:
-        targets = [s for s in sources if s.get("triage_decision") == args.decision]
     else:
-        # Default: P2 done papers first, then include papers
-        targets = [s for s in sources if s.get("pass_status") == "P2 done"]
-        if not targets:
-            targets = [s for s in sources if s.get("triage_decision") == "include"]
+        # Default: only papers the researcher has selected
+        targets = [s for s in sources if s.get("researcher_selection")]
 
     targets = targets[:args.limit]
     print(f"Targeting {len(targets)} papers for Markdown conversion...", flush=True)

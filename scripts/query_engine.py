@@ -22,18 +22,13 @@ if hasattr(sys.stdout, "reconfigure"):
 if hasattr(sys.stderr, "reconfigure"):
     sys.stderr.reconfigure(encoding="utf-8", errors="replace")
 
-DEFAULT_CONFIG_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), "config", "corpus_config.yaml")
+try:
+    from scripts.corpus_common import DEFAULT_CONFIG_PATH, load_config
+    from scripts.tile_ids import TILE_ACADEMIC_PAPERS, TILE_RESEARCH_GRAPH
+except ImportError:  # run directly as `python scripts/<name>.py`
+    from corpus_common import DEFAULT_CONFIG_PATH, load_config
+    from tile_ids import TILE_ACADEMIC_PAPERS, TILE_RESEARCH_GRAPH
 
-def load_config(config_path=DEFAULT_CONFIG_PATH):
-    if os.path.exists(config_path):
-        with open(config_path, "r", encoding="utf-8") as f:
-            return yaml.safe_load(f)
-    return {
-        "ledger_dir": "ledger",
-        "archive_path": "ledger/research_corpus.s3a",
-        "wiki_dir": "wiki",
-        "s3a_binary_path": r"C:\Users\Ashley\Downloads\s3a\target\debug\s3a-cli.exe"
-    }
 
 def execute_rag_query(cfg, query_str, limit=5):
     ledger_path = os.path.join(cfg.get("ledger_dir", "ledger"), "source_ledger.json")
@@ -47,8 +42,8 @@ def execute_rag_query(cfg, query_str, limit=5):
         text = (s.get("title", "") + " " + s.get("abstract_excerpt", "") + " " + " ".join(s.get("theoretical_frameworks", []))).lower()
         match_score = sum(text.count(t) for t in terms)
         
-        # Boost for included and P2 done papers
-        if s.get("triage_decision") == "include":
+        # Boost papers the researcher selected / that have a Pass 2 extraction
+        if s.get("researcher_selection"):
             match_score += 3
         if s.get("pass_status") == "P2 done":
             match_score += 5
@@ -61,21 +56,21 @@ def execute_rag_query(cfg, query_str, limit=5):
 
     print("=" * 70)
     print(f"S3A Spatial RAG Query: '{query_str}'")
-    print(f"Archive: {cfg.get('archive_path')} (Tile 2: ACADEMIC_PAPERS)")
+    print(f"Archive: {cfg.get('archive_path')} (Tile {TILE_ACADEMIC_PAPERS}: ACADEMIC_PAPERS)")
     print("=" * 70)
 
     for rank, (score, tile_rec_idx, s) in enumerate(results, 1):
         sid = s["source_id"]
-        coord = f"L0:T2:R{tile_rec_idx}"
+        coord = f"L0:T{TILE_ACADEMIC_PAPERS}:R{tile_rec_idx}"
         prov = s.get("provenance", f"{sid} | {s.get('drive_path')} | {s.get('pass_status')}")
-        scores = s.get("relevance_scores", {})
+        scores = s.get("researcher_scores") or {}
         theories = ", ".join(s.get("theoretical_frameworks", [])) or "None indexed"
 
         print(f"\n[{rank}] Source ID: `{sid}` | S3A Address: `{coord}` | Score: {score}")
         print(f"    Title:       {s.get('title')}")
         print(f"    Authors:     {s.get('author', 'Unknown')} ({s.get('year', 'Unknown')})")
         print(f"    Provenance:  [{prov}]")
-        print(f"    Scores:      EE: {scores.get('evidence_evaluation', '-')} | LA: {scores.get('learner_agency', '-')} | TW: {scores.get('traceable_workflows', '-')}")
+        print(f"    Researcher scores: EE: {scores.get('evidence_evaluation', '-')} | LA: {scores.get('learner_agency', '-')} | TW: {scores.get('traceable_workflows', '-')}")
         print(f"    Theories:    {theories}")
         if s.get("abstract_excerpt"):
             print(f"    Excerpt:     {s['abstract_excerpt'][:220]}...")
@@ -105,7 +100,7 @@ def execute_dag_query(cfg, source_id):
     print(f"Archive: {cfg.get('archive_path')}")
     print("=" * 70)
 
-    coord = f"L0:T2:R{target_idx}"
+    coord = f"L0:T{TILE_ACADEMIC_PAPERS}:R{target_idx}"
     print(f"\nCanonical Node: `{source_id}`")
     print(f"  Title:            {target.get('title')}")
     print(f"  Physical Drive:   {target.get('drive_path')}")
@@ -142,7 +137,7 @@ def execute_graph_query(cfg, theory_or_topic):
 
     for idx, s in enumerate(ledger.get("sources", [])):
         theories = [t.lower() for t in s.get("theoretical_frameworks", [])]
-        scores = s.get("relevance_scores", {})
+        scores = s.get("researcher_scores") or {}
         
         la_val = scores.get("learner_agency") or 0
         ee_val = scores.get("evidence_evaluation") or 0
@@ -161,13 +156,13 @@ def execute_graph_query(cfg, theory_or_topic):
 
     print("=" * 70)
     print(f"S3A Knowledge Graph Subgraph: '{theory_or_topic}'")
-    print(f"Archive: {cfg.get('archive_path')} (Tile 3: RESEARCH_GRAPH)")
+    print(f"Archive: {cfg.get('archive_path')} (Tile {TILE_RESEARCH_GRAPH}: RESEARCH_GRAPH)")
     print("=" * 70)
 
     print(f"\nFound {len(matched)} associated literature nodes:")
     for idx, s in matched[:10]:
         sid = s["source_id"]
-        coord = f"L0:T2:R{idx}"
+        coord = f"L0:T{TILE_ACADEMIC_PAPERS}:R{idx}"
         theories_str = ", ".join(s.get("theoretical_frameworks", [])) or "Topical Alignment"
         print(f"  ├─ [`{sid}` | `{coord}`] {s.get('title')[:60]}... (Theory: {theories_str})")
 

@@ -13,16 +13,11 @@ import argparse
 from datetime import datetime
 import yaml
 
-DEFAULT_CONFIG_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), "config", "corpus_config.yaml")
+try:
+    from scripts.corpus_common import DEFAULT_CONFIG_PATH, load_config
+except ImportError:  # run directly as `python scripts/<name>.py`
+    from corpus_common import DEFAULT_CONFIG_PATH, load_config
 
-def load_config(config_path=DEFAULT_CONFIG_PATH):
-    if os.path.exists(config_path):
-        with open(config_path, "r", encoding="utf-8") as f:
-            return yaml.safe_load(f)
-    return {
-        "ledger_dir": "ledger",
-        "wiki_dir": "wiki"
-    }
 
 def categorize_paper(title, abstract, theories):
     text = (title + " " + abstract + " " + " ".join(theories)).lower()
@@ -84,8 +79,8 @@ Each entry provides verifiable provenance tracking back to the active Google Dri
         content += "| Source ID | Title | Year | Authors | Wiki Note | Pass Status |\n"
         content += "|-----------|-------|------|---------|-----------|-------------|\n"
         
-        # Sort papers: P2 done first, then include
-        papers.sort(key=lambda p: (p.get("pass_status") != "P2 done", p.get("triage_decision") != "include"))
+        # Sort papers: researcher-selected / P2 first
+        papers.sort(key=lambda p: (p.get("pass_status") != "P2 done", not p.get("researcher_selection")))
 
         for p in papers[:25]:  # Show top 25 per family
             sid = p["source_id"]
