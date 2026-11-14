@@ -135,8 +135,10 @@ def generate_intermediate_files(cfg, sources_list: Optional[List[Dict[str, Any]]
         }
         papers_file.write(json.dumps(paper_rec) + "\n")
 
-        # Tile 13: Research Graph citation / reference edges
+        # Tile 13: Research Graph citation / reference / theory edges
         refs = s.get("references", [])
+        theories = s.get("theoretical_frameworks", [])
+
         if refs:
             for r in refs[:5]:
                 ref_hash = hash_string_u64(r.get("doi") or r.get("title", ""))
@@ -149,7 +151,33 @@ def generate_intermediate_files(cfg, sources_list: Optional[List[Dict[str, Any]]
                     "weight": 1.0
                 }
                 edges_file.write(json.dumps(edge) + "\n")
-        else:
+
+        if theories:
+            for t in theories:
+                for th_name in {t, t.replace(" ", "_")}:
+                    th_hash = hash_string_u64(th_name)
+                    # Forward edge: paper -> theory
+                    edge = {
+                        "subject_hash": pid,
+                        "object_hash": th_hash,
+                        "timestamp_sec": base_time + idx * 3600,
+                        "hilbert_coord": h_idx,
+                        "predicate_id": 2,  # 2: APPLIES_THEORY
+                        "weight": 1.0
+                    }
+                    edges_file.write(json.dumps(edge) + "\n")
+                    # Reverse edge: theory -> paper
+                    edge_rev = {
+                        "subject_hash": th_hash,
+                        "object_hash": pid,
+                        "timestamp_sec": base_time + idx * 3600,
+                        "hilbert_coord": h_idx,
+                        "predicate_id": 2,
+                        "weight": 1.0
+                    }
+                    edges_file.write(json.dumps(edge_rev) + "\n")
+
+        if not refs and not theories:
             # Minimal edge for topic linkage
             edge = {
                 "subject_hash": pid,
@@ -160,6 +188,15 @@ def generate_intermediate_files(cfg, sources_list: Optional[List[Dict[str, Any]]
                 "weight": 1.0
             }
             edges_file.write(json.dumps(edge) + "\n")
+            edge_rev = {
+                "subject_hash": hash_string_u64("Learner_Agency"),
+                "object_hash": pid,
+                "timestamp_sec": base_time + idx * 3600,
+                "hilbert_coord": h_idx,
+                "predicate_id": 2,
+                "weight": 1.0
+            }
+            edges_file.write(json.dumps(edge_rev) + "\n")
 
         # Tile 10: Human LRS Ledger (Researcher review note / approval)
         # Written only when the researcher selected this paper

@@ -1,0 +1,750 @@
+{
+  "source_id": "SRC-REAL-D",
+  "paper_id": 0,
+  "title": "GenAICHI: Generative AI and HCI",
+  "authors": [
+    "Michael Muller",
+    "Lydia B Chilton",
+    "Anna Kantosalo",
+    "Charles Patrick Martin",
+    "Greg Walsh"
+  ],
+  "year": 2022,
+  "doi": "10.1145/3491101.3503719",
+  "arxiv_id": null,
+  "urls": {
+    "landing": "https://doi.org/10.1145/3491101.3503719",
+    "pdf": ""
+  },
+  "completeness": "metadata-only",
+  "provenance": {
+    "path_used": "doi_metadata",
+    "tool": "crossref-openalex",
+    "tool_version": "Crossref REST API v1 (Polite Pool)",
+    "source_uri": "https://api.crossref.org/works/10.1145/3491101.3503719",
+    "extracted_at": "2026-11-13T20:50:03.366003",
+    "per_part": {
+      "metadata": {
+        "tool": "crossref-openalex",
+        "status": "extracted"
+      },
+      "sections": {
+        "tool": "crossref-openalex",
+        "status": "not-available"
+      },
+      "figures": {
+        "tool": "crossref-openalex",
+        "status": "not-available"
+      },
+      "tables": {
+        "tool": "crossref-openalex",
+        "status": "not-available"
+      },
+      "equations": {
+        "tool": "crossref-openalex",
+        "status": "not-available"
+      },
+      "references": {
+        "tool": "crossref-openalex",
+        "status": "extracted"
+      }
+    }
+  },
+  "abstract": "",
+  "sections": [],
+  "figures": [],
+  "tables": [],
+  "equations": [],
+  "references": [
+    {
+      "id": "e_1_3_2_1_1_1",
+      "title": "Adverb. 2021. Advadnoun. https://twitter.com/advadnoun  Adverb. 2021. Advadnoun. https://twitter.com/advadnoun",
+      "authors": [],
+      "venue": "",
+      "year": null,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "Adverb. 2021. Advadnoun. https://twitter.com/advadnoun  Adverb. 2021. Advadnoun. https://twitter.com/advadnoun",
+      "verified": "metadata-only, no body"
+    },
+    {
+      "id": "e_1_3_2_1_2_1",
+      "title": "Reference 2",
+      "authors": [],
+      "venue": "",
+      "year": null,
+      "doi": "10.1145/2818052.2855518",
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "metadata-only, no body"
+    },
+    {
+      "id": "e_1_3_2_1_3_1",
+      "title": "Terence Broad Sebastian Berns Simon Colton and Mick Grierson. 2021. Active Divergence with Generative Deep Learning–A Su",
+      "authors": [],
+      "venue": "",
+      "year": null,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "Terence Broad Sebastian Berns Simon Colton and Mick Grierson. 2021. Active Divergence with Generative Deep Learning–A Survey and Taxonomy. arXiv preprint arXiv:2107.05599(2021).  Terence Broad Sebastian Berns Simon Colton and Mick Grierson. 2021. Active Divergence with Generative Deep Learning–A Survey and Taxonomy. arXiv preprint arXiv:2107.05599(2021).",
+      "verified": "metadata-only, no body"
+    },
+    {
+      "id": "e_1_3_2_1_4_1",
+      "title": "Andrew Brock Jeff Donahue and Karen Simonyan. 2019. Large Scale GAN Training for High Fidelity Natural Image Synthesis. ",
+      "authors": [],
+      "venue": "",
+      "year": null,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "Andrew Brock Jeff Donahue and Karen Simonyan. 2019. Large Scale GAN Training for High Fidelity Natural Image Synthesis. arxiv:1809.11096 [cs.LG]  Andrew Brock Jeff Donahue and Karen Simonyan. 2019. Large Scale GAN Training for High Fidelity Natural Image Synthesis. arxiv:1809.11096 [cs.LG]",
+      "verified": "metadata-only, no body"
+    },
+    {
+      "id": "e_1_3_2_1_5_1",
+      "title": "Katherine Crowson. 2021. Introduction to VQGAN CLIP. Google Docs. https://docs.google.com/document/d/1Lu7XPRKlNhBQjcKr8k",
+      "authors": [],
+      "venue": "",
+      "year": null,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "Katherine Crowson. 2021. Introduction to VQGAN CLIP. Google Docs. https://docs.google.com/document/d/1Lu7XPRKlNhBQjcKr8k8qRzUzbBW7kzxb5Vu72GMRn2E/edit  Katherine Crowson. 2021. Introduction to VQGAN CLIP. Google Docs. https://docs.google.com/document/d/1Lu7XPRKlNhBQjcKr8k8qRzUzbBW7kzxb5Vu72GMRn2E/edit",
+      "verified": "metadata-only, no body"
+    },
+    {
+      "id": "e_1_3_2_1_6_1",
+      "title": "Katherine Crowson. 2021. Rivers Have Wings. https://twitter.com/RiversHaveWings  Katherine Crowson. 2021. Rivers Have Wi",
+      "authors": [],
+      "venue": "",
+      "year": null,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "Katherine Crowson. 2021. Rivers Have Wings. https://twitter.com/RiversHaveWings  Katherine Crowson. 2021. Rivers Have Wings. https://twitter.com/RiversHaveWings",
+      "verified": "metadata-only, no body"
+    },
+    {
+      "id": "e_1_3_2_1_7_1",
+      "title": "Nicholas Davis . 2013 . Human-computer co-creativity: Blending human and computational creativity . In Doctoral Consorti",
+      "authors": [],
+      "venue": "",
+      "year": 2013,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "Nicholas Davis . 2013 . Human-computer co-creativity: Blending human and computational creativity . In Doctoral Consortium of the Ninth AAAI Conference on Artificial Intelligence and Interactive Digital Entertainment ( Boston, Massachusetts, USA, October 14-18,). AAAI, 9–12. Nicholas Davis. 2013. Human-computer co-creativity: Blending human and computational creativity. In Doctoral Consortium of the Ninth AAAI Conference on Artificial Intelligence and Interactive Digital Entertainment (Boston, Massachusetts, USA, October 14-18,). AAAI, 9–12.",
+      "verified": "metadata-only, no body"
+    },
+    {
+      "id": "e_1_3_2_1_8_1",
+      "title": "Reference 8",
+      "authors": [],
+      "venue": "",
+      "year": null,
+      "doi": "10.1145/2856767.2856795",
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "metadata-only, no body"
+    },
+    {
+      "id": "e_1_3_2_1_9_1",
+      "title": "Bestiario del Hypogripho. 2021. Ayuda:Generar imágenes con VQGAN CLIP/English. https://tuscriaturas.miraheze.org/w/index",
+      "authors": [],
+      "venue": "",
+      "year": null,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "Bestiario del Hypogripho. 2021. Ayuda:Generar imágenes con VQGAN CLIP/English. https://tuscriaturas.miraheze.org/w/index.php?title=Ayuda:Generar_imágenes_con_VQGAN CLIP/English  Bestiario del Hypogripho. 2021. Ayuda:Generar imágenes con VQGAN CLIP/English. https://tuscriaturas.miraheze.org/w/index.php?title=Ayuda:Generar_imágenes_con_VQGAN CLIP/English",
+      "verified": "metadata-only, no body"
+    },
+    {
+      "id": "e_1_3_2_1_10_1",
+      "title": "Reference 10",
+      "authors": [],
+      "venue": "",
+      "year": null,
+      "doi": "10.1145/3027063.3027072",
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "metadata-only, no body"
+    },
+    {
+      "id": "e_1_3_2_1_11_1",
+      "title": "Upol Ehsan , Philipp Wintersberger , Q Vera Liao , Martina Mara , Marc Streit , Sandra Wachter , Andreas Riener , and Ma",
+      "authors": [],
+      "venue": "",
+      "year": 2021,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "Upol Ehsan , Philipp Wintersberger , Q Vera Liao , Martina Mara , Marc Streit , Sandra Wachter , Andreas Riener , and Mark  O Riedl . 2021 . Operationalizing Human-Centered Perspectives in Explainable AI. In Extended Abstracts of the 2021 CHI Conference on Human Factors in Computing Systems. 1–6. Upol Ehsan, Philipp Wintersberger, Q Vera Liao, Martina Mara, Marc Streit, Sandra Wachter, Andreas Riener, and Mark O Riedl. 2021. Operationalizing Human-Centered Perspectives in Explainable AI. In Extended Abstracts of the 2021 CHI Conference on Human Factors in Computing Systems. 1–6.",
+      "verified": "metadata-only, no body"
+    },
+    {
+      "id": "e_1_3_2_1_12_1",
+      "title": "Ahmed Elgammal , Bingchen Liu , Mohamed Elhoseiny , and Marian Mazzone . 2017 . Can: Creative adversarial networks, gene",
+      "authors": [],
+      "venue": "",
+      "year": 2017,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "Ahmed Elgammal , Bingchen Liu , Mohamed Elhoseiny , and Marian Mazzone . 2017 . Can: Creative adversarial networks, generating ” art” by learning about styles and deviating from style norms. arXiv preprint arXiv:1706.07068(2017). Ahmed Elgammal, Bingchen Liu, Mohamed Elhoseiny, and Marian Mazzone. 2017. Can: Creative adversarial networks, generating” art” by learning about styles and deviating from style norms. arXiv preprint arXiv:1706.07068(2017).",
+      "verified": "metadata-only, no body"
+    },
+    {
+      "id": "e_1_3_2_1_13_1",
+      "title": "Reference 13",
+      "authors": [],
+      "venue": "",
+      "year": null,
+      "doi": "10.1145/3407662.3407757",
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "metadata-only, no body"
+    },
+    {
+      "id": "e_1_3_2_1_14_1",
+      "title": "Jesse Engel , Kumar Krishna Agrawal , Shuo Chen , Ishaan Gulrajani , Chris Donahue , and Adam Roberts . 2019 . GANSynth:",
+      "authors": [],
+      "venue": "",
+      "year": 2019,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "Jesse Engel , Kumar Krishna Agrawal , Shuo Chen , Ishaan Gulrajani , Chris Donahue , and Adam Roberts . 2019 . GANSynth: Adversarial Neural Audio Synthesis . In Proceedings of the International Conference on Learning Representations. https://openreview.net/pdf?id=H1xQVn09FX Jesse Engel, Kumar Krishna Agrawal, Shuo Chen, Ishaan Gulrajani, Chris Donahue, and Adam Roberts. 2019. GANSynth: Adversarial Neural Audio Synthesis. In Proceedings of the International Conference on Learning Representations. https://openreview.net/pdf?id=H1xQVn09FX",
+      "verified": "metadata-only, no body"
+    },
+    {
+      "id": "e_1_3_2_1_15_1",
+      "title": "Leon A. Gatys Alexander S. Ecker and Matthias Bethge. 2015. A Neural Algorithm of Artistic Style. arxiv:1508.06576 [cs.C",
+      "authors": [],
+      "venue": "",
+      "year": null,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "Leon A. Gatys Alexander S. Ecker and Matthias Bethge. 2015. A Neural Algorithm of Artistic Style. arxiv:1508.06576 [cs.CV]  Leon A. Gatys Alexander S. Ecker and Matthias Bethge. 2015. A Neural Algorithm of Artistic Style. arxiv:1508.06576 [cs.CV]",
+      "verified": "metadata-only, no body"
+    },
+    {
+      "id": "e_1_3_2_1_16_1",
+      "title": "Pablo Gervás . 2001. An Expert System for the Composition of Formal Spanish Poetry . In Applications and Innovations in ",
+      "authors": [],
+      "venue": "",
+      "year": null,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "Pablo Gervás . 2001. An Expert System for the Composition of Formal Spanish Poetry . In Applications and Innovations in Intelligent Systems VIII , Ann Macintosh, Mike Moulton, and Frans Coenen (Eds.). Springer London , London , 19–32. Pablo Gervás. 2001. An Expert System for the Composition of Formal Spanish Poetry. In Applications and Innovations in Intelligent Systems VIII, Ann Macintosh, Mike Moulton, and Frans Coenen (Eds.). Springer London, London, 19–32.",
+      "verified": "metadata-only, no body"
+    },
+    {
+      "id": "e_1_3_2_1_17_1",
+      "title": "Reference 17",
+      "authors": [],
+      "venue": "",
+      "year": null,
+      "doi": "10.1145/3379336.3379355",
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "metadata-only, no body"
+    },
+    {
+      "id": "e_1_3_2_1_18_1",
+      "title": "Reference 18",
+      "authors": [],
+      "venue": "",
+      "year": null,
+      "doi": "10.1145/3397482.3450707",
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "metadata-only, no body"
+    },
+    {
+      "id": "e_1_3_2_1_19_1",
+      "title": "Aaron Hertzmann . 2020. Visual Indeterminacy in GAN Art. Leonardo 53, 4 (07 2020 ), 424–428. https://doi.org/10.1162/leo",
+      "authors": [],
+      "venue": "",
+      "year": 2020,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "Aaron Hertzmann . 2020. Visual Indeterminacy in GAN Art. Leonardo 53, 4 (07 2020 ), 424–428. https://doi.org/10.1162/leon_a_01930 Aaron Hertzmann. 2020. Visual Indeterminacy in GAN Art. Leonardo 53, 4 (07 2020), 424–428. https://doi.org/10.1162/leon_a_01930",
+      "verified": "metadata-only, no body"
+    },
+    {
+      "id": "e_1_3_2_1_20_1",
+      "title": "Cheng- Zhi Anna Huang , Ashish Vaswani , Jakob Uszkoreit , Noam Shazeer , Ian Simon , Curtis Hawthorne , Andrew Dai , Ma",
+      "authors": [],
+      "venue": "",
+      "year": 2019,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "Cheng- Zhi Anna Huang , Ashish Vaswani , Jakob Uszkoreit , Noam Shazeer , Ian Simon , Curtis Hawthorne , Andrew Dai , Matt Hoffman , Monica Dinculescu , and Douglas Eck . 2019 . Music Transformer: Generating Music with Long-Term Structure. https://arxiv.org/abs/1809.04281 Cheng-Zhi Anna Huang, Ashish Vaswani, Jakob Uszkoreit, Noam Shazeer, Ian Simon, Curtis Hawthorne, Andrew Dai, Matt Hoffman, Monica Dinculescu, and Douglas Eck. 2019. Music Transformer: Generating Music with Long-Term Structure. https://arxiv.org/abs/1809.04281",
+      "verified": "metadata-only, no body"
+    },
+    {
+      "id": "e_1_3_2_1_21_1",
+      "title": "Justin. 2021. Somewhere Systems Twitter. https://twitter.com/somewheresy  Justin. 2021. Somewhere Systems Twitter. https",
+      "authors": [],
+      "venue": "",
+      "year": null,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "Justin. 2021. Somewhere Systems Twitter. https://twitter.com/somewheresy  Justin. 2021. Somewhere Systems Twitter. https://twitter.com/somewheresy",
+      "verified": "metadata-only, no body"
+    },
+    {
+      "id": "e_1_3_2_1_22_1",
+      "title": "Anna Kantosalo , Jukka  M. Toivanen , Ping Xiao , and Hannu Toivonen . 2014 . From Isolation to Involvement: Adapting Ma",
+      "authors": [],
+      "venue": "",
+      "year": 2014,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "Anna Kantosalo , Jukka  M. Toivanen , Ping Xiao , and Hannu Toivonen . 2014 . From Isolation to Involvement: Adapting Machine Creativity Software to Support Human-Computer Co-Creation . In Proceedings of the Fifth International Conference on Computational Creativity , Ljubljana, Slovenia. 1–7. http://computationalcreativity.net/iccc 2014/wp-content/uploads/2014/06/1.1_Kantosalo.pdf Anna Kantosalo, Jukka M. Toivanen, Ping Xiao, and Hannu Toivonen. 2014. From Isolation to Involvement: Adapting Machine Creativity Software to Support Human-Computer Co-Creation. In Proceedings of the Fifth International Conference on Computational Creativity, Ljubljana, Slovenia. 1–7. http://computationalcreativity.net/iccc2014/wp-content/uploads/2014/06/1.1_Kantosalo.pdf",
+      "verified": "metadata-only, no body"
+    },
+    {
+      "id": "e_1_3_2_1_23_1",
+      "title": "Pegah Karimi , Kaz Grace , Mary Lou Maher , and Nick Davis . 2018 . Evaluating Creativity in Computational Co-Creative S",
+      "authors": [],
+      "venue": "",
+      "year": 2018,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "Pegah Karimi , Kaz Grace , Mary Lou Maher , and Nick Davis . 2018 . Evaluating Creativity in Computational Co-Creative Systems . In Proceedings of the 2018 international conference on computational creativity, Vol. 147 . Citeseer. Pegah Karimi, Kaz Grace, Mary Lou Maher, and Nick Davis. 2018. Evaluating Creativity in Computational Co-Creative Systems. In Proceedings of the 2018 international conference on computational creativity, Vol. 147. Citeseer.",
+      "verified": "metadata-only, no body"
+    },
+    {
+      "id": "e_1_3_2_1_24_1",
+      "title": "Pegah Karimi , Mary Lou Maher , Nick Davis , and Kaz Grace . 2019 . Deep Learning in a Computational Model for Conceptua",
+      "authors": [],
+      "venue": "",
+      "year": 2019,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "Pegah Karimi , Mary Lou Maher , Nick Davis , and Kaz Grace . 2019 . Deep Learning in a Computational Model for Conceptual Shifts in a Co-Creative Design System . In Proceedings of the 2019 international conference on computational creativity, Vol. 147 . Citeseer. Pegah Karimi, Mary Lou Maher, Nick Davis, and Kaz Grace. 2019. Deep Learning in a Computational Model for Conceptual Shifts in a Co-Creative Design System. In Proceedings of the 2019 international conference on computational creativity, Vol. 147. Citeseer.",
+      "verified": "metadata-only, no body"
+    },
+    {
+      "id": "e_1_3_2_1_25_1",
+      "title": "Reference 25",
+      "authors": [],
+      "venue": "",
+      "year": null,
+      "doi": "10.1145/3323994.3369898",
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "metadata-only, no body"
+    },
+    {
+      "id": "e_1_3_2_1_26_1",
+      "title": "Aran Komatsuzaki . 2021. When you generate images with VQGAN CLIP, the image quality dramatically improves if you add ”u",
+      "authors": [],
+      "venue": "",
+      "year": null,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "Aran Komatsuzaki . 2021. When you generate images with VQGAN CLIP, the image quality dramatically improves if you add ”unreal engine ” to your prompt. People are now calling this ”unreal engine trick” lole.g. ”the angel of air. unreal engine” pic.twitter.com/G4xBgVLyiv. https://twitter.com/arankomatsuzaki/status/1399471244760649729 Aran Komatsuzaki. 2021. When you generate images with VQGAN CLIP, the image quality dramatically improves if you add ”unreal engine” to your prompt. People are now calling this ”unreal engine trick” lole.g. ”the angel of air. unreal engine” pic.twitter.com/G4xBgVLyiv. https://twitter.com/arankomatsuzaki/status/1399471244760649729",
+      "verified": "metadata-only, no body"
+    },
+    {
+      "id": "e_1_3_2_1_27_1",
+      "title": "Reference 27",
+      "authors": [],
+      "venue": "",
+      "year": null,
+      "doi": "10.1145/3313831.3376739",
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "metadata-only, no body"
+    },
+    {
+      "id": "e_1_3_2_1_28_1",
+      "title": "Mary Lou Maher , Katherine Brady , and Douglas  H Fisher . 2013 . Computational models of surprise in evaluating creativ",
+      "authors": [],
+      "venue": "",
+      "year": 2013,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "Mary Lou Maher , Katherine Brady , and Douglas  H Fisher . 2013 . Computational models of surprise in evaluating creative design . In Proceedings of the fourth international conference on computational creativity, Vol. 147 . Citeseer. Mary Lou Maher, Katherine Brady, and Douglas H Fisher. 2013. Computational models of surprise in evaluating creative design. In Proceedings of the fourth international conference on computational creativity, Vol. 147. Citeseer.",
+      "verified": "metadata-only, no body"
+    },
+    {
+      "id": "e_1_3_2_1_29_1",
+      "title": "Charles Patrick Martin , Fabio Morreale , Benedikte Wallace , and Hugo Scurto . 2021 . Critical Perspectives on AI/ML in",
+      "authors": [],
+      "venue": "",
+      "year": 2021,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "Charles Patrick Martin , Fabio Morreale , Benedikte Wallace , and Hugo Scurto . 2021 . Critical Perspectives on AI/ML in Musical Interfaces. Workshop at NIME 2021. https://critical-ml-music-interfaces.github.io Charles Patrick Martin, Fabio Morreale, Benedikte Wallace, and Hugo Scurto. 2021. Critical Perspectives on AI/ML in Musical Interfaces. Workshop at NIME 2021. https://critical-ml-music-interfaces.github.io",
+      "verified": "metadata-only, no body"
+    },
+    {
+      "id": "e_1_3_2_1_30_1",
+      "title": "Justin Matejka Michael Glueck Erin Bradner Ali Hashemi Tovi Grossman and George Fitzmaurice. 2018. Dream Lens : Explorat",
+      "authors": [],
+      "venue": "",
+      "year": null,
+      "doi": "10.1145/3173574.3173943",
+      "arxiv_id": null,
+      "raw": "Justin Matejka Michael Glueck Erin Bradner Ali Hashemi Tovi Grossman and George Fitzmaurice. 2018. Dream Lens : Exploration and Visualization of Large-Scale Generative Design Datasets. (2018) 1–12.  Justin Matejka Michael Glueck Erin Bradner Ali Hashemi Tovi Grossman and George Fitzmaurice. 2018. Dream Lens : Exploration and Visualization of Large-Scale Generative Design Datasets. (2018) 1–12.",
+      "verified": "metadata-only, no body"
+    },
+    {
+      "id": "e_1_3_2_1_31_1",
+      "title": "Reference 31",
+      "authors": [],
+      "venue": "",
+      "year": null,
+      "doi": "10.1145/3173574.3173943",
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "metadata-only, no body"
+    },
+    {
+      "id": "e_1_3_2_1_32_1",
+      "title": "Sam Moore . 2021. Justin Bieber fooled into picking a fight with deepfake Tom Cruise. Independent (Oct 2021 ). https://w",
+      "authors": [],
+      "venue": "",
+      "year": 2021,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "Sam Moore . 2021. Justin Bieber fooled into picking a fight with deepfake Tom Cruise. Independent (Oct 2021 ). https://www.independent.co.uk/arts-entertainment/music/news/justin-bieber-fight-tom-cruise-b1935148.html Sam Moore. 2021. Justin Bieber fooled into picking a fight with deepfake Tom Cruise. Independent (Oct 2021). https://www.independent.co.uk/arts-entertainment/music/news/justin-bieber-fight-tom-cruise-b1935148.html",
+      "verified": "metadata-only, no body"
+    },
+    {
+      "id": "e_1_3_2_1_33_1",
+      "title": "Michael Muller , Cecilia Aragon , Shion Guha , Marina Kogan , Gina Neff , Cathrine Seidelin , Katie Shilton , and Anissa",
+      "authors": [],
+      "venue": "",
+      "year": 2020,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "Michael Muller , Cecilia Aragon , Shion Guha , Marina Kogan , Gina Neff , Cathrine Seidelin , Katie Shilton , and Anissa Tanweer . 2020 . Interrogating Data Science. In Conference Companion Publication of the 2020 on Computer Supported Cooperative Work and Social Computing. 467–473 . Michael Muller, Cecilia Aragon, Shion Guha, Marina Kogan, Gina Neff, Cathrine Seidelin, Katie Shilton, and Anissa Tanweer. 2020. Interrogating Data Science. In Conference Companion Publication of the 2020 on Computer Supported Cooperative Work and Social Computing. 467–473.",
+      "verified": "metadata-only, no body"
+    },
+    {
+      "id": "e_1_3_2_1_34_1",
+      "title": "Reference 34",
+      "authors": [],
+      "venue": "",
+      "year": null,
+      "doi": "10.1145/3290607.3299018",
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "metadata-only, no body"
+    },
+    {
+      "id": "e_1_3_2_1_35_1",
+      "title": "Michael Muller , April  Y. Wang , Steven  I. Ross , Justin  D. Weisz , Mayank Agarwal , Kartik Talamadupula , Stephanie ",
+      "authors": [],
+      "venue": "",
+      "year": 2021,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "Michael Muller , April  Y. Wang , Steven  I. Ross , Justin  D. Weisz , Mayank Agarwal , Kartik Talamadupula , Stephanie Houde , Fernando Martinez , John Richards , Jaimie Drozdal , Xie Lui , David Piorkowski , and Dakuo Wang . 2021. How data scientists improve generated code documentation in Jupyter notebooks. Retrieved October 5, 2021 from https://hai-gen2021.github.io/program/ Michael Muller, April Y. Wang, Steven I. Ross, Justin D. Weisz, Mayank Agarwal, Kartik Talamadupula, Stephanie Houde, Fernando Martinez, John Richards, Jaimie Drozdal, Xie Lui, David Piorkowski, and Dakuo Wang. 2021. How data scientists improve generated code documentation in Jupyter notebooks. Retrieved October 5, 2021 from https://hai-gen2021.github.io/program/",
+      "verified": "metadata-only, no body"
+    },
+    {
+      "id": "e_1_3_2_1_36_1",
+      "title": "Neur IPS. 2019 . Machine Learning for Creativity and Design . Retrieved Oct 10, 2021 from https://neurips2019creativity.",
+      "authors": [],
+      "venue": "",
+      "year": 2019,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "Neur IPS. 2019 . Machine Learning for Creativity and Design . Retrieved Oct 10, 2021 from https://neurips2019creativity.github.io/ NeurIPS. 2019. Machine Learning for Creativity and Design. Retrieved Oct 10, 2021 from https://neurips2019creativity.github.io/",
+      "verified": "metadata-only, no body"
+    },
+    {
+      "id": "e_1_3_2_1_37_1",
+      "title": "AkshatKumar Nigam , Robert Pollice , Mario Krenn , Gabriel dos Passos Gomes , and Alan Aspuru-Guzik . 2021. Beyond gener",
+      "authors": [],
+      "venue": "",
+      "year": 2021,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "AkshatKumar Nigam , Robert Pollice , Mario Krenn , Gabriel dos Passos Gomes , and Alan Aspuru-Guzik . 2021. Beyond generative models: superfast traversal, optimization, novelty, exploration and discovery (STONED) algorithm for molecules using SELFIES. Chemical science ( 2021 ). AkshatKumar Nigam, Robert Pollice, Mario Krenn, Gabriel dos Passos Gomes, and Alan Aspuru-Guzik. 2021. Beyond generative models: superfast traversal, optimization, novelty, exploration and discovery (STONED) algorithm for molecules using SELFIES. Chemical science (2021).",
+      "verified": "metadata-only, no body"
+    },
+    {
+      "id": "e_1_3_2_1_38_1",
+      "title": "Amin Heyrani Nobari Muhammad Fathy Rashad and Faez Ahmed. 2021. Creativegan: editing generative adversarial networks for",
+      "authors": [],
+      "venue": "",
+      "year": null,
+      "doi": "10.1115/DETC2021-68103",
+      "arxiv_id": null,
+      "raw": "Amin Heyrani Nobari Muhammad Fathy Rashad and Faez Ahmed. 2021. Creativegan: editing generative adversarial networks for creative design synthesis. arXiv preprint arXiv:2103.06242(2021).  Amin Heyrani Nobari Muhammad Fathy Rashad and Faez Ahmed. 2021. Creativegan: editing generative adversarial networks for creative design synthesis. arXiv preprint arXiv:2103.06242(2021).",
+      "verified": "metadata-only, no body"
+    },
+    {
+      "id": "e_1_3_2_1_39_1",
+      "title": "NPR. 2021. Team uses AI to complete Beethoven’s unfinished masterpiece. NPR (Oct 2021 ). https://www.npr.org/2021/10/02/",
+      "authors": [],
+      "venue": "",
+      "year": 2021,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "NPR. 2021. Team uses AI to complete Beethoven’s unfinished masterpiece. NPR (Oct 2021 ). https://www.npr.org/2021/10/02/1042742330/team-uses-ai-to-complete-beethovens-unfinished-masterpiece NPR. 2021. Team uses AI to complete Beethoven’s unfinished masterpiece. NPR (Oct 2021). https://www.npr.org/2021/10/02/1042742330/team-uses-ai-to-complete-beethovens-unfinished-masterpiece",
+      "verified": "metadata-only, no body"
+    },
+    {
+      "id": "e_1_3_2_1_40_1",
+      "title": "Reference 40",
+      "authors": [],
+      "venue": "",
+      "year": null,
+      "doi": "10.1080/09528130010029820",
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "metadata-only, no body"
+    },
+    {
+      "id": "e_1_3_2_1_41_1",
+      "title": "Alec Radford Jong Wook Kim Chris Hallacy Aditya Ramesh Gabriel Goh Sandhini Agarwal Girish Sastry Amanda Askell Pamela M",
+      "authors": [],
+      "venue": "",
+      "year": null,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "Alec Radford Jong Wook Kim Chris Hallacy Aditya Ramesh Gabriel Goh Sandhini Agarwal Girish Sastry Amanda Askell Pamela Mishkin Jack Clark Gretchen Krueger and Ilya Sutskever. 2021. Learning Transferable Visual Models From Natural Language Supervision. arxiv:2103.00020 [cs.CV]  Alec Radford Jong Wook Kim Chris Hallacy Aditya Ramesh Gabriel Goh Sandhini Agarwal Girish Sastry Amanda Askell Pamela Mishkin Jack Clark Gretchen Krueger and Ilya Sutskever. 2021. Learning Transferable Visual Models From Natural Language Supervision. arxiv:2103.00020 [cs.CV]",
+      "verified": "metadata-only, no body"
+    },
+    {
+      "id": "e_1_3_2_1_42_1",
+      "title": "Aditya Ramesh Mikhail Pavlov Gabriel Goh Scott Gray Chelsea Voss Alec Radford Mark Chen and Ilya Sutskever. 2021. Zero-S",
+      "authors": [],
+      "venue": "",
+      "year": null,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "Aditya Ramesh Mikhail Pavlov Gabriel Goh Scott Gray Chelsea Voss Alec Radford Mark Chen and Ilya Sutskever. 2021. Zero-Shot Text-to-Image Generation. arxiv:2102.12092 [cs.CV]  Aditya Ramesh Mikhail Pavlov Gabriel Goh Scott Gray Chelsea Voss Alec Radford Mark Chen and Ilya Sutskever. 2021. Zero-Shot Text-to-Image Generation. arxiv:2102.12092 [cs.CV]",
+      "verified": "metadata-only, no body"
+    },
+    {
+      "id": "e_1_3_2_1_43_1",
+      "title": "Reddit 2021. r/bigsleep: A subreddit for AI imagery generated from text descriptions.https://www.reddit.com/r/bigsleep/ ",
+      "authors": [],
+      "venue": "",
+      "year": null,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "Reddit 2021. r/bigsleep: A subreddit for AI imagery generated from text descriptions.https://www.reddit.com/r/bigsleep/  Reddit 2021. r/bigsleep: A subreddit for AI imagery generated from text descriptions.https://www.reddit.com/r/bigsleep/",
+      "verified": "metadata-only, no body"
+    },
+    {
+      "id": "e_1_3_2_1_44_1",
+      "title": "Adam Roberts , Curtis Hawthorne , and Ian Simon . 2018 . Magenta.js: A JavaScript API for Augmenting Creativity with Dee",
+      "authors": [],
+      "venue": "",
+      "year": 2018,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "Adam Roberts , Curtis Hawthorne , and Ian Simon . 2018 . Magenta.js: A JavaScript API for Augmenting Creativity with Deep Learning . In Joint Workshop on Machine Learning for Music (ICML). Adam Roberts, Curtis Hawthorne, and Ian Simon. 2018. Magenta.js: A JavaScript API for Augmenting Creativity with Deep Learning. In Joint Workshop on Machine Learning for Music (ICML).",
+      "verified": "metadata-only, no body"
+    },
+    {
+      "id": "e_1_3_2_1_45_1",
+      "title": "Reference 45",
+      "authors": [],
+      "venue": "",
+      "year": null,
+      "doi": "10.1080/10400419.2012.650092",
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "metadata-only, no body"
+    },
+    {
+      "id": "e_1_3_2_1_46_1",
+      "title": "Huzaifah Saleem . 2020. What is generative AI and how much power does it have. https://developer.ibm.com/blogs/what-is-g",
+      "authors": [],
+      "venue": "",
+      "year": 2021,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "Huzaifah Saleem . 2020. What is generative AI and how much power does it have. https://developer.ibm.com/blogs/what-is-generative-ai-and-how-much-power-does-it-have [Online ; accessed 12. Oct. 2021 ]. Huzaifah Saleem. 2020. What is generative AI and how much power does it have. https://developer.ibm.com/blogs/what-is-generative-ai-and-how-much-power-does-it-have [Online; accessed 12. Oct. 2021].",
+      "verified": "metadata-only, no body"
+    },
+    {
+      "id": "e_1_3_2_1_47_1",
+      "title": "Othman Sbai , Mohamed Elhoseiny , Antoine Bordes , Yann LeCun , and Camille Couprie . 2018 . Design: Design inspiration ",
+      "authors": [],
+      "venue": "",
+      "year": 2018,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "Othman Sbai , Mohamed Elhoseiny , Antoine Bordes , Yann LeCun , and Camille Couprie . 2018 . Design: Design inspiration from generative networks . In Proceedings of the European Conference on Computer Vision (ECCV) Workshops. 0–0. Othman Sbai, Mohamed Elhoseiny, Antoine Bordes, Yann LeCun, and Camille Couprie. 2018. Design: Design inspiration from generative networks. In Proceedings of the European Conference on Computer Vision (ECCV) Workshops. 0–0.",
+      "verified": "metadata-only, no body"
+    },
+    {
+      "id": "e_1_3_2_1_48_1",
+      "title": "Isabella Seeber , Eva Bittner , Robert  O Briggs , Triparna De Vreede , Gert-Jan De Vreede , Aaron Elkins , Ronald Maier",
+      "authors": [],
+      "venue": "",
+      "year": 2020,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "Isabella Seeber , Eva Bittner , Robert  O Briggs , Triparna De Vreede , Gert-Jan De Vreede , Aaron Elkins , Ronald Maier , Alexander  B Merz , Sarah Oeste-Reiß , Nils Randrup , 2020. Machines as teammates: A research agenda on AI in team collaboration. Information & management 57, 2 ( 2020 ), 103174. Isabella Seeber, Eva Bittner, Robert O Briggs, Triparna De Vreede, Gert-Jan De Vreede, Aaron Elkins, Ronald Maier, Alexander B Merz, Sarah Oeste-Reiß, Nils Randrup, 2020. Machines as teammates: A research agenda on AI in team collaboration. Information & management 57, 2 (2020), 103174.",
+      "verified": "metadata-only, no body"
+    },
+    {
+      "id": "e_1_3_2_1_49_1",
+      "title": "Reference 49",
+      "authors": [],
+      "venue": "",
+      "year": null,
+      "doi": "10.1145/1323688.1323689",
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "metadata-only, no body"
+    },
+    {
+      "id": "e_1_3_2_1_50_1",
+      "title": "Angie Spoto and Natalia Oleynik . [n. d.]. Library of Mixed Initiative Creative Interfaces . Retrieved Oct 10, 2021 from",
+      "authors": [],
+      "venue": "",
+      "year": 2021,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "Angie Spoto and Natalia Oleynik . [n. d.]. Library of Mixed Initiative Creative Interfaces . Retrieved Oct 10, 2021 from http://mici.codingconduct.cc/ Angie Spoto and Natalia Oleynik. [n. d.]. Library of Mixed Initiative Creative Interfaces. Retrieved Oct 10, 2021 from http://mici.codingconduct.cc/",
+      "verified": "metadata-only, no body"
+    },
+    {
+      "id": "e_1_3_2_1_51_1",
+      "title": "Reference 51",
+      "authors": [],
+      "venue": "",
+      "year": null,
+      "doi": "10.1007/978-3-642-10643-9_10",
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "metadata-only, no body"
+    },
+    {
+      "id": "e_1_3_2_1_52_1",
+      "title": "ICCC’20 The Eleventh International Conference on Computational Creativity. 2020. Workshop on the Future of Co-Creative S",
+      "authors": [],
+      "venue": "",
+      "year": 2021,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "ICCC’20 The Eleventh International Conference on Computational Creativity. 2020. Workshop on the Future of Co-Creative Systems. Retrieved Oct 11, 2021 from https://computationalcreativity.net/workshops/cocreative-iccc20/ ICCC’20 The Eleventh International Conference on Computational Creativity. 2020. Workshop on the Future of Co-Creative Systems. Retrieved Oct 11, 2021 from https://computationalcreativity.net/workshops/cocreative-iccc20/",
+      "verified": "metadata-only, no body"
+    },
+    {
+      "id": "e_1_3_2_1_53_1",
+      "title": "ICCC’21 The Twelfth International Conference on Computational Creativity. 2021. Second Workshop on the Future of Co-Crea",
+      "authors": [],
+      "venue": "",
+      "year": 2021,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "ICCC’21 The Twelfth International Conference on Computational Creativity. 2021. Second Workshop on the Future of Co-Creative Systems. Retrieved Oct 11, 2021 from https://computationalcreativity.net/iccc21/wfccs/ ICCC’21 The Twelfth International Conference on Computational Creativity. 2021. Second Workshop on the Future of Co-Creative Systems. Retrieved Oct 11, 2021 from https://computationalcreativity.net/iccc21/wfccs/",
+      "verified": "metadata-only, no body"
+    },
+    {
+      "id": "e_1_3_2_1_54_1",
+      "title": "Twitter 2021. VQGANCLIP Hashtag. https://twitter.com/hashtag/vqganclip?src=hashtag_click  Twitter 2021. VQGANCLIP Hashta",
+      "authors": [],
+      "venue": "",
+      "year": null,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "Twitter 2021. VQGANCLIP Hashtag. https://twitter.com/hashtag/vqganclip?src=hashtag_click  Twitter 2021. VQGANCLIP Hashtag. https://twitter.com/hashtag/vqganclip?src=hashtag_click",
+      "verified": "metadata-only, no body"
+    },
+    {
+      "id": "e_1_3_2_1_55_1",
+      "title": "@someheresy Twitter. 2021. VQGAN CLIP Colab Notebook. https://colab.research.google.com/drive/1_4Jl0a7WIJeqy5LTjPJfZOwMZ",
+      "authors": [],
+      "venue": "",
+      "year": null,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "@someheresy Twitter. 2021. VQGAN CLIP Colab Notebook. https://colab.research.google.com/drive/1_4Jl0a7WIJeqy5LTjPJfZOwMZopG5C-W?usp=sharing#scrollTo=ZdlpRFL8UAlW  @someheresy Twitter. 2021. VQGAN CLIP Colab Notebook. https://colab.research.google.com/drive/1_4Jl0a7WIJeqy5LTjPJfZOwMZopG5C-W?usp=sharing#scrollTo=ZdlpRFL8UAlW",
+      "verified": "metadata-only, no body"
+    },
+    {
+      "id": "e_1_3_2_1_56_1",
+      "title": "Reference 56",
+      "authors": [],
+      "venue": "",
+      "year": null,
+      "doi": "10.1021/acsmedchemlett.0c00088",
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "metadata-only, no body"
+    },
+    {
+      "id": "e_1_3_2_1_57_1",
+      "title": "Benedikte Wallace , Charles Patrick Martin , Jim Tørresen , and Kristian Nymoen . 2021 . Exploring the Effect of Samplin",
+      "authors": [],
+      "venue": "",
+      "year": 2021,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "Benedikte Wallace , Charles Patrick Martin , Jim Tørresen , and Kristian Nymoen . 2021 . Exploring the Effect of Sampling Strategy on Movement Generation with Generative Neural Networks. In Artificial Intelligence in Music, Sound , Art and Design: 10th International Conference, EvoMUSART 2021. Springer International Publishing, 344–359. https://doi.org/10.1007/978-3-030-72914-1_23 Benedikte Wallace, Charles Patrick Martin, Jim Tørresen, and Kristian Nymoen. 2021. Exploring the Effect of Sampling Strategy on Movement Generation with Generative Neural Networks. In Artificial Intelligence in Music, Sound, Art and Design: 10th International Conference, EvoMUSART 2021. Springer International Publishing, 344–359. https://doi.org/10.1007/978-3-030-72914-1_23",
+      "verified": "metadata-only, no body"
+    },
+    {
+      "id": "e_1_3_2_1_58_1",
+      "title": "April Yi Wang , Dakuo Wang , Jaimie Drozdal , Michael Muller , Soya Park , Justin  D Weisz , Xuye Liu , Lingfei Wu , and",
+      "authors": [],
+      "venue": "",
+      "year": 2021,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "April Yi Wang , Dakuo Wang , Jaimie Drozdal , Michael Muller , Soya Park , Justin  D Weisz , Xuye Liu , Lingfei Wu , and Casey Dugan . 2021 . Themisto: Towards Automated Documentation Generation in Computational Notebooks. arXiv preprint arXiv:2102.12592(2021). April Yi Wang, Dakuo Wang, Jaimie Drozdal, Michael Muller, Soya Park, Justin D Weisz, Xuye Liu, Lingfei Wu, and Casey Dugan. 2021. Themisto: Towards Automated Documentation Generation in Computational Notebooks. arXiv preprint arXiv:2102.12592(2021).",
+      "verified": "metadata-only, no body"
+    },
+    {
+      "id": "e_1_3_2_1_59_1",
+      "title": "Justin  D Weisz , Michael Muller , Stephanie Houde , John Richards , Steven  I Ross , Fernando Martinez , Mayank Agarwal",
+      "authors": [],
+      "venue": "",
+      "year": 2021,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "Justin  D Weisz , Michael Muller , Stephanie Houde , John Richards , Steven  I Ross , Fernando Martinez , Mayank Agarwal , and Kartik Talamadupula . 2021 . Perfection Not Required? Human-AI Partnerships in Code Translation. In 26th International Conference on Intelligent User Interfaces. 402–412 . Justin D Weisz, Michael Muller, Stephanie Houde, John Richards, Steven I Ross, Fernando Martinez, Mayank Agarwal, and Kartik Talamadupula. 2021. Perfection Not Required? Human-AI Partnerships in Code Translation. In 26th International Conference on Intelligent User Interfaces. 402–412.",
+      "verified": "metadata-only, no body"
+    },
+    {
+      "id": "e_1_3_2_1_60_1",
+      "title": "Mark Wilson . 2021. This amazing AI tool lets you create human faces from scratch . Fast Company (Apr 2021 ). https://ww",
+      "authors": [],
+      "venue": "",
+      "year": 2021,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "Mark Wilson . 2021. This amazing AI tool lets you create human faces from scratch . Fast Company (Apr 2021 ). https://www.fastcompany.com/90628866/this-amazing-ai-tool-lets-you-create-human-faces-from-scratch Mark Wilson. 2021. This amazing AI tool lets you create human faces from scratch. Fast Company (Apr 2021). https://www.fastcompany.com/90628866/this-amazing-ai-tool-lets-you-create-human-faces-from-scratch",
+      "verified": "metadata-only, no body"
+    },
+    {
+      "id": "e_1_3_2_1_61_1",
+      "title": "Georgios  N Yannakakis , Antonios Liapis , and Constantine Alexopoulos . 2014 . Mixed-initiative co-creativity . In Proc",
+      "authors": [],
+      "venue": "",
+      "year": 2014,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "Georgios  N Yannakakis , Antonios Liapis , and Constantine Alexopoulos . 2014 . Mixed-initiative co-creativity . In Proceedings of the 9th International Conference on the Foundations of Digital Games, FDG 2014 (Liberty of the Seas, Caribbean, April 3-7). Georgios N Yannakakis, Antonios Liapis, and Constantine Alexopoulos. 2014. Mixed-initiative co-creativity. In Proceedings of the 9th International Conference on the Foundations of Digital Games, FDG 2014 (Liberty of the Seas, Caribbean, April 3-7).",
+      "verified": "metadata-only, no body"
+    },
+    {
+      "id": "e_1_3_2_1_62_1",
+      "title": "Yijun Zhou Yuki Koyama Masataka Goto and Takeo Igarashi. 2020. Generative Melody Composition with Human-in-the-Loop Baye",
+      "authors": [],
+      "venue": "",
+      "year": null,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "Yijun Zhou Yuki Koyama Masataka Goto and Takeo Igarashi. 2020. Generative Melody Composition with Human-in-the-Loop Bayesian Optimization. arXiv preprint arXiv:2010.03190(2020).  Yijun Zhou Yuki Koyama Masataka Goto and Takeo Igarashi. 2020. Generative Melody Composition with Human-in-the-Loop Bayesian Optimization. arXiv preprint arXiv:2010.03190(2020).",
+      "verified": "metadata-only, no body"
+    }
+  ],
+  "human_notes": {
+    "problem_formulation": "",
+    "methodology_evaluation": "",
+    "findings_credibility": "",
+    "dissertation_gaps": ""
+  },
+  "sha256": null,
+  "created_at": "2026-11-13T20:50:03.366003"
+}

@@ -11,6 +11,7 @@ venv/
 # Local Caches & Intermediate Build Files
 cache/
 *.pdf
+tests/real/*.pdf
 
 # Secrets & Credentials
 .env

@@ -24,7 +24,8 @@ from scripts.wiki_manager import (
     lint_wiki,
     ensure_wiki_scaffold
 )
-from scripts.compile_s3a import compile_s3a_archive, round_trip_test, load_config
+from scripts.compile_s3a import compile_s3a_archive, round_trip_test, load_config, hilbert_3d_index, hash_string_u64
+from scripts.query_engine import run_s3a_graph_cmd, execute_dag_query, execute_graph_query
 
 FIXTURES_DIR = os.path.join(WORKSPACE_ROOT, "tests", "fixtures")
 
@@ -229,3 +230,90 @@ def test_s3a_round_trip_export(tmp_path):
     """S3A round-trip test: exports records, builds .s3a, inspects headers and tiles."""
     cfg = load_config()
     round_trip_test(cfg)
+
+def test_python_and_s3a_cli_parity(tmp_path):
+    """Item 2: Verifies bit-for-bit parity between Python hash/Hilbert functions and s3a-cli graph queries."""
+    # 1. Exact mathematical parity for fixed inputs
+    h_str = hash_string_u64("Learner_Agency")
+    assert h_str == 10956731137806894464
+    assert f"0x{h_str:016x}" == "0x980e20eb28710580"
+
+    # Hilbert 3D index for normalized coordinates
+    assert hilbert_3d_index(0.25, 0.25, 0.25) == 262143
+    assert hilbert_3d_index(0.5, 0.5, 0.5) == 2097151
+    assert hilbert_3d_index(0.0, 0.0, 0.0) == 0
+    assert hilbert_3d_index(1.0, 1.0, 1.0) == 16777215
+
+    # 2. End-to-end round trip parity through s3a-cli
+    archive_file = str(tmp_path / "test_parity.s3a")
+    inter_dir = str(tmp_path / "intermediate")
+    cfg = load_config()
+    cfg["archive_path"] = archive_file
+    cfg["intermediate_dir"] = inter_dir
+
+    sample_sources = [
+        {
+            "source_id": "SRC-9001",
+            "title": "Empirical Evaluation of AI Reasoning in Educational Question Answering",
+            "author": "Alice Test; Bob Sample",
+            "year": 2025,
+            "pass_status": "P2 done",
+            "provenance": "SRC-9001 | test.pdf | P2 done",
+            "abstract_excerpt": "We present a comprehensive empirical benchmark...",
+            "researcher_selection": {"selected_by": "researcher"},
+            "pass2_ai_draft": True
+        }
+    ]
+    compile_s3a_archive(cfg, fresh=True, sources_list=sample_sources)
+
+    # Query s3a-cli graph neighbors for node 0x0000000000002329 (SRC-9001)
+    res, err = run_s3a_graph_cmd(cfg, "neighbors", "0x0000000000002329")
+    assert err is None, f"s3a-cli error: {err}"
+    assert res is not None
+    assert res.get("ok") is True
+    neighbors = res.get("neighbors", [])
+    assert len(neighbors) >= 1
+
+    # Find the edge to Learner_Agency
+    target_edge = next((e for e in neighbors if e.get("to") == "0x980e20eb28710580"), None)
+    assert target_edge is not None, "Edge to 0x980e20eb28710580 (Learner_Agency) must exist"
+    assert target_edge["properties"]["hilbert"] == 262143
+    assert target_edge["properties"]["predicate_id"] == 2
+
+def test_query_engine_s3a_graph_delegation(tmp_path, capsys):
+    """Item 1: Query engine delegates DAG and Graph queries to s3a-cli graph commands."""
+    archive_file = str(tmp_path / "test_query.s3a")
+    inter_dir = str(tmp_path / "intermediate")
+    cfg = load_config()
+    cfg["archive_path"] = archive_file
+    cfg["intermediate_dir"] = inter_dir
+
+    sample_sources = [
+        {
+            "source_id": "SRC-9001",
+            "title": "Empirical Evaluation of AI Reasoning in Educational Question Answering",
+            "author": "Alice Test; Bob Sample",
+            "year": 2025,
+            "pass_status": "P2 done",
+            "provenance": "SRC-9001 | test.pdf | P2 done",
+            "abstract_excerpt": "We present a comprehensive empirical benchmark...",
+            "researcher_selection": {"selected_by": "researcher"},
+            "pass2_ai_draft": True
+        }
+    ]
+    compile_s3a_archive(cfg, fresh=True, sources_list=sample_sources)
+
+    # Test DAG query delegation
+    execute_dag_query(cfg, "SRC-9001")
+    out = capsys.readouterr().out
+    assert "S3A Native Graph & Provenance DAG Trace: `SRC-9001`" in out
+    assert "S3A Tile 13 Graph Neighbors" in out
+    assert "0x980e20eb28710580" in out
+    assert "S3A Graph Traversal" in out
+
+    # Test Graph query delegation
+    execute_graph_query(cfg, "Learner_Agency")
+    out = capsys.readouterr().out
+    assert "S3A Knowledge Graph Subgraph: 'Learner_Agency'" in out
+    assert "Found 1 associated S3A graph edge(s)" in out
+    assert "0x0000000000002329" in out

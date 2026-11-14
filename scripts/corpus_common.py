@@ -37,6 +37,22 @@ def load_config(config_path=DEFAULT_CONFIG_PATH):
         cfg["s3a_binary_path"] = os.environ["S3A_BINARY_PATH"]
     elif os.environ.get("S3A_CLI"):
         cfg["s3a_binary_path"] = os.environ["S3A_CLI"]
+
+    # Fallback auto-discovery if binary path is default 's3a-cli' and not on PATH
+    bin_path = cfg.get("s3a_binary_path", "s3a-cli")
+    if not (shutil.which(bin_path) or os.path.exists(bin_path)):
+        candidates = [
+            os.path.expanduser("~/.cargo/bin/s3a-cli.exe"),
+            os.path.expanduser("~/.cargo/bin/s3a-cli"),
+            os.path.join(REPO_ROOT, "..", "s3a", "target", "debug", "s3a-cli.exe"),
+            os.path.join(REPO_ROOT, "..", "s3a", "target", "release", "s3a-cli.exe"),
+            os.path.join(REPO_ROOT, "..", "s3a", "target", "debug", "s3a-cli"),
+            os.path.join(REPO_ROOT, "..", "s3a", "target", "release", "s3a-cli"),
+        ]
+        for c in candidates:
+            if os.path.exists(c):
+                cfg["s3a_binary_path"] = c
+                break
     return cfg
 
 
