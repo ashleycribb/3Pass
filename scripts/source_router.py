@@ -46,8 +46,12 @@ DEFAULT_CACHE_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "ca
 METADATA_CACHE_DIR = os.path.join(DEFAULT_CACHE_DIR, "metadata")
 HTML_CACHE_DIR = os.path.join(DEFAULT_CACHE_DIR, "html")
 TEI_CACHE_DIR = os.path.join(DEFAULT_CACHE_DIR, "tei")
+JATS_CACHE_DIR = os.path.join(DEFAULT_CACHE_DIR, "jats")
 
 os.makedirs(METADATA_CACHE_DIR, exist_ok=True)
+os.makedirs(HTML_CACHE_DIR, exist_ok=True)
+os.makedirs(TEI_CACHE_DIR, exist_ok=True)
+os.makedirs(JATS_CACHE_DIR, exist_ok=True)
 os.makedirs(HTML_CACHE_DIR, exist_ok=True)
 os.makedirs(TEI_CACHE_DIR, exist_ok=True)
 
@@ -627,6 +631,305 @@ class LatexSourcePlugin(BaseSourcePlugin):
         )
 
 
+class PublisherXmlPlugin(BaseSourcePlugin):
+    """
+    Route: Publisher JATS XML (PLOS, PMC, eLife, etc.)
+    When a DOI's publisher offers JATS XML, parse it directly with
+    provenance tool="jats-xml", completeness "full". Preferred over GROBID.
+    """
+    name = "publisher_xml"
+    priority = 70
+
+    def can_handle(self, paper_input: Dict[str, Any]) -> bool:
+        if paper_input.get("jats_fixture") or paper_input.get("xml_fixture"):
+            return True
+        if paper_input.get("jats_path") or paper_input.get("xml_path"):
+            return True
+        doi = paper_input.get("doi")
+        if doi:
+            clean_doi = str(doi).strip()
+            if clean_doi.startswith("10.1371/"):  # PLOS
+                return True
+            if clean_doi.startswith("10.7554/"):  # eLife
+                return True
+            clean_name = clean_doi.replace("/", "_")
+            if os.path.exists(os.path.join(JATS_CACHE_DIR, f"{clean_name}.xml")):
+                return True
+        if paper_input.get("pmcid"):
+            return True
+        return False
+
+    def extract(self, paper_input: Dict[str, Any]) -> PaperRecord:
+        jats_xml = ""
+        source_uri = ""
+
+        if paper_input.get("jats_fixture"):
+            jats_xml = paper_input["jats_fixture"]
+            source_uri = paper_input.get("fixture_uri", "fixture://jats.xml")
+        elif paper_input.get("xml_fixture"):
+            jats_xml = paper_input["xml_fixture"]
+            source_uri = paper_input.get("fixture_uri", "fixture://jats.xml")
+        elif paper_input.get("jats_path") and os.path.exists(paper_input["jats_path"]):
+            source_uri = paper_input["jats_path"]
+            with open(source_uri, "r", encoding="utf-8") as fp:
+                jats_xml = fp.read()
+        elif paper_input.get("xml_path") and os.path.exists(paper_input["xml_path"]):
+            source_uri = paper_input["xml_path"]
+            with open(source_uri, "r", encoding="utf-8") as fp:
+                jats_xml = fp.read()
+        else:
+            doi = paper_input.get("doi", "").strip()
+            if not doi:
+                raise ValueError("PublisherXmlPlugin requires jats_fixture, jats_path, or doi")
+            clean_doi = doi
+            clean_name = clean_doi.replace("/", "_")
+            cache_file = os.path.join(JATS_CACHE_DIR, f"{clean_name}.xml")
+            if os.path.exists(cache_file):
+                with open(cache_file, "r", encoding="utf-8") as fp:
+                    jats_xml = fp.read()
+                source_uri = f"https://doi.org/{clean_doi}"
+            else:
+                if clean_doi.startswith("10.1371/"):
+                    url = f"https://journals.plos.org/plosone/article/file?id={clean_doi}&type=manuscript"
+                    r = self.session.get(url, timeout=20)
+                    r.raise_for_status()
+                    jats_xml = r.text
+                    source_uri = url
+                    with open(cache_file, "w", encoding="utf-8") as fp:
+                        fp.write(jats_xml)
+                elif clean_doi.startswith("10.7554/"):
+                    elife_id = clean_doi.split("/")[-1].split(".")[-1]
+                    url = f"https://api.elifesciences.org/articles/{elife_id}.xml"
+                    r = self.session.get(url, timeout=20)
+                    r.raise_for_status()
+                    jats_xml = r.text
+                    source_uri = url
+                    with open(cache_file, "w", encoding="utf-8") as fp:
+                        fp.write(jats_xml)
+                else:
+                    raise RuntimeError(f"No direct JATS XML fetcher configured for DOI: {clean_doi}")
+
+        return self._parse_jats_xml(jats_xml, paper_input, source_uri)
+
+    def _parse_jats_xml(self, jats_xml: str, paper_input: Dict[str, Any], source_uri: str) -> PaperRecord:
+        xml_bytes = jats_xml.encode("utf-8") if isinstance(jats_xml, str) else jats_xml
+        root = ET.fromstring(xml_bytes)
+
+        # Title
+        t_el = root.find(".//title-group/article-title")
+        if t_el is None:
+            t_el = root.find(".//article-title")
+        title = " ".join(t_el.itertext()).strip() if t_el is not None else paper_input.get("title", "Untitled")
+
+        # Authors
+        authors: List[str] = []
+        for c in (root.findall(".//contrib-group/contrib") or root.findall(".//contrib")):
+            c_type = c.get("contrib-type")
+            if c_type in ("author", None):
+                name = c.find(".//name")
+                if name is not None:
+                    sn = name.find("surname")
+                    gn = name.find("given-names")
+                    s_txt = sn.text.strip() if sn is not None and sn.text else ""
+                    g_txt = gn.text.strip() if gn is not None and gn.text else ""
+                    full_name = f"{g_txt} {s_txt}".strip() if g_txt or s_txt else ""
+                    if full_name and full_name not in authors:
+                        authors.append(full_name)
+                else:
+                    collab = c.find(".//collab")
+                    if collab is not None:
+                        c_txt = " ".join(collab.itertext()).strip()
+                        if c_txt and c_txt not in authors:
+                            authors.append(c_txt)
+
+        # Year
+        year = None
+        for pd in (root.findall(".//pub-date") or root.findall(".//date")):
+            y_el = pd.find("year")
+            if y_el is not None and y_el.text:
+                m_yr = re.search(r"\b(19\d{2}|20\d{2})\b", y_el.text)
+                if m_yr:
+                    year = int(m_yr.group(1))
+                    break
+        if not year:
+            year = paper_input.get("year")
+
+        # DOI
+        doi = None
+        for aid in root.findall(".//article-id"):
+            if aid.get("pub-id-type") == "doi" and aid.text:
+                doi = aid.text.strip()
+                break
+        if not doi:
+            doi = paper_input.get("doi")
+
+        # Abstract
+        abstract = ""
+        abs_ps = root.findall(".//abstract//p")
+        if abs_ps:
+            abstract = "\n\n".join(" ".join(p.itertext()).strip() for p in abs_ps if "".join(p.itertext()).strip())
+        else:
+            abs_el = root.find(".//abstract")
+            if abs_el is not None:
+                abstract = " ".join(abs_el.itertext()).strip()
+
+        # Sections
+        sections: List[SectionRecord] = []
+        secs = root.findall(".//body//sec")
+        if not secs:
+            body_el = root.find(".//body")
+            if body_el is not None:
+                paras = [" ".join(p.itertext()).strip() for p in body_el.findall("p") if "".join(p.itertext()).strip()]
+                if paras:
+                    sections.append(SectionRecord(
+                        id="sec_1",
+                        title="Main Text",
+                        text="\n\n".join(paras),
+                        level=1,
+                        verified="jats-verified"
+                    ))
+        else:
+            for i, s in enumerate(secs, 1):
+                t_el = s.find("title")
+                sec_title = " ".join(t_el.itertext()).strip() if t_el is not None else f"Section {i}"
+                p_list = [" ".join(p.itertext()).strip() for p in s.findall("p") if "".join(p.itertext()).strip()]
+                sec_text = "\n\n".join(p_list) if p_list else ""
+                sections.append(SectionRecord(
+                    id=s.get("id") or f"sec_{i}",
+                    title=sec_title,
+                    text=sec_text,
+                    level=1,
+                    verified="jats-verified"
+                ))
+
+        # Figures
+        figures: List[FigureRecord] = []
+        for i, fig in enumerate(root.findall(".//body//fig"), 1):
+            cap_el = fig.find("caption")
+            if cap_el is None:
+                cap_el = fig.find("title")
+            cap = " ".join(cap_el.itertext()).strip() if cap_el is not None else f"Figure {i}"
+            figures.append(FigureRecord(
+                id=fig.get("id") or f"fig_{i}",
+                caption=cap,
+                verified="jats-verified"
+            ))
+
+        # Tables
+        tables: List[TableRecord] = []
+        for i, tbl in enumerate(root.findall(".//body//table-wrap"), 1):
+            cap_el = tbl.find("caption")
+            if cap_el is None:
+                cap_el = tbl.find("title")
+            cap = " ".join(cap_el.itertext()).strip() if cap_el is not None else f"Table {i}"
+            tables.append(TableRecord(
+                id=tbl.get("id") or f"tab_{i}",
+                caption=cap,
+                markdown="*(Structured Table from Publisher JATS XML)*",
+                verified="jats-verified"
+            ))
+
+        # Equations
+        equations: List[EquationRecord] = []
+        for i, eq in enumerate(root.findall(".//body//disp-formula"), 1):
+            lbl = eq.find("label")
+            lbl_txt = lbl.text.strip() if lbl is not None and lbl.text else f"eq_{i}"
+            tex_el = eq.find(".//tex-math")
+            if tex_el is not None and tex_el.text:
+                latex_code = tex_el.text.strip()
+            else:
+                latex_code = " ".join(eq.itertext()).strip()
+            equations.append(EquationRecord(
+                id=eq.get("id") or lbl_txt,
+                latex=latex_code,
+                verified="jats-verified"
+            ))
+
+        # References
+        references: List[ReferenceRecord] = []
+        for i, ref in enumerate(root.findall(".//ref-list/ref"), 1):
+            t_el = ref.find(".//article-title")
+            if t_el is None:
+                t_el = ref.find(".//source")
+            ref_title = " ".join(t_el.itertext()).strip() if t_el is not None else f"Reference {i}"
+
+            ref_authors = []
+            for a in ref.findall(".//name"):
+                sn = a.find("surname")
+                gn = a.find("given-names")
+                s_t = sn.text.strip() if sn is not None and sn.text else ""
+                g_t = gn.text.strip() if gn is not None and gn.text else ""
+                if s_t or g_t:
+                    ref_authors.append(f"{g_t} {s_t}".strip())
+            if not ref_authors:
+                for c in ref.findall(".//collab"):
+                    c_t = " ".join(c.itertext()).strip()
+                    if c_t:
+                        ref_authors.append(c_t)
+
+            ref_year = None
+            y_el = ref.find(".//year")
+            if y_el is not None and y_el.text:
+                m_yr = re.search(r"\b(19\d{2}|20\d{2})\b", y_el.text)
+                if m_yr:
+                    ref_year = int(m_yr.group(1))
+
+            ref_doi = None
+            for pid in ref.findall(".//pub-id"):
+                if pid.get("pub-id-type") == "doi" and pid.text:
+                    ref_doi = pid.text.strip()
+                    break
+
+            references.append(ReferenceRecord(
+                id=ref.get("id") or f"ref_{i}",
+                title=ref_title,
+                authors="; ".join(ref_authors) if ref_authors else None,
+                year=ref_year,
+                doi=ref_doi,
+                verified="jats-verified"
+            ))
+
+        prov = RecordProvenance(
+            path_used="publisher_xml",
+            tool="jats-xml",
+            tool_version="JATS XML (Publisher)",
+            source_uri=source_uri,
+            extracted_at=datetime.now().isoformat(),
+            per_part={
+                "metadata": {"tool": "jats-xml", "status": "extracted"},
+                "sections": {"tool": "jats-xml", "status": "extracted"},
+                "figures": {"tool": "jats-xml", "status": "extracted"},
+                "tables": {"tool": "jats-xml", "status": "extracted"},
+                "equations": {"tool": "jats-xml", "status": "extracted"},
+                "references": {"tool": "jats-xml", "status": "extracted"}
+            }
+        )
+
+        sid = paper_input.get("source_id", "SRC-0000")
+        pid = paper_input.get("paper_id") or derive_paper_id(sid, doi or title)
+        sha256_val = paper_input.get("sha256") or hashlib.sha256(jats_xml.encode("utf-8")).hexdigest()
+
+        return PaperRecord(
+            source_id=sid,
+            paper_id=pid,
+            title=title,
+            authors=authors,
+            year=year,
+            doi=doi,
+            arxiv_id=None,
+            urls={"source": source_uri, "landing": f"https://doi.org/{doi}" if doi else source_uri},
+            completeness="full",
+            provenance=prov,
+            abstract=abstract,
+            sections=sections,
+            figures=figures,
+            tables=tables,
+            equations=equations,
+            references=references,
+            sha256=sha256_val
+        )
+
+
 class GrobidPdfPlugin(BaseSourcePlugin):
     """
     Path c: PDF only.
@@ -638,7 +941,10 @@ class GrobidPdfPlugin(BaseSourcePlugin):
     priority = 60
 
     def __init__(self, grobid_url: Optional[str] = None):
+        super().__init__()
         self.grobid_url = grobid_url or os.environ.get("GROBID_URL", "http://localhost:8070")
+        self.live_grobid_version: Optional[str] = None
+        self.request_made: bool = False
 
     def can_handle(self, paper_input: Dict[str, Any]) -> bool:
         if paper_input.get("tei_fixture"):
@@ -649,61 +955,45 @@ class GrobidPdfPlugin(BaseSourcePlugin):
     def extract(self, paper_input: Dict[str, Any]) -> PaperRecord:
         tei_xml = ""
         source_uri = ""
+        is_live = False
+        grobid_ver = None
 
         if paper_input.get("tei_fixture"):
             tei_xml = paper_input["tei_fixture"]
             source_uri = paper_input.get("fixture_uri", "fixture://grobid.tei.xml")
+            is_live = False
         elif paper_input.get("tei_path") and os.path.exists(paper_input["tei_path"]):
             source_uri = paper_input["tei_path"]
             with open(source_uri, "r", encoding="utf-8") as fp:
                 tei_xml = fp.read()
+            is_live = False
         else:
             pdf_path = paper_input.get("drive_path") or paper_input.get("original_path")
             if not pdf_path or not os.path.exists(pdf_path):
                 raise FileNotFoundError(f"PDF source file not found: {pdf_path}")
             source_uri = pdf_path
-            # Check local TEI cache
-            pdf_hash = paper_input.get("sha256") or hashlib.sha256(open(pdf_path, "rb").read()).hexdigest()
-            cache_file = os.path.join(TEI_CACHE_DIR, f"{pdf_hash}.tei.xml")
+            tei_xml, grobid_ver = self._call_grobid(pdf_path)
+            is_live = True
 
-            if os.path.exists(cache_file):
-                with open(cache_file, "r", encoding="utf-8") as fp:
-                    tei_xml = fp.read()
-            else:
-                tei_xml = self._call_grobid(pdf_path)
-                with open(cache_file, "w", encoding="utf-8") as fp:
-                    fp.write(tei_xml)
-
-        return self._parse_tei_xml(tei_xml, paper_input, source_uri)
+        return self._parse_tei_xml(tei_xml, paper_input, source_uri, is_live_request=is_live, grobid_version=grobid_ver)
 
     def _ensure_grobid_running(self) -> bool:
-        """Attempts to start Docker Desktop and GROBID container if not already answering."""
+        """Attempts to ping GROBID and start Docker Desktop/container if needed."""
         try:
-            r = requests.get(f"{self.grobid_url}/api/isalive", timeout=2)
+            r = self.session.get(f"{self.grobid_url}/api/isalive", timeout=2)
             if r.status_code == 200:
                 return True
         except Exception:
             pass
 
-        # Try starting existing grobid container
         try:
             subprocess.run(["docker", "start", "grobid"], capture_output=True, timeout=5)
         except Exception:
             pass
 
-        # Try launching new grobid container
-        try:
-            subprocess.run(
-                ["docker", "run", "-d", "--rm", "-p", "8070:8070", "--name", "grobid", "lfoppiano/grobid:0.8.1"],
-                capture_output=True,
-                timeout=5
-            )
-        except Exception:
-            pass
-
         for _ in range(3):
             try:
-                r = requests.get(f"{self.grobid_url}/api/isalive", timeout=2)
+                r = self.session.get(f"{self.grobid_url}/api/isalive", timeout=2)
                 if r.status_code == 200:
                     return True
             except Exception:
@@ -711,18 +1001,33 @@ class GrobidPdfPlugin(BaseSourcePlugin):
 
         return False
 
-    def _call_grobid(self, pdf_path: str) -> str:
+    def get_grobid_version(self) -> str:
+        """Pings the /api/version endpoint to record exact running GROBID version."""
+        try:
+            r = self.session.get(f"{self.grobid_url}/api/version", timeout=3)
+            if r.status_code == 200:
+                v = r.text.strip()
+                if v:
+                    return v
+        except Exception:
+            pass
+        return "0.8.1"
+
+    def _call_grobid(self, pdf_path: str) -> tuple[str, str]:
         """Calls live GROBID server; if unreachable, fails loudly without fallback."""
         self._ensure_grobid_running()
         try:
+            grobid_ver = self.get_grobid_version()
             with open(pdf_path, "rb") as f:
-                r = requests.post(
+                r = self.session.post(
                     f"{self.grobid_url}/api/processFulltextDocument",
                     files={"input": f},
-                    timeout=30
+                    timeout=60
                 )
             if r.status_code == 200:
-                return r.text
+                self.live_grobid_version = grobid_ver
+                self.request_made = True
+                return r.text, grobid_ver
             raise RuntimeError(f"GROBID server error {r.status_code}: {r.text[:200]}")
         except Exception as e:
             raise RuntimeError(
@@ -731,7 +1036,14 @@ class GrobidPdfPlugin(BaseSourcePlugin):
                 f"Failing loudly without fallback. Error: {e}"
             ) from e
 
-    def _parse_tei_xml(self, xml_content: str, paper_input: Dict[str, Any], source_uri: str) -> PaperRecord:
+    def _parse_tei_xml(
+        self,
+        xml_content: str,
+        paper_input: Dict[str, Any],
+        source_uri: str,
+        is_live_request: bool = False,
+        grobid_version: Optional[str] = None
+    ) -> PaperRecord:
         clean_xml = re.sub(r'\sxmlns="[^"]+"', "", xml_content, count=1)
         root = ET.fromstring(clean_xml)
 
@@ -870,19 +1182,29 @@ class GrobidPdfPlugin(BaseSourcePlugin):
                 verified="pdf-extracted, verify"
             ))
 
+        if not is_live_request and (grobid_version or "GROBID" in paper_input.get("tool_version", "")):
+            raise ValueError("Never write a tool name or version that did not actually run.")
+
+        if is_live_request and grobid_version:
+            tool_name = "grobid-tei"
+            tool_ver_str = f"GROBID {grobid_version} (pdf-extracted, verify)"
+        else:
+            tool_name = "tei-xml-fixture"
+            tool_ver_str = "fixture (pdf-extracted, verify)"
+
         prov = RecordProvenance(
             path_used="grobid_pdf",
-            tool="grobid-tei",
-            tool_version="GROBID 0.8.1 (pdf-extracted, verify)",
+            tool=tool_name,
+            tool_version=tool_ver_str,
             source_uri=source_uri,
             extracted_at=datetime.now().isoformat(),
             per_part={
-                "metadata": {"tool": "grobid-tei", "status": "pdf-extracted, verify"},
-                "sections": {"tool": "grobid-tei", "status": "pdf-extracted, verify"},
-                "figures": {"tool": "grobid-tei", "status": "pdf-extracted, verify"},
-                "tables": {"tool": "grobid-tei", "status": "pdf-extracted, verify"},
-                "equations": {"tool": "grobid-tei", "status": "not-available"},
-                "references": {"tool": "grobid-tei", "status": "pdf-extracted, verify"}
+                "metadata": {"tool": tool_name, "status": "pdf-extracted, verify"},
+                "sections": {"tool": tool_name, "status": "pdf-extracted, verify"},
+                "figures": {"tool": tool_name, "status": "pdf-extracted, verify"},
+                "tables": {"tool": tool_name, "status": "pdf-extracted, verify"},
+                "equations": {"tool": tool_name, "status": "not-available"},
+                "references": {"tool": tool_name, "status": "pdf-extracted, verify"}
             }
         )
 
@@ -1113,6 +1435,7 @@ def create_default_router() -> SourceRouter:
     router = SourceRouter()
     router.register_plugin(ArxivHtmlPlugin())
     router.register_plugin(LatexSourcePlugin())
+    router.register_plugin(PublisherXmlPlugin())
     router.register_plugin(GrobidPdfPlugin())
     router.register_plugin(CrossrefOpenAlexPlugin())
     return router

@@ -9,7 +9,14 @@ on:
 
 jobs:
   test:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
+
+    services:
+      grobid:
+        image: lfoppiano/grobid:0.8.1
+        ports:
+          - 8070:8070
+        options: --init
 
     steps:
       - name: Checkout 3Pass
@@ -28,8 +35,8 @@ jobs:
       - name: Build s3a-cli binary
         run: |
           cargo build -p s3a-cli --manifest-path s3a/Cargo.toml
-          echo "$PWD/s3a/target/debug" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
-          echo "S3A_BINARY_PATH=$PWD/s3a/target/debug/s3a-cli.exe" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          echo "$GITHUB_WORKSPACE/s3a/target/debug" >> $GITHUB_PATH
+          echo "S3A_BINARY_PATH=$GITHUB_WORKSPACE/s3a/target/debug/s3a-cli" >> $GITHUB_ENV
 
       - name: Set up Python 3.12
         uses: actions/setup-python@v5
@@ -42,6 +49,21 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      - name: Wait for GROBID Service
+        run: |
+          echo "Waiting for GROBID service container at http://localhost:8070..."
+          for i in {1..30}; do
+            if curl -s http://localhost:8070/api/isalive | grep -q "true"; then
+              echo "GROBID is alive!"
+              echo -n "GROBID Version: "
+              curl -s http://localhost:8070/api/version
+              echo ""
+              break
+            fi
+            echo "Waiting for GROBID ($i/30)..."
+            sleep 2
+          done
+
       - name: Run Test Suite
         run: |
           python -m pytest tests/ -v
@@ -49,3 +71,7 @@ jobs:
       - name: Run Wiki Linter
         run: |
           python scripts/wiki_manager.py --lint
+
+      - name: Run Real-Paper Smoke Test (Live GROBID & Publisher XML)
+        run: |
+          python scripts/smoke_test_real_papers.py

@@ -14,6 +14,7 @@ from scripts.models import PaperRecord
 from scripts.source_router import (
     ArxivHtmlPlugin,
     LatexSourcePlugin,
+    PublisherXmlPlugin,
     GrobidPdfPlugin,
     CrossrefOpenAlexPlugin,
     SourceRouter,
@@ -42,6 +43,11 @@ def latex_tex():
 @pytest.fixture
 def grobid_tei():
     with open(os.path.join(FIXTURES_DIR, "grobid_sample.tei.xml"), "r", encoding="utf-8") as fp:
+        return fp.read()
+
+@pytest.fixture
+def jats_xml():
+    with open(os.path.join(FIXTURES_DIR, "jats_sample.xml"), "r", encoding="utf-8") as fp:
         return fp.read()
 
 @pytest.fixture
@@ -101,6 +107,39 @@ def test_latex_source_plugin(latex_tex):
     assert len(rec.tables) >= 1
     assert len(rec.references) >= 1
 
+def test_publisher_xml_plugin(jats_xml):
+    """Path publisher_xml: Publisher JATS XML -> completeness 'full', jats-verified parts."""
+    plugin = PublisherXmlPlugin()
+    paper_input = {
+        "source_id": "SRC-1002B",
+        "doi": "10.1371/journal.pone.0298888",
+        "jats_fixture": jats_xml,
+        "fixture_uri": "tests/fixtures/jats_sample.xml"
+    }
+    assert plugin.can_handle(paper_input) is True
+    rec = plugin.extract(paper_input)
+
+    assert isinstance(rec, PaperRecord)
+    assert rec.source_id == "SRC-1002B"
+    assert rec.completeness == "full"
+    assert rec.provenance.path_used == "publisher_xml"
+    assert rec.provenance.tool == "jats-xml"
+    assert "Adversarial AI applied to cross-user inter-domain" in rec.title
+    assert "Muhammad Hassan" in rec.authors
+    assert "Tom Kelsey" in rec.authors
+    assert "Fahrurrozi Rahman" in rec.authors
+    assert rec.year == 2024
+    assert len(rec.sections) >= 2
+    assert rec.sections[0].verified == "jats-verified"
+    assert len(rec.figures) >= 1
+    assert rec.figures[0].verified == "jats-verified"
+    assert len(rec.tables) >= 1
+    assert rec.tables[0].verified == "jats-verified"
+    assert len(rec.equations) >= 1
+    assert rec.equations[0].verified == "jats-verified"
+    assert len(rec.references) >= 2
+    assert rec.references[0].verified == "jats-verified"
+
 def test_grobid_pdf_plugin(grobid_tei):
     """Path c: PDF only -> completeness 'pdf-extracted', all parts 'pdf-extracted, verify'."""
     plugin = GrobidPdfPlugin()
@@ -117,7 +156,8 @@ def test_grobid_pdf_plugin(grobid_tei):
     assert rec.source_id == "SRC-1003"
     assert rec.completeness == "pdf-extracted"
     assert rec.provenance.path_used == "grobid_pdf"
-    assert rec.provenance.tool == "grobid-tei"
+    assert rec.provenance.tool in ("grobid-tei", "tei-xml-fixture")
+    assert "GROBID" not in rec.provenance.tool_version, "Fixture extraction must not claim a GROBID version"
     assert "Empirical Study of Student Agency" in rec.title
     assert "Eve Analyst" in rec.authors
     assert len(rec.sections) >= 2
@@ -150,15 +190,16 @@ def test_crossref_metadata_plugin(crossref_json):
     assert len(rec.tables) == 0
     assert len(rec.references) >= 1
 
-def test_unified_record_schema_across_all_paths(arxiv_html, latex_tex, grobid_tei, crossref_json):
-    """All 4 paths must produce the identical PaperRecord schema."""
+def test_unified_record_schema_across_all_paths(arxiv_html, latex_tex, jats_xml, grobid_tei, crossref_json):
+    """All 5 paths must produce the identical PaperRecord schema."""
     router = create_default_router()
 
     inputs = [
         {"source_id": "SRC-A", "arxiv_id": "2402.12345", "html_fixture": arxiv_html},
         {"source_id": "SRC-B", "latex_fixture": latex_tex},
-        {"source_id": "SRC-C", "tei_fixture": grobid_tei},
-        {"source_id": "SRC-D", "doi": "10.1145/3491101.3503719", "metadata_fixture": crossref_json}
+        {"source_id": "SRC-C", "doi": "10.1371/journal.pone.0298888", "jats_fixture": jats_xml},
+        {"source_id": "SRC-D", "tei_fixture": grobid_tei},
+        {"source_id": "SRC-E", "doi": "10.1145/3491101.3503719", "metadata_fixture": crossref_json}
     ]
 
     records = [router.route(inp) for inp in inputs]
@@ -217,14 +258,15 @@ def test_wiki_draft_page_facts_and_empty_researcher_notes(arxiv_html, tmp_path):
     assert "LA:" not in content
 
 def test_source_router_plugin_priority():
-    """Router prioritizes arXiv HTML > LaTeX source > GROBID PDF > DOI metadata."""
+    """Router prioritizes arXiv HTML > LaTeX source > Publisher XML > GROBID PDF > DOI metadata."""
     router = create_default_router()
     plugins = router.plugins
 
     assert plugins[0].name == "arxiv_html"
     assert plugins[1].name == "latex_source"
-    assert plugins[2].name == "grobid_pdf"
-    assert plugins[3].name == "doi_metadata"
+    assert plugins[2].name == "publisher_xml"
+    assert plugins[3].name == "grobid_pdf"
+    assert plugins[4].name == "doi_metadata"
 
 def test_s3a_round_trip_export(tmp_path):
     """S3A round-trip test: exports records, builds .s3a, inspects headers and tiles."""
@@ -318,14 +360,15 @@ def test_query_engine_s3a_graph_delegation(tmp_path, capsys):
     assert "Found 1 associated S3A graph edge(s)" in out
     assert "0x0000000000002329" in out
 
-def test_all_paths_populate_sha256_and_positive_paper_id(arxiv_html, latex_tex, grobid_tei, crossref_json):
+def test_all_paths_populate_sha256_and_positive_paper_id(arxiv_html, latex_tex, jats_xml, grobid_tei, crossref_json):
     """Smoke fix 4: Asserts sha256 (64 hex characters) and positive paper_id (>0) are set on every record."""
     router = create_default_router()
     inputs = [
         {"source_id": "SRC-A", "arxiv_id": "2402.12345", "html_fixture": arxiv_html},
         {"source_id": "SRC-B", "latex_fixture": latex_tex},
-        {"source_id": "SRC-C", "tei_fixture": grobid_tei},
-        {"source_id": "SRC-D", "doi": "10.1145/3491101.3503719", "metadata_fixture": crossref_json}
+        {"source_id": "SRC-C", "doi": "10.1371/journal.pone.0298888", "jats_fixture": jats_xml},
+        {"source_id": "SRC-D", "tei_fixture": grobid_tei},
+        {"source_id": "SRC-E", "doi": "10.1145/3491101.3503719", "metadata_fixture": crossref_json}
     ]
     for inp in inputs:
         rec = router.route(inp)
@@ -360,6 +403,19 @@ def test_path_b_fixture_metadata_inspection(latex_tex):
     assert rec.authors[0] == "Carol Professor"
     assert rec.year == 2024
 
+def test_path_publisher_xml_fixture_metadata_inspection(jats_xml):
+    """Smoke fix: Publisher XML JATS fixture inspection (title, first author, year)."""
+    plugin = PublisherXmlPlugin()
+    rec = plugin.extract({
+        "source_id": "SRC-PATH-JATS",
+        "doi": "10.1371/journal.pone.0298888",
+        "jats_fixture": jats_xml,
+        "fixture_uri": "tests/fixtures/jats_sample.xml"
+    })
+    assert "Adversarial AI applied to cross-user inter-domain" in rec.title
+    assert rec.authors[0] == "Muhammad Hassan"
+    assert rec.year == 2024
+
 def test_path_c_fixture_metadata_inspection(grobid_tei):
     """Smoke fix 5: Path c fixture inspection (title, first author, year)."""
     plugin = GrobidPdfPlugin()
@@ -384,6 +440,29 @@ def test_path_d_fixture_metadata_inspection(crossref_json):
     assert rec.title == "Algorithmic Scaffolding in Higher Education: A Crossref Registered Record"
     assert rec.authors[0] == "Frank Scientist"
     assert rec.year == 2024
+
+def test_no_false_grobid_tool_version_claim_without_request(grobid_tei):
+    """Provenance check (Item 4): Fails if any record's tool_version claims GROBID when no GROBID request was made."""
+    plugin = GrobidPdfPlugin()
+    paper_input = {
+        "source_id": "SRC-NO-GROBID",
+        "title": "PDF Paper",
+        "tei_fixture": grobid_tei,
+        "fixture_uri": "tests/fixtures/grobid_sample.tei.xml"
+    }
+    rec = plugin.extract(paper_input)
+
+    # When extracting from a fixture, tool_version must NEVER claim a real GROBID tool or version
+    assert "GROBID" not in rec.provenance.tool_version, (
+        f"tool_version claimed '{rec.provenance.tool_version}' but no live GROBID request was made!"
+    )
+    assert rec.provenance.tool != "grobid-tei", (
+        f"tool claimed '{rec.provenance.tool}' without making a live GROBID request!"
+    )
+
+    # Attempting to forge a GROBID tool_version when is_live_request is False must raise ValueError
+    with pytest.raises(ValueError, match="Never write a tool name or version that did not actually run"):
+        plugin._parse_tei_xml(grobid_tei, paper_input, "fixture://dummy", is_live_request=False, grobid_version="0.8.1")
 
 def test_grobid_pdf_plugin_fails_loudly_when_offline(tmp_path):
     """Smoke fix 3: GROBID plugin must fail loudly with RuntimeError when GROBID is unreachable."""

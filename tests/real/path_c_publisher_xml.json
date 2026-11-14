@@ -1,0 +1,859 @@
+{
+  "source_id": "SRC-REAL-JATS",
+  "paper_id": 261012,
+  "title": "Adversarial AI applied to cross-user inter-domain and intra-domain adaptation in human activity recognition using wireless signals",
+  "authors": [
+    "Muhammad Hassan",
+    "Tom Kelsey",
+    "Fahrurrozi Rahman",
+    "Lei Chu",
+    "Sunder Ali Khowaja"
+  ],
+  "year": 2024,
+  "doi": "10.1371/journal.pone.0298888",
+  "arxiv_id": null,
+  "urls": {
+    "source": "https://doi.org/10.1371/journal.pone.0298888",
+    "landing": "https://doi.org/10.1371/journal.pone.0298888"
+  },
+  "completeness": "full",
+  "provenance": {
+    "path_used": "publisher_xml",
+    "tool": "jats-xml",
+    "tool_version": "JATS XML (Publisher)",
+    "source_uri": "https://doi.org/10.1371/journal.pone.0298888",
+    "extracted_at": "2026-11-14T09:28:23.403930",
+    "per_part": {
+      "metadata": {
+        "tool": "jats-xml",
+        "status": "extracted"
+      },
+      "sections": {
+        "tool": "jats-xml",
+        "status": "extracted"
+      },
+      "figures": {
+        "tool": "jats-xml",
+        "status": "extracted"
+      },
+      "tables": {
+        "tool": "jats-xml",
+        "status": "extracted"
+      },
+      "equations": {
+        "tool": "jats-xml",
+        "status": "extracted"
+      },
+      "references": {
+        "tool": "jats-xml",
+        "status": "extracted"
+      }
+    }
+  },
+  "abstract": "In recent years, researchers have successfully recognised human activities using commercially available WiFi (Wireless Fidelity) devices. The channel state information (CSI) can be gathered at the access point with the help of a network interface controller (NIC card). These CSI streams are sensitive to human body motions and produce abrupt changes (fluctuations) in their magnitude and phase values when a moving object interacts with a transmitter and receiver pair. This sensing methodology is gaining popularity compared to traditional approaches involving wearable technology, as it is a contactless sensing strategy with no cumbersome sensing equipments fitted on the target with preserved privacy since no personal information of the subject is collected. In previous investigations, internal validation statistics have been promising. However, external validation results have been poor, due to model application to varying subjects with remarkably different environments. To address this problem, we propose an adversarial Artificial Intelligence AI model that learns and utilises domain-invariant features. We analyse model results in terms of suitability for inter-domain and intra-domain alignment techniques, to identify which is better at robustly matching the source to target domain, and hence improve recognition accuracy in cross-user conditions for HAR using wireless signals. We evaluate our model performance on different target training data percentages to assess model reliability on data scarcity. After extensive evaluation, our architecture shows improved predictive performance across target training data proportions when compared to a non-adversarial model for nine cross-user conditions with comparatively less simulation time. We conclude that inter-domain alignment is preferable for HAR applications using wireless signals, and confirm that the dataset used is suitable for investigations of this type. Our architecture can form the basis of future studies using other datasets and/or investigating combined cross-environmental and cross-user features.",
+  "sections": [
+    {
+      "id": "sec001",
+      "title": "Introduction",
+      "text": "Commercial-off-the-shelf (COTS) WiFi devices were initially invented for wireless communication and local area networking using wireless networking protocols. Owing to the ubiquitous nature of WiFi technologies, there are tens of billions of devices connected together in a network. Today, we are surrounded by various types of wireless signals such as WiFi, LoRa, and LTE. Earlier research has shown that the radio signals travel through multiple paths and can be used to identify the presence, location and movement of surrounding objects, via superposition at the receiver. The pervasive nature of the radio signals and their capability to demodulate the activities of the surrounding environment open the way for a new wireless sensing technology. WiFi Sensing is hence the use of commercially available WiFi devices for carrying information about users’ behavior.\n\nThe field of wireless sensing is involved with the key concepts of Multiple Input Multiple Output (MIMO) [ 1 ] and Orthogonal Frequency Division Multiplexing (OFDM). MIMO is a technology that creates multiple versions of the same signal using multiple antennas at both the source and destination. These multiple versions of the same signal are helpful to both increase the signal-to-noise-ratio and reduce signal fading, since multiple copies of same signal increase the chances of the signal arriving at the receiving end successfully [ 1 ]. MIMO in WiFi devices can supply diverse and rich data concerning how signals carry information related to the surrounding environment, which we refer to as channel state information (CSI). OFDM is a modulation technique that supports a large number of carriers, each separated from the other orthogonally. It is less susceptible to selective fading, interference, and multi path effects [ 2 ]. Modern WiFi devices with IEEE 802.11 n/ac standards utilize OFDM with MIMO systems. In OFDM, data is transmitted over multiple orthogonal sub-carriers with quite narrow bandwidth. Therefore, it suffers from flat fading but this is not very severe, while co-channel interference is also avoided to a great extent. CSI data has benefits compared to received signal strength indicator (RSSI) [ 3 ]. RSSI measures the signal power on the receiver side and associates it with the distance either from the reflected object or the transmitter. This signal strength is susceptible to multi-path fading. When the transmitted signal is emitted in the environment, it gets obstructed with the surrounding objects such as buildings, vehicles and humans, which takes multiple paths before reaching at the receiver. Different signals presume different path lengths, thus suffering from fading and delay. This results in the reduction of the received signal power.\n\nWhen radio signals emerge from a COTS WiFi device and spread out in the surrounding environment, they follow a multi-path propagation which induces a pattern of channel state information (CSI) at the receiving end. As a target (object or human) performs some activity under the presence of wireless environment, it creates fluctuations which exhibit distinct characteristics due to different movements in the CSI pattern. These distinct fluctuating patterns are used to train a deep learning model to predict specific activities.  Fig 1  illustrates the concept of wireless sensing along with the phasor representation of a target moving from location  A  to a new location  B  covering a distance  d . Target activity whilst between  A  and  B  will be reflected by the dynamic movement of vectors in the I-Q plane at the receiving end. When radio waves emerge from a device, they are broadly classified into three main vectors in terms of a phasor diagram. The reflection and diffraction from static objects such as walls or furniture and line of sight (LOS) contact between a transmitter and a receiver forms a static vector. In the I-Q plane,  V s  (in blue) is the static vector, whose length represents the magnitude and angle from I-axis to Vs is its phase value. The direct reflection from the target forms a dynamic vector. As the target moves, it causes changes in the magnitude and phase of the dynamic vector. In the same I-Q plane,  V d  (in red) is the dynamic vector appearing for two different target positions at  A  and  B . The vector length represents its magnitude and angles from I-axis to  V d  at location  A  and location  B  are its phase values for these two locations. Since this vector is dynamic in nature, the phase and magnitude differences between the dynamic vectors at location  A  and  B  can be used to track the target movement. The summation of a static and dynamic vector forms a composite vector [ 4 ].\n\nSince the fluctuations in CSI data are dependent upon surrounding objects and in fact the target characteristics can severely affects the model performance, its a challenging task to generalize a model for different cross-user conditions. Hence the work described of this study is the proposal of an adversarial model and detailed evidence to support the use of such models in this context. Our key contributions are:",
+      "level": 1,
+      "verified": "jats-verified"
+    },
+    {
+      "id": "sec002",
+      "title": "Related work",
+      "text": "The field of human activity recognition has gained popularity due to it’s valuable usages in the field of activity recognition, mobile health monitoring and patient rehabilitation. The typical challenge is to concern about the model performance in cross-domain conditions such as cross-user (a classifier is trained on known users and tested on some unknown users), cross-environment (a classifier is trained on a seen environment and tested on some unseen environment) and a combination of both of them. Models proposed by the researchers in the past performed well when they were tested on the same conditions which were used during the model training. Unfortunately, their performance suffers from acute degradation when they are tested on different environments and subjects other than those used for the model training. The activity patterns for new users and environments differ from those in the training data which makes the model less efficient in predicting activities in cross-domain conditions. Additionally, training a classifier for unseen users and environments is time consuming which also takes high computational resources [ 5 ]. Domain adaptation [ 6 ], a sub-field of transfer learning [ 7 ], is considered to be an appropriate solution for adjusting a model’s parameters (weights and biases) to transfer them from one domain, refer to as source domain, to another as target domain whereas both the domains consist of domain variant features (source and target features are different from each other). Researchers in recent years resorted to unsupervised domain adaptation (UDA) [ 8 ] where adversarial learning approaches are applied to transfer domain independent features from source domain with labelled data to match with the target domain features, however, this new unseen target domain has unlabelled data samples. Virtual sample generation via geometric modelling [ 9 ], is the representation of drafting a translation function between source and target configurations. Translation function is a mathematical modelling to generate virtual samples for target movements in different locations and orientations, thus saves time to collect new training data for user’s new locations and orientations. However, this method is not very effective all the time because of it’s initial essential parameters estimation requirements such as users’ moving speed and directions in both the configurations and their initial locations and orientations etc. Signals reflected by static objects in a specific environment are considered to be domain dependent features. These components are removed through user’s motion and velocity profile modelling across different domains so that the dynamic components of the target movement can be retrieved. These dynamic components are domain invariant features as velocity profiles of different users show unique kinetic characteristics which cannot be changed with cross-environmental conditions. Also, users’ velocity profiles of movements are different for different users.  v  = ( f λ)/2 is the relation built between a user’s velocity and frequency of movement that can estimate the velocity changes during the target movement [ 10 ,  11 ]. Transfer learning [ 12 – 14 ], is a way to use transferable knowledge of one domain already trained on a specific training condition (known user and environment) to train a new domain with few data samples which saves computational cost. There are two types of transfer learning as parameter transfer and feature-representation transfer. In parameter transfer [ 15 ], pre-trained models are used to fine-tune new testing domain without the need of training the entire network from scratch. These re-trained models are used to fix initial learned parameters of new domain as these layers are responsible to generate features only focused on model abstraction. They can not contribute to the model final output. A few samples from new testing domain are used to fine-tune only particular layers of the network. In feature representation [ 13 ,  14 ], a shared space is created between the extracted features of training and testing domain by mitigating the distinct features between them. Domain Adversarial Neural Network (DANN) [ 8 ], a type of feature representation, is one of the pioneers in the field of domain adaptation that has been applied to many of the cross-domain deep learning problems including device-free WiFi sensing. Its training works in an adversarial fashion to mismatch a generator and a domain discriminator. The generator converges to its optimal performance when discriminator fails to predict domain labels. EI [ 16 ] made the use of DANN [ 8 ] architecture to extract subject and environment independent features. They worked on three constraints to make the model effective and tolerant against over-fitting. Confidence Control Constraint is responsible to avoid the model getting stuck on local optimum. Smoothing Constraint saves the model to be significantly different in it’s predictions on neighbouring samples. Balance Constraint comes into play when model tends to assign same labels to different but similar type of activities. They changed different source domains and showed in all cases their model accuracy is higher than baseline models (VADA [ 17 ], RF [ 18 ]). Few-shot learning, is a classification problem of identifying the similarity and differences between training and testing domains using a very few labelled samples from training data. Fidora [ 19 ] is a Wireless-based localization system which can locate an objects’ location fingerprints without being subject to WiFi fingerprint inconsistency such as body shapes of new users, objects in the background and daily changes in the environment. Synthetic data fingerprints are generated from labelled data fingerprints and a data augmenter (Variational Auto-Encoder) is applied for this purpose. [ 20 ]. The precedence of VAE’s over traditional Auto-Encoders is their capability to generate augmented data samples from a Gaussian distribution  N (0,  γkI ) of original data fingerprints. Baseline models considered in the original paper are AutoFi [ 21 ], VAE-only, and FiDo [ 22 ] which were tested on cross-user and cross-environmental conditions against Fidora [ 19 ]. Evaluation results show its average F1 score is 17.8% and 23.1% better than the benchmark in unlabeled user and varied environment respectively. WiGR [ 23 ] is a lightweight few-shot learning based gesture recognition system using WiFi devices. Network ability is its transferable domain shifting learning in new domains. Few- shot learning [ 24 ,  25 ] uses supervised learning to generalize a model for new tasks using only a few data samples. Model was tested against WiGeR [ 26 ], WiCatch [ 27 ], SignFi [ 28 ] and Siamese-LSTM [ 29 ] for cross- user, cross-environment and cross-location evaluations. It outperformed all of these conditions against the baseline models. They also analyzed the model complexity in terms of model’s parameters and calculation required. It outperforms other few-shot learning models in model complexity such as [ 29 – 32 ]. JADA [ 33 ] is an unsupervised domain adaptation scheme which is proposed to tackle with the vulnerability of spatial dynamics. Evaluation results show that the model achieves 87.8% and 90.3% average recognition accuracy in cross-environmental conditions between large and small conference rooms respectively. Model is also outperforming to 2 state-of-the-art adversarial methods (DIFA [ 34 ] and ADDA [ 35 ]) under spatial dynamics. CrossGR [ 36 ] is a low cost cross-target gesture recognition model which uses generative adversarial network (GAN) for generating synthetic data samples from a small set of real-world data collected on a specific number of users. After data augmentation, it uses those labelled and synthetic data samples for eliminating out the user-related information in order to obtain gesture related features. During the back propagation, these gesture related features help the model to be trained for recognizing new users’ activities. Contrastive Supervision by considering “where” to contract is a novel approach to apply contrastive loss on a time series wearable sensor data on HAR. Their key contribution is to tackle the problem of data augmentation introduced by information loss at different depth of a neural network. By using contrastive loss on intermediate layers of a network, they pushed positive augmented invariant pairs nearby and negative pairs far apart [ 37 ]. DSAN [ 38 ] is a non-adversarial model which tries to minimize the local sub-domain discrepancies within the same class of the source and target domains using local maximum mean discrepancy (LMMD) loss. DASAN [ 39 ] is an adversarial variant of DSAN [ 38 ] which is presented to solve fault diagnosis problems in different rotationary parts of machines. It focuses on global adaptation by using a discriminator for domain alignment and LMMD loss calculation between source and target activations for sub-domain alignment. During the LMMD loss calculation, they introduced pseudolabel learning [ 40 ] for generating pseudolabels for unlabelled target data.",
+      "level": 1,
+      "verified": "jats-verified"
+    },
+    {
+      "id": "sec003",
+      "title": "Preliminaries",
+      "text": "",
+      "level": 1,
+      "verified": "jats-verified"
+    },
+    {
+      "id": "sec004",
+      "title": "Channel state information",
+      "text": "Suppose there are  M Tx  antennae and  N Rx  antennae in a MIMO system. Let  H  be a CSI matrix, or called channel fading factor matrix,\n H   =   [   h   1   ,   1   h   1   ,   2   .   .   .   .   .   h   1   ,   M   h   2   ,   1   h   2   ,   2   .   .   .   .   .   h   2   ,   M   .   .   .   .   .   .   .   .   .   .   .   .   h   N   ,   1   h   N   ,   2   .   .   .   .   .   h   N   ,   M   ] \nEach term in  H  is a complex value representing the magnitude and phase shift of an OFDM sub-carrier in CSI stream as [ 41 ],\n h   i   ,   j   (   f   k   )   =   h   i   ,   j   (   f   k   )   e   j   ∠   h   i   ,   j   f   k   ,   (1) \nwhere  h i , j ( f k ) and ∠ h i , j ( f k ) are the magnitude and phase shift of individual OFDM sub-carrier respectively.  f k  is the OFDM sub-carrier central frequency.\n\nWith  H , the transmitted and received signals can be represented as\n B   (   t   )   =   H   *   A   (   t   )   +   n   (   t   )   ,   (2) \nwhere  A ( t ) and  B ( t ) are the matrices of MIMO system transmitting and receiving antennae respectively, and  n ( t ) is the additive White Gaussian noise matrix.\n\nCSI is effective in providing precise information of a channel state. CSI streams are generated by multiple antenna pairs of a transmitter with a receiver, working at different OFDM sub-channels. These OFDM sub-channels operate at their own frequencies. Each sub-channel is associated with CSI amplitude and phase measurements. The collected CSI information over time is 4D matrix  M T , C , N , M , where  T  is the number of WiFi signal packets,  C  is the number of subcarriers, and  N  and  M  are the number of antennae. From each packet, we can extract CSI features into a magnitude and phase vector of dimension  N  *  M  *  C . These sub-frequency carriers make different patterns for different activities, thus forming a good foundation for human activity recognition.",
+      "level": 1,
+      "verified": "jats-verified"
+    },
+    {
+      "id": "sec005",
+      "title": "Maximum mean discrepancy (MMD) loss",
+      "text": "The maximum mean discrepancy (MMD) loss [ 39 ] measures the global distribution discrepancy between the source mean embedding and target mean embedding in the reproducing kernel Hilbert space (RKHS) provided that the source and target probability distribution is marginal. It takes two inputs, feature representations of source and target domain generated by the classifier layers as shown in  Fig 2 . It can be calculated as,\n L   M   M   D   (   p   s   ,   p   q   )   ≡   |   |   E   p   [   ϕ   (   x   s   )   ]   -   E   q   [   ϕ   (   x   t   )   ]   |   |   H   2   (3) \nwhere  p s  is the source marginal probability distribution,  p q  is the target marginal probability distribution, H is the reproducing kernel Hillbert space (RKHS) endowed with a characteristic kernel k, and  ϕ (.) is a mapping function which maps the features into the RKHS.  ϕ (.) is associated with characteristic kernel  k ( x s ,  x t ) = <  ϕ ( x s ),  ϕ ( x t ) >, where (., .) represents the standard inner product of vectors. According to the theoretical results in [ 42 ], the source marginal probability distribution is equal to the target marginal probability distribution if, and only if,  L MMD ( p s ,  p q ) = 0.",
+      "level": 1,
+      "verified": "jats-verified"
+    },
+    {
+      "id": "sec006",
+      "title": "Local maximum mean discrepancy (LMMD) loss",
+      "text": "The local maximum mean discrepancy (LMMD) [ 38 ] is a variant of MDD loss, measuring the relevant sub-domains distribution discrepancies between the source mean embedding and target mean embedding in the reproducing kernel Hilbert space (RKHS). Unlike MMD loss, it focuses on the alignment of two sub-domains’ relevant features within the same class of an activity. According to a particular class to which samples belong, it introduces weighted samples for each class of the activity. It takes four inputs, feature representations of source and target domain generated by the classifier layers, source true labels and target predicted labels as shown in  Fig 3 . Mathematically, it can be calculated as,\n L   L   M   M   D   (   p   (   c   )   ,   q   (   c   )   )   ≡   E   c   |   |   E   p   (   c   )   [   ϕ   (   x   s   )   ]   -   E   q   (   c   )   [   ϕ   (   x   t   )   ]   |   |   H   2   (4) \nwhere  p ( c )  and  q ( c )  are distributions of subdomains  D   s   (   c   )  and  D   t   (   c   ) , and  x s  and  x t  are samples from source and target domains  D s  and  D t , respectively.",
+      "level": 1,
+      "verified": "jats-verified"
+    },
+    {
+      "id": "sec007",
+      "title": "Problem definition",
+      "text": "Key challenges remain for the widespread deployment of WiFi-based sensing systems, in particular real-world environments involving users with different age, gender, height, body movement speed, location and orientation with respect to the WiFi transmitter and receiver. These aspects can severely impact the WiFi signals features and characteristics such as amplitude, phase and Doppler Frequency Shift (DFS). Consequently, if any of these factors changes from training to the testing of a model there is an inevitable degradation in the system performance caused by varying fluctuations in CSI measurements from training to the testing data samples of same activities. This creates a need to re-train the model for each new domain, requiring the extra burdens of new data collection and re-learning of model parameters and hyperparameters. Moreover, data annotation is cumbersome and time consuming because each domain carries its own specific information related to multi-path wireless propagation. Therefore, re-training a model every time for a new domain is neither feasible nor practical [ 15 ]. In order to tackle with the aforementioned problem, researchers have relied on global and sub-domain alignments on an adversarial/non-adversarial model as shown in  Fig 4 . These models converge easily for inter-domain alignment tasks by matching a source and target domain globally. Unfortunately, global domain adaptation neglects fine-grained information of sub-domains within the same group of different domains. Whereas, it is a time consuming process to converge these models for intra-domain alignment tasks using several loss functions. This leads to a poor transfer learning performance [ 38 ]. Cross-user transfer learning in HAR using wireless signals is a sub-domain alignment task within the same class of different activities, yet it is still unknown which type of alignment is best suitable for CSI-image based Wi-Fi data. A global alignment would be a better idea for learning domain-invariant features, by minimizing the distribution discrepancy between the source domain and target domain since CSI data for different activities appears to be quite similar without much significant domain shifting within the data. Thus, it is likely not to align perfectly on relevant sub-domain distributions. In this study we adapt an existing adversarial AI architecture in order to analyze the suitability of global and intra-class alignments for HAR domain shifting applications using wireless signals.",
+      "level": 1,
+      "verified": "jats-verified"
+    },
+    {
+      "id": "sec008",
+      "title": "Materials and methods",
+      "text": "",
+      "level": 1,
+      "verified": "jats-verified"
+    },
+    {
+      "id": "sec009",
+      "title": "Proposed method",
+      "text": "We accessed a public dataset available at [ 43 ] on 8th June 2023. We have not had access to information that could identify individual participants during or after data collection. Available dataset has CSI magnitude values obtained from 52 sub-carriers. From these raw measurements high frequency content is filtered out as noise. Based on the nature of processed data, architecture of the feature generator can play a crucial role. Researchers have focused more on recurrent neural networks to process CSI data as a time series input with memory cells to keep track of the past inputs. This is because of the nature of CSI data which is continuous and sequential. Recurrent Neural Networks (RNNs) are supposed to be very functional in handling temporal data. These RNNs are a good option to extract key features from input CSI measurements but they need high memory requirements and their processing time is pretty long. For fully exploit the functionality of CNN with time series models in extracting shift invariant features along with the temporal information, there are plenty of 1D-CNN variants. However, these CNNs are merged with RNNs to achieve high precision but model convexity is increased thus simulation time. Our input to a 2D-CNN is a three channel RGB 64×64 CSI-image representation array of colored cells varying in intensity depending upon the magnitude values. Convolutional Neural Networks have widely been used for many applications and revolutionized the field of computer vision because of their low pre-processing requirements and remarkable results for image recognition task. Such networks can adjust filter parameters, thus useful in finding spatial and temporal dependencies in an image. ConvNets are also capable to deal with huge datasets due to their ability to reduce data dimensions. Our proposed model does not depend upon any memory cell to keep track of past inputs and its a very simple yet robust adversarial model which is suitable for applying the global and sub-domain alignments for a multi-class problem. Model is particularly chosen to investigate the impact of different alignments on cross-user domain shifting tasks using wireless sensing.\n\nOur proposed architecture is inspired by the work presented in [ 39 ]. The main idea is to examine the effects of global as well as subdomain adaptation on HAR using device free sensing. The proposed model, Deep Adversarial Sub-Domain Adaptation (DASAN), works in three adversarial training steps. Our model architecture is shown in  Fig 5  with its simulation parameters represented in  Table 1 . The domain shared feature extractor is a 2-D CNN. This module is responsible to extract high-level features from the raw source and target domain data samples. Since this module is shared between source and target, it maps source samples  x s  and target samples  x t  using mapping function  F f  with mapping parameter  θ f  in such a way that  Z s  =  F f ( x s ;  θ f ) and  Z t  =  F f ( x t ;  θ f )( Z s ,  Z t  ∈  R M × D ) where  Z s ,  Z t  are corresponding source and target output features with  M  is the mini-batch size and  D  is the feature dimensional length. Next comes a label classifier and a domain discriminator. Input to these modules is the extracted features from the previous module. The domain discriminator is responsible for predicting the corresponding domains from source and target data features. The label classifier predicts the labels’ category of the extracted source and target domain features. Classifier is a mapping function  C c  with mapping parameter  θ c  which maps the generated features to the predicted label  y   ^  in such a way that  y   ^   =   C   c   (   Z   s   ,   θ   c   ) . Finally, the LMMD and MMD loss functions are calculated to isolate the distribution discrepancy between the source and target activations. The LMMD loss measures the distribution discrepancy among relevant sub-domains, whereas the MMD loss measures the distribution discrepancy between the source and target distribution globally.\n\nThe label classifier is trained using the source domain labelled samples and cross entropy loss is measured between the real and predicted source labels to maximize the activity recognition accuracy on source domain that can be defined as,\n L   c   l   s   =   -   1   M   [   ∑   i   =   1   M   ∑   c   =   1   C   I   [   y   i   s   =   c   ]   l   o   g   (   C   c   (   F   f   (   x   i   s   ;   θ   f   ;   θ   c   )   )   ]   (5) \nIt also leverages pseudolabel learning for reducing the prediction uncertainty of target data unlabelled samples. Pseudolabel learning loss can be calculated as,\n L   P   s   e   u   d   o   =   -   1   M   [   ∑   j   =   1   M   ∑   m   =   1   C p   [   y   ^   j   t   =   m   |   x   j   t   ]   l   o   g   (   p   [   y   ^   j   t   =   m   |   x   j   t   )   ]   (6) \nAlso, the predicted labels of the label classifier for the target domain unlabelled data samples are used to calculate the LMMD and MMD losses. Thus, the objective function of label classifier can be defined as,\n L   c   =   L   c   l   s   +   α   L   P   s   e   u   d   o   +   β   (   L   M   M   D   /   L   L   M   M   D   )   (7) \nwhere  α , and  β  are the tradeoff parameters.\n\nThe purpose of domain discriminator is to minimize the global distribution discrepancy by learning domain invariant features. This adversarial role of domain discriminator is played by a two-player minmax game. The domain discriminator itself is liable to differentiate between the source and target domains as first player. The feature extractor is trained to fool the domain discriminator as second player of the game. Domain Discriminator is a mapping function  D d  with mapping parameter  θ d  which maps the generated features in domain  d  such as  d  =  D d ( f ,  θ d )( x i  ∈  D s  if  d i  = 1 otherwise  x j  ∈  D t  if  d j  = 0. Its adversarial loss can be defined as,\n L   a   d   v   =   -   1   M   ∑   i   =   1   M   d   i   l   o   g   [   D   d   (   F   f   (   x   i   s   ;   θ   f   )   ;   θ   d   )   ]   -   1   M   ∑   i   =   1   M   (   1   -   d   i   )   l   o   g   [   D   d   (   F   f   (   x   j   t   ;   θ   f   )   ;   θ   d   )   ]   (8) \nThe total loss of the model can be calculated as,\n L   t   o   t   a   l   =   L   c   l   s   -   γ   L   a   d   v   +   β   L   L   M   M   D   +   α   L   P   s   e   u   d   o   (   in   case   of   LMMD   Loss   )   (9)   L   t   o   t   a   l   =   L   c   l   s   -   γ   L   a   d   v   +   β   L   M   M   D   +   α   L   P   s   e   u   d   o   (   in   case   of   MMD   Loss   )   (10) \nwhere  L cls  is the classifier loss,  L adv  is the discriminator adversarial loss,  α ,  β  and  γ  are the tradeoff parameters.",
+      "level": 1,
+      "verified": "jats-verified"
+    },
+    {
+      "id": "sec010",
+      "title": "Experimental results",
+      "text": "",
+      "level": 1,
+      "verified": "jats-verified"
+    },
+    {
+      "id": "sec011",
+      "title": "Dataset",
+      "text": "We use a public dataset available at [ 43 ] to assess model performance, named as the Parisafm dataset. The dataset was collected with the involvement of 3 volunteers, thus suitable for cross-user domain adaptation. The participants performed 7 different activities including walk, run, fall, lie down, sit down, stand up, and bend in an experimental environment. Each activity was repeated for 20 trials. In total, there are 420 labelled data samples which are equally divided among three different subjects. For adversarial training the source domain is always equipped with labeled samples for a particular subject/combination of subjects, while the target domain is treated as unlabeled data samples coming from the other subject/combination of subjects during model training. The Raspberry Pi was used as a WiFi-enabled platform for packet reception and a Nexmon Tool [ 44 ] was employed for data collection process. Each subcarrier has a complex representation of CSI values. These complex values have magnitude and phase information about a specific activity. For mode simulation, only CSI magnitude values are being employed. A low pass filter is used for the reduction of high-frequency content which is treated as noise. These values are normalized between 0 and 255 for a colored image representation. These RGB colored images are then generated as a MATLAB pseudocolor plot, shown in  Fig 6 . This results in an array of colored cells also known as a face. Each image is resized to 64×64 scale.",
+      "level": 1,
+      "verified": "jats-verified"
+    },
+    {
+      "id": "sec012",
+      "title": "Model evaluation",
+      "text": "To evaluate the inter- and intra-domain adaptation on HAR using wireless sensor data comprehensively, we have two different variations of the proposed model, with their transfer results being compared to another model, Deep Subdomain Adaptation Network (DSAN) [ 38 ]. DSAN [ 38 ] is a non-adversarial model with a simple architecture of a shared feature extractor and a classifier. Features generated by the extractor for source labelled data and target unlabelled data are fed to the classifier layers one at a time. Thereafter, maximum mean discrepancy (MMD) and local maximum mean discrepancy (LMMD) losses are calculated between these source and target activations for examining the effects of global and subdomain alignments respectively. The proposed model is also tested for global and local sub-domain adaptations using the same loss minimization functions that is DASAN-LMMD and DASAN-MMD. Finally, these two variations of proposed model are compared with DSAN-MMD and DSAN-LMMD against the measuring parameters of model activity recognition micro- and macro-F1 scores, the harmonic mean of precision and recall, on cross-user domain shifting tasks. Micro-F1 score aggregates the contributions of all instances, and the macro-F1 score computes the metric independently for each class and then takes the average [ 45 ]. Since we have an imbalanced dataset, we also report macro-F1 score, which takes equal contribution from majority and minority classes to achieve objective results. Simulation time for each model is additionally measured for comparison.\n\nThe dataset used for model evaluation has three different subjects involved for performing seven different activities. We have tested each model for nine different domain shifting tasks with subject 1, 2 and 3 are interchangeably used for source to target domains. In order to report our model simulation results, we are following evaluation approach mentioned in [ 45 ]. Each case is run ten times and their average is calculated for an unbiased models comparison. We also compute and report 95% confidence intervals for each performance metric. The cross-user domain shifting task measures the accuracy of adopting an activity model trained on one user (male/female) with some physical appearance (e.g., weight, height, age) to another with different physical appearance.",
+      "level": 1,
+      "verified": "jats-verified"
+    },
+    {
+      "id": "sec013",
+      "title": "Models comparison of micro- and macro-F1 scores",
+      "text": "Tables  2 – 9 , report the micro- and macro-F1 scores of DASAN and baseline technique with MMD and LMMD losses on nine cross-user experiments with different target data training samples varying from 100% to 10%. These are averaged F1 scores over 10 runs of the nine cross-user experiments reported in the table. DASAN-MMD obtains the highest average of averaged micro- and macro-F1 scores of nine cross-user domain-shifting tasks on varying target data training samples: 0.69 and 0.64, which is 0.019 and 0.017 higher than DASAN-LMMD, the second best performing technique. In addition, DASAN-MMD outperforms DSAN-MMD with 0.094 and 0.105 in micro- and macro-F1 scores, whereas it is 0.118 and 0.14 higher in micro- and macro-F1 scores than DSAN-LMMD, the least performing technique among all. We can also observe the DASAN-MMD model reliability with reduced target data training samples that is no less than 0.62 and 0.57 for averaged micro- and macro-F1 scores even for the worst case of only 10% of target data training samples. This concludes that global adaptation is a better option for HAR using wireless signals in terms of achieving higher model micro- and macro-F1 scores. Looking more closely at different cross-user tasks on the Parisafm dataset, we have plotted the averaged micro- and macro-F1 scores on varying target data training samples depicted in Figs  7  and  8 .",
+      "level": 1,
+      "verified": "jats-verified"
+    },
+    {
+      "id": "sec014",
+      "title": "Models comparison of training time",
+      "text": "Tables  10 – 13 , report the training times of DASAN and baseline technique with MMD and LMMD losses on nine cross-user experiments with different target data training samples varying from 100% to 10%. These are averaged training times over 10 runs of the nine cross-user experiments reported in the table. DASAN-MMD obtains a moderate average of averaged training times of nine cross-user domain-shifting tasks on varying target data training samples: 130.36 sec, which is 22.16 sec shorter than that of DASAN-LMMD, taking the longest training time among all. However, DASAN-MMD takes 31.22 sec more than DSAN-LMMD in model training time, whereas it takes 41.38 sec longer than DSAN-MMD, taking the shortest training time among all. There is a trade-off between higher model accuracy and shorter training time. However, DASAN-MMD still has the highest recognition accuracy with shorter training time as compared to DASAN-LMMD and moderate among all.  Fig 9  shows the comparison of average training times of all the models for different target data training samples in a histogram plot.",
+      "level": 1,
+      "verified": "jats-verified"
+    },
+    {
+      "id": "sec015",
+      "title": "Conclusion",
+      "text": "In this study we both propose the use of adversarial models and supply detailed evidence to support the proposal. We have shown that our model has utility for finding the impacts of global and sub-domain adaptation on cross-user domain transferring tasks on HAR using wireless signals. Even though sub-domain adaptation is usually considered to be a more significant method for cross-domain alignments because it fulfils the need of fine-grained information from the relevant classes of different domain, our simulations provide initial evidence that it is an inferior choice for human activity recognition (HAR) using device-free sensing. Wireless signals show quite similar CSI patterns for different activities and it is not easy to align these sub-domains properly for better recognition accuracy. In other words, the distance between positive (samples belong to the same class) and negative (samples other than the positive class) samples is not reasonably large enough to align target sub-domains to their source counterparts using sub-domain alignment techniques such as LMMD. The adversarial AI model developed in this study shows improved predictive performance at all levels of test data proportion when compared to a non-adversarial model. We demonstrated the superiority of DASAN-MMD in terms of higher model recognition accuracy by comparing its transfer results with those of DASAN-LMMD, DSAN-LMMD, and DSAN-MMD. The experimental results further illustrate that we have developed a lightweight model with comparable simulation time to existing baseline methods. Our results show that MMD loss with an adversarial model aligns the source domain to the target domain globally, providing further evidence that inter-domain alignment is more effective for HAR using wireless signals and the dataset along with the preprocessing steps followed are suitable for such type of examinations.",
+      "level": 1,
+      "verified": "jats-verified"
+    }
+  ],
+  "figures": [
+    {
+      "id": "pone.0298888.g001",
+      "caption": "Left: Concept of wireless sensing. Right: Phasor representation.",
+      "url_or_path": "",
+      "verified": "jats-verified"
+    },
+    {
+      "id": "pone.0298888.g002",
+      "caption": "MMD loss requires two inputs:  Z sl  source activation, and  Z tl  target activation.",
+      "url_or_path": "",
+      "verified": "jats-verified"
+    },
+    {
+      "id": "pone.0298888.g003",
+      "caption": "LMMD loss requires four inputs:  Z sl  source activation,  Z tl  target activation,  Y s  source true labels and  Y   t   ′  target predicted labels.",
+      "url_or_path": "",
+      "verified": "jats-verified"
+    },
+    {
+      "id": "pone.0298888.g004",
+      "caption": "Left: domain adaptation with global alignment. Right: sub-domain adaptation with intra-class alignment [ 38 ,  39 ].",
+      "url_or_path": "",
+      "verified": "jats-verified"
+    },
+    {
+      "id": "pone.0298888.g005",
+      "caption": "Three training steps of proposed model. \n The network is constructed of three modules: feature extractor, label classifier and domain discriminator. Step 1 is the training of feature extractor and classifier to obtain discriminative features. Target unlabelled samples are also used to generate pseudolabels. Step 2 is the training of feature extractor, classifier and discriminator using gradient reversal layer. Step 3 is the classification of activities on new target data samples.",
+      "url_or_path": "",
+      "verified": "jats-verified"
+    },
+    {
+      "id": "pone.0298888.g006",
+      "caption": "CSI RGB images for different activities.",
+      "url_or_path": "",
+      "verified": "jats-verified"
+    },
+    {
+      "id": "pone.0298888.g007",
+      "caption": "Comparison of average Micro-F1 scores of DASAN-MMD, DASAN-LMMD, DSAN-MMD, & DSAN-LMMD.",
+      "url_or_path": "",
+      "verified": "jats-verified"
+    },
+    {
+      "id": "pone.0298888.g008",
+      "caption": "Comparison of average Macro-F1 scores of DASAN-MMD, DASAN-LMMD, DSAN-MMD, & DSAN-LMMD.",
+      "url_or_path": "",
+      "verified": "jats-verified"
+    },
+    {
+      "id": "pone.0298888.g009",
+      "caption": "Comparison of average training time of DASAN-MMD, DASAN-LMMD, DSAN-MMD, & DSAN-LMMD.",
+      "url_or_path": "",
+      "verified": "jats-verified"
+    }
+  ],
+  "tables": [
+    {
+      "id": "pone.0298888.t001",
+      "caption": "Structure parameters.",
+      "markdown": "*(Structured Table from Publisher JATS XML)*",
+      "verified": "jats-verified"
+    },
+    {
+      "id": "pone.0298888.t002",
+      "caption": "Average micro-F1 scores of DSAN-LMMD on CSI image dataset across all training percentages.",
+      "markdown": "*(Structured Table from Publisher JATS XML)*",
+      "verified": "jats-verified"
+    },
+    {
+      "id": "pone.0298888.t003",
+      "caption": "Average micro-F1 scores of DSAN-MMD on CSI image dataset across all training percentages.",
+      "markdown": "*(Structured Table from Publisher JATS XML)*",
+      "verified": "jats-verified"
+    },
+    {
+      "id": "pone.0298888.t004",
+      "caption": "Average micro-F1 scores of DASAN-LMMD on CSI image dataset across all training percentages.",
+      "markdown": "*(Structured Table from Publisher JATS XML)*",
+      "verified": "jats-verified"
+    },
+    {
+      "id": "pone.0298888.t005",
+      "caption": "Average micro-F1 scores of DASAN-MMD on CSI image dataset across all training percentages.",
+      "markdown": "*(Structured Table from Publisher JATS XML)*",
+      "verified": "jats-verified"
+    },
+    {
+      "id": "pone.0298888.t006",
+      "caption": "Average macro-F1 scores of DSAN-LMMD on CSI image dataset across all training percentages.",
+      "markdown": "*(Structured Table from Publisher JATS XML)*",
+      "verified": "jats-verified"
+    },
+    {
+      "id": "pone.0298888.t007",
+      "caption": "Average macro-F1 scores of DSAN-MMD on CSI image dataset across all training percentages.",
+      "markdown": "*(Structured Table from Publisher JATS XML)*",
+      "verified": "jats-verified"
+    },
+    {
+      "id": "pone.0298888.t008",
+      "caption": "Average macro-F1 scores of DASAN-LMMD on CSI image dataset across all training percentages.",
+      "markdown": "*(Structured Table from Publisher JATS XML)*",
+      "verified": "jats-verified"
+    },
+    {
+      "id": "pone.0298888.t009",
+      "caption": "Average macro-F1 scores of DASAN-MMD on CSI image dataset across all training percentages.",
+      "markdown": "*(Structured Table from Publisher JATS XML)*",
+      "verified": "jats-verified"
+    },
+    {
+      "id": "pone.0298888.t010",
+      "caption": "Average training times of DSAN-LMMD on CSI image dataset across all training percentages.",
+      "markdown": "*(Structured Table from Publisher JATS XML)*",
+      "verified": "jats-verified"
+    },
+    {
+      "id": "pone.0298888.t011",
+      "caption": "Average training times of DSAN-MMD on CSI image dataset across all training percentages.",
+      "markdown": "*(Structured Table from Publisher JATS XML)*",
+      "verified": "jats-verified"
+    },
+    {
+      "id": "pone.0298888.t012",
+      "caption": "Average training times of DASAN-LMMD on CSI image dataset across all training percentages.",
+      "markdown": "*(Structured Table from Publisher JATS XML)*",
+      "verified": "jats-verified"
+    },
+    {
+      "id": "pone.0298888.t013",
+      "caption": "Average training times of DASAN-MMD on CSI image dataset across all training percentages.",
+      "markdown": "*(Structured Table from Publisher JATS XML)*",
+      "verified": "jats-verified"
+    }
+  ],
+  "equations": [
+    {
+      "id": "pone.0298888.e001",
+      "latex": "H   =   [   h   1   ,   1   h   1   ,   2   .   .   .   .   .   h   1   ,   M   h   2   ,   1   h   2   ,   2   .   .   .   .   .   h   2   ,   M   .   .   .   .   .   .   .   .   .   .   .   .   h   N   ,   1   h   N   ,   2   .   .   .   .   .   h   N   ,   M   ]",
+      "verified": "jats-verified"
+    },
+    {
+      "id": "pone.0298888.e002",
+      "latex": "h   i   ,   j   (   f   k   )   =   h   i   ,   j   (   f   k   )   e   j   ∠   h   i   ,   j   f   k   ,   (1)",
+      "verified": "jats-verified"
+    },
+    {
+      "id": "pone.0298888.e003",
+      "latex": "B   (   t   )   =   H   *   A   (   t   )   +   n   (   t   )   ,   (2)",
+      "verified": "jats-verified"
+    },
+    {
+      "id": "pone.0298888.e004",
+      "latex": "L   M   M   D   (   p   s   ,   p   q   )   ≡   |   |   E   p   [   ϕ   (   x   s   )   ]   -   E   q   [   ϕ   (   x   t   )   ]   |   |   H   2   (3)",
+      "verified": "jats-verified"
+    },
+    {
+      "id": "pone.0298888.e005",
+      "latex": "L   L   M   M   D   (   p   (   c   )   ,   q   (   c   )   )   ≡   E   c   |   |   E   p   (   c   )   [   ϕ   (   x   s   )   ]   -   E   q   (   c   )   [   ϕ   (   x   t   )   ]   |   |   H   2   (4)",
+      "verified": "jats-verified"
+    },
+    {
+      "id": "pone.0298888.e011",
+      "latex": "L   c   l   s   =   -   1   M   [   ∑   i   =   1   M   ∑   c   =   1   C   I   [   y   i   s   =   c   ]   l   o   g   (   C   c   (   F   f   (   x   i   s   ;   θ   f   ;   θ   c   )   )   ]   (5)",
+      "verified": "jats-verified"
+    },
+    {
+      "id": "pone.0298888.e012",
+      "latex": "L   P   s   e   u   d   o   =   -   1   M   [   ∑   j   =   1   M   ∑   m   =   1   C p   [   y   ^   j   t   =   m   |   x   j   t   ]   l   o   g   (   p   [   y   ^   j   t   =   m   |   x   j   t   )   ]   (6)",
+      "verified": "jats-verified"
+    },
+    {
+      "id": "pone.0298888.e013",
+      "latex": "L   c   =   L   c   l   s   +   α   L   P   s   e   u   d   o   +   β   (   L   M   M   D   /   L   L   M   M   D   )   (7)",
+      "verified": "jats-verified"
+    },
+    {
+      "id": "pone.0298888.e014",
+      "latex": "L   a   d   v   =   -   1   M   ∑   i   =   1   M   d   i   l   o   g   [   D   d   (   F   f   (   x   i   s   ;   θ   f   )   ;   θ   d   )   ]   -   1   M   ∑   i   =   1   M   (   1   -   d   i   )   l   o   g   [   D   d   (   F   f   (   x   j   t   ;   θ   f   )   ;   θ   d   )   ]   (8)",
+      "verified": "jats-verified"
+    },
+    {
+      "id": "pone.0298888.e015",
+      "latex": "L   t   o   t   a   l   =   L   c   l   s   -   γ   L   a   d   v   +   β   L   L   M   M   D   +   α   L   P   s   e   u   d   o   (   in   case   of   LMMD   Loss   )   (9)",
+      "verified": "jats-verified"
+    },
+    {
+      "id": "pone.0298888.e016",
+      "latex": "L   t   o   t   a   l   =   L   c   l   s   -   γ   L   a   d   v   +   β   L   M   M   D   +   α   L   P   s   e   u   d   o   (   in   case   of   MMD   Loss   )   (10)",
+      "verified": "jats-verified"
+    }
+  ],
+  "references": [
+    {
+      "id": "pone.0298888.ref001",
+      "title": "Reference 1",
+      "authors": null,
+      "venue": "",
+      "year": null,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "jats-verified"
+    },
+    {
+      "id": "pone.0298888.ref002",
+      "title": "Reference 2",
+      "authors": null,
+      "venue": "",
+      "year": null,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "jats-verified"
+    },
+    {
+      "id": "pone.0298888.ref003",
+      "title": "A survey on behavior recognition using wifi channel state information",
+      "authors": "S. Yousefi; H. Narui; S. Dayal; S. Ermon; S Valaee",
+      "venue": "",
+      "year": 2017,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "jats-verified"
+    },
+    {
+      "id": "pone.0298888.ref004",
+      "title": "Pushing the limits of long range wireless sensing with lora",
+      "authors": "B. Xie; Y. Yin; J Xiong",
+      "venue": "",
+      "year": 2021,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "jats-verified"
+    },
+    {
+      "id": "pone.0298888.ref005",
+      "title": "Transfer learning for human activity recognition using representational analysis of neural network",
+      "authors": "S. An; G. Bhat; S. Gumussoy; U Ogras",
+      "venue": "",
+      "year": 2023,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "jats-verified"
+    },
+    {
+      "id": "pone.0298888.ref006",
+      "title": "Reference 6",
+      "authors": null,
+      "venue": "",
+      "year": null,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "jats-verified"
+    },
+    {
+      "id": "pone.0298888.ref007",
+      "title": "A survey of transfer learning",
+      "authors": "K. Weiss; T. M. Khoshgoftaar; D Wang",
+      "venue": "",
+      "year": 2016,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "jats-verified"
+    },
+    {
+      "id": "pone.0298888.ref008",
+      "title": "Reference 8",
+      "authors": null,
+      "venue": "",
+      "year": null,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "jats-verified"
+    },
+    {
+      "id": "pone.0298888.ref009",
+      "title": "Geometric modelling: a survey",
+      "authors": "A. Baer; C. Eastman; M Henrion",
+      "venue": "",
+      "year": 1979,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "jats-verified"
+    },
+    {
+      "id": "pone.0298888.ref010",
+      "title": "Augmenting user identification with wifi based gesture recognition",
+      "authors": "M. Shahzad; S Zhang",
+      "venue": "",
+      "year": 2018,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "jats-verified"
+    },
+    {
+      "id": "pone.0298888.ref011",
+      "title": "Witraj: robust indoor motion tracking with wifi signals",
+      "authors": "D. Wu; Y. Zeng; R. Gao; S. Li; Y. Li; R. C. Shah",
+      "venue": "",
+      "year": 2021,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "jats-verified"
+    },
+    {
+      "id": "pone.0298888.ref012",
+      "title": "Cross-subject transfer learning in human activity recognition systems using generative adversarial network",
+      "authors": "E. Soleimani; E Nazerfard",
+      "venue": "",
+      "year": 2021,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "jats-verified"
+    },
+    {
+      "id": "pone.0298888.ref013",
+      "title": "Transfer learning for activity recognition: A survey",
+      "authors": "D. Cook; K. D. Feuz; N. C Krishnan",
+      "venue": "",
+      "year": 2013,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "jats-verified"
+    },
+    {
+      "id": "pone.0298888.ref014",
+      "title": "A survey on transfer learning",
+      "authors": "S. J. Pan; Q Yang",
+      "venue": "",
+      "year": 2009,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "jats-verified"
+    },
+    {
+      "id": "pone.0298888.ref015",
+      "title": "Cross-domain wifi sensing with channel state information: A survey",
+      "authors": "C. Chen; G. Zhou; Y Lin",
+      "venue": "",
+      "year": 2023,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "jats-verified"
+    },
+    {
+      "id": "pone.0298888.ref016",
+      "title": "Reference 16",
+      "authors": null,
+      "venue": "",
+      "year": null,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "jats-verified"
+    },
+    {
+      "id": "pone.0298888.ref017",
+      "title": "Reference 17",
+      "authors": null,
+      "venue": "",
+      "year": null,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "jats-verified"
+    },
+    {
+      "id": "pone.0298888.ref018",
+      "title": "Reference 18",
+      "authors": null,
+      "venue": "",
+      "year": null,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "jats-verified"
+    },
+    {
+      "id": "pone.0298888.ref019",
+      "title": "Fidora: Robust wifi-based indoor localization via unsupervised domain adaptation",
+      "authors": "X. Chen; H. Li; C. Zhou; X. Liu; D. Wu; G Dudek",
+      "venue": "",
+      "year": 2022,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "jats-verified"
+    },
+    {
+      "id": "pone.0298888.ref020",
+      "title": "An introduction to variational autoencoders",
+      "authors": "D. P. Kingma; M. Welling",
+      "venue": "",
+      "year": 2019,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "jats-verified"
+    },
+    {
+      "id": "pone.0298888.ref021",
+      "title": "Autofi: Towards automatic wifi human sensing via geometric self-supervised learning",
+      "authors": "J. Yang; X. Chen; H. Zou; D. Wang; L Xie",
+      "venue": "",
+      "year": 2022,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "jats-verified"
+    },
+    {
+      "id": "pone.0298888.ref022",
+      "title": "Reference 22",
+      "authors": null,
+      "venue": "",
+      "year": null,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "jats-verified"
+    },
+    {
+      "id": "pone.0298888.ref023",
+      "title": "Wigr: a practical wi-fi-based gesture recognition system with a lightweight few-shot network",
+      "authors": "P. Hu; C. Tang; K. Yin; X Zhang",
+      "venue": "",
+      "year": 2021,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "jats-verified"
+    },
+    {
+      "id": "pone.0298888.ref024",
+      "title": "Reference 24",
+      "authors": null,
+      "venue": "",
+      "year": null,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "jats-verified"
+    },
+    {
+      "id": "pone.0298888.ref025",
+      "title": "Generalizing from a few examples: A survey on few-shot learning",
+      "authors": "Y. Wang; Q. Yao; J. T. Kwok; L. M Ni",
+      "venue": "",
+      "year": 2020,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "jats-verified"
+    },
+    {
+      "id": "pone.0298888.ref026",
+      "title": "Wiger: Wifi-based gesture recognition system",
+      "authors": "M. A. A. Al-qaness; F Li",
+      "venue": "",
+      "year": 2016,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "jats-verified"
+    },
+    {
+      "id": "pone.0298888.ref027",
+      "title": "Wicatch: A wifi based hand gesture recognition system",
+      "authors": "Z. Tian; J. Wang; X. Yang; M Zhou",
+      "venue": "",
+      "year": 2018,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "jats-verified"
+    },
+    {
+      "id": "pone.0298888.ref028",
+      "title": "Signfi: Sign language recognition using wifi",
+      "authors": "Y. Ma; G. Zhou; S. Wang; H. Zhao; W Jung",
+      "venue": "",
+      "year": 2018,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "jats-verified"
+    },
+    {
+      "id": "pone.0298888.ref029",
+      "title": "Reference 29",
+      "authors": null,
+      "venue": "",
+      "year": null,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "jats-verified"
+    },
+    {
+      "id": "pone.0298888.ref030",
+      "title": "Reference 30",
+      "authors": null,
+      "venue": "",
+      "year": null,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "jats-verified"
+    },
+    {
+      "id": "pone.0298888.ref031",
+      "title": "Reference 31",
+      "authors": null,
+      "venue": "",
+      "year": null,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "jats-verified"
+    },
+    {
+      "id": "pone.0298888.ref032",
+      "title": "Reference 32",
+      "authors": null,
+      "venue": "",
+      "year": null,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "jats-verified"
+    },
+    {
+      "id": "pone.0298888.ref033",
+      "title": "Reference 33",
+      "authors": null,
+      "venue": "",
+      "year": null,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "jats-verified"
+    },
+    {
+      "id": "pone.0298888.ref034",
+      "title": "Reference 34",
+      "authors": null,
+      "venue": "",
+      "year": null,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "jats-verified"
+    },
+    {
+      "id": "pone.0298888.ref035",
+      "title": "Reference 35",
+      "authors": null,
+      "venue": "",
+      "year": null,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "jats-verified"
+    },
+    {
+      "id": "pone.0298888.ref036",
+      "title": "Crossgr: Accurate and low-cost cross-target gesture recognition using wi-fi",
+      "authors": "X. Li; L. Chang; F. Song; J. Wang; X. Chen; Z. Tang",
+      "venue": "",
+      "year": 2021,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "jats-verified"
+    },
+    {
+      "id": "pone.0298888.ref037",
+      "title": "Learning hierarchical time series data augmentation invariances via contrastive supervision for human activity recognition",
+      "authors": "D. Cheng; L. Zhang; C. Bu; H. Wu; A Song",
+      "venue": "",
+      "year": null,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "jats-verified"
+    },
+    {
+      "id": "pone.0298888.ref038",
+      "title": "Deep subdomain adaptation network for image classification",
+      "authors": "Yongchun Zhu",
+      "venue": "",
+      "year": 2020,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "jats-verified"
+    },
+    {
+      "id": "pone.0298888.ref039",
+      "title": "Deep adversarial subdomain adaptation network for intelligent fault diagnosis",
+      "authors": "Yanxu Liu",
+      "venue": "",
+      "year": 2022,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "jats-verified"
+    },
+    {
+      "id": "pone.0298888.ref040",
+      "title": "Reference 40",
+      "authors": null,
+      "venue": "",
+      "year": null,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "jats-verified"
+    },
+    {
+      "id": "pone.0298888.ref041",
+      "title": "Channel state information from pure communication to sense and track human motion:. A survey",
+      "authors": "M. A. Al-Qaness; M. Abd Elaziz; S. Kim; A. A. Ewees; A. A. Abbasi; Y. A. Alhaj",
+      "venue": "",
+      "year": 2019,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "jats-verified"
+    },
+    {
+      "id": "pone.0298888.ref042",
+      "title": "A kernel two-sample test",
+      "authors": "Arthur Gretton",
+      "venue": "",
+      "year": 2012,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "jats-verified"
+    },
+    {
+      "id": "pone.0298888.ref043",
+      "title": "A CSI-based human activity recognition using deep learning",
+      "authors": "Parisa Fard Moshiri",
+      "venue": "",
+      "year": 2021,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "jats-verified"
+    },
+    {
+      "id": "pone.0298888.ref044",
+      "title": "Reference 44",
+      "authors": null,
+      "venue": "",
+      "year": null,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "jats-verified"
+    },
+    {
+      "id": "pone.0298888.ref045",
+      "title": "ContrasGAN: Unsupervised domain adaptation in Human Activity Recognition via adversarial and contrastive learning",
+      "authors": "Andrea Rosales Sanabria",
+      "venue": "",
+      "year": 2021,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "jats-verified"
+    }
+  ],
+  "human_notes": {
+    "problem_formulation": "",
+    "methodology_evaluation": "",
+    "findings_credibility": "",
+    "dissertation_gaps": ""
+  },
+  "sha256": "86130705c8191065df0db800eea930725995ccef8a101f5bf25d29992aae78a5",
+  "created_at": "2026-11-14T09:28:23.404455"
+}

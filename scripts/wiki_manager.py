@@ -436,8 +436,11 @@ def sync_all_from_ledger(cfg):
         
         path_used = s.get("path_used", "grobid_pdf")
         completeness = s.get("completeness", "pdf-extracted")
-        tool_name = "grobid-tei" if completeness == "pdf-extracted" else "latexml-html"
-        tool_ver = "GROBID 0.8.1 (pdf-extracted, verify)" if completeness == "pdf-extracted" else "LaTeXML 0.8.8"
+        tool_name = s.get("tool") or ("jats-xml" if path_used == "publisher_xml" else ("grobid-tei" if completeness == "pdf-extracted" else "latexml-html"))
+        tool_ver = s.get("tool_version") or (
+            "JATS XML (Publisher)" if path_used == "publisher_xml"
+            else ("fixture (pdf-extracted, verify)" if completeness == "pdf-extracted" else "LaTeXML 0.8.8")
+        )
 
         prov = {
             "path_used": path_used,

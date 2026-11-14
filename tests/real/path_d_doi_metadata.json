@@ -22,7 +22,7 @@
     "tool": "crossref-openalex",
     "tool_version": "Crossref REST API v1 (Polite Pool)",
     "source_uri": "https://api.crossref.org/works/10.1145/3491101.3503719",
-    "extracted_at": "2026-11-14T09:06:02.448101",
+    "extracted_at": "2026-11-14T09:28:44.116050",
     "per_part": {
       "metadata": {
         "tool": "crossref-openalex",
@@ -746,5 +746,5 @@
     "dissertation_gaps": ""
   },
   "sha256": "456cf59f29c5dfa5a106796fc96f86e758b1d6e6afae2ec0b5ab0e15cd59aa80",
-  "created_at": "2026-11-14T09:06:02.448101"
+  "created_at": "2026-11-14T09:28:44.116050"
 }

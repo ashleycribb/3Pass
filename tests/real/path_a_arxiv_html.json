@@ -1155,7 +1155,7 @@
     "tool": "latexml-html",
     "tool_version": "LaTeXML 0.8.8",
     "source_uri": "https://arxiv.org/html/2403.05530",
-    "extracted_at": "2026-11-14T09:05:46.281668",
+    "extracted_at": "2026-11-14T09:28:22.473736",
     "per_part": {
       "metadata": {
         "tool": "latexml-html",
@@ -4615,5 +4615,5 @@
     "dissertation_gaps": ""
   },
   "sha256": "8ba86867c1b8f943c3a8367840647111361f254c85a187e8eb3c7e7ff9fcf665",
-  "created_at": "2026-11-14T09:05:46.285787"
+  "created_at": "2026-11-14T09:28:22.473736"
 }

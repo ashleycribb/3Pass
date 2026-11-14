@@ -24,7 +24,7 @@ import re
 import hashlib
 import requests
 import xml.etree.ElementTree as ET
-from typing import Dict, Any
+from typing import Dict, Any, Optional, List
 
 WORKSPACE_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if WORKSPACE_ROOT not in sys.path:
@@ -33,6 +33,7 @@ if WORKSPACE_ROOT not in sys.path:
 from scripts.source_router import (
     ArxivHtmlPlugin,
     LatexSourcePlugin,
+    PublisherXmlPlugin,
     GrobidPdfPlugin,
     CrossrefOpenAlexPlugin,
     SourceRouter,
@@ -132,113 +133,52 @@ def run_path_b_latex_source() -> PaperRecord:
     return rec
 
 
-def _build_plos_tei_xml(doi: str = "10.1371/journal.pone.0298888") -> str:
-    """Builds authoritative TEI XML for the open-access PLOS ONE research article."""
-    url = f"https://journals.plos.org/plosone/article/file?id={doi}&type=manuscript"
-    r = requests.get(url, timeout=15)
-    r.raise_for_status()
-    root = ET.fromstring(r.content)
-
-    title_el = root.find(".//article-title")
-    title = title_el.text.strip() if title_el is not None and title_el.text else "PLOS ONE Article"
-
-    authors = []
-    for c in root.findall(".//contrib"):
-        if c.get("contrib-type") == "author":
-            name = c.find(".//name")
-            if name is not None:
-                sn = name.find("surname").text if name.find("surname") is not None and name.find("surname").text else ""
-                gn = name.find("given-names").text if name.find("given-names") is not None and name.find("given-names").text else ""
-                if sn or gn:
-                    authors.append((gn, sn))
-
-    tei_lines = [
-        '<?xml version="1.0" encoding="UTF-8"?>',
-        '<TEI xmlns="http://www.tei-c.org/ns/1.0">',
-        '  <teiHeader>',
-        '    <fileDesc>',
-        '      <titleStmt>',
-        f'        <title level="a" type="main">{title}</title>'
-    ]
-    for gn, sn in authors:
-        tei_lines.append(f'        <author><persName><forename type="first">{gn}</forename><surname>{sn}</surname></persName></author>')
-
-    tei_lines.extend([
-        '      </titleStmt>',
-        '      <publicationStmt><date when="2024">2024</date></publicationStmt>',
-        '    </fileDesc>',
-        '  </teiHeader>',
-        '  <text>',
-        '    <body>'
-    ])
-
-    for sec in root.findall(".//body/sec")[:8]:
-        st = sec.find("title")
-        sec_title = st.text.strip() if st is not None and st.text else "Section"
-        paras = [p.text.strip() for p in sec.findall("p") if p.text]
-        tei_lines.append("      <div>")
-        tei_lines.append(f"        <head>{sec_title}</head>")
-        for p in paras[:4]:
-            tei_lines.append(f"        <p>{p}</p>")
-        tei_lines.append("      </div>")
-
-    tei_lines.extend([
-        '    </body>',
-        '    <back>',
-        '      <div type="references">',
-        '        <listBibl>'
-    ])
-
-    for i, ref in enumerate(root.findall(".//ref-list/ref"), 1):
-        rid = ref.get("id", f"b{i}")
-        t_el = ref.find(".//article-title")
-        if t_el is None:
-            t_el = ref.find(".//source")
-        ref_title = t_el.text.strip() if t_el is not None and t_el.text else f"Reference {i}"
-        year_el = ref.find(".//year")
-        ref_yr = year_el.text.strip() if year_el is not None and year_el.text else ""
-
-        ref_authors = []
-        for a in ref.findall(".//name"):
-            sn = a.find("surname").text if a.find("surname") is not None and a.find("surname").text else ""
-            gn = a.find("given-names").text if a.find("given-names") is not None and a.find("given-names").text else ""
-            if sn or gn:
-                ref_authors.append(f"{gn} {sn}".strip())
-
-        doi_el = None
-        for p_id in ref.findall(".//pub-id"):
-            if p_id.get("pub-id-type") == "doi" and p_id.text:
-                doi_el = p_id.text.strip()
-
-        tei_lines.append(f'          <biblStruct id="{rid}">')
-        tei_lines.append(f'            <analytic><title level="a">{ref_title}</title>')
-        for ra in ref_authors:
-            tei_lines.append(f'              <author><persName>{ra}</persName></author>')
-        tei_lines.append('            </analytic>')
-        tei_lines.append(f'            <monogr><imprint><date when="{ref_yr}">{ref_yr}</date></imprint></monogr>')
-        if doi_el:
-            tei_lines.append(f'            <idno type="DOI">{doi_el}</idno>')
-        tei_lines.append('          </biblStruct>')
-
-    tei_lines.extend([
-        '        </listBibl>',
-        '      </div>',
-        '    </back>',
-        '  </text>',
-        '</TEI>'
-    ])
-    return "\n".join(tei_lines)
-
-
-def run_path_c_grobid_pdf() -> PaperRecord:
+def run_path_c_publisher_xml() -> PaperRecord:
     print("\n" + "=" * 60)
-    print("Path c: Real PDF-Only Journal Paper (PLOS ONE - 10.1371/journal.pone.0298888)")
+    print("Path c: Real Publisher JATS XML (PLOS ONE - 10.1371/journal.pone.0298888)")
     print("=" * 60)
-    pdf_url = "https://journals.plos.org/plosone/article/file?id=10.1371/journal.pone.0298888&type=printable"
-    local_pdf = os.path.join(REAL_DIR, "plos_journal_paper.pdf")
+    plugin = PublisherXmlPlugin()
+    paper_input = {
+        "source_id": "SRC-REAL-JATS",
+        "doi": "10.1371/journal.pone.0298888"
+    }
+    rec = plugin.extract(paper_input)
+
+    assert "Adversarial AI applied to cross-user inter-domain" in rec.title, f"Title mismatch: {rec.title}"
+    assert len(rec.authors) >= 3, f"Expected 3 authors, got {len(rec.authors)}: {rec.authors}"
+    assert rec.year == 2024, f"Expected year 2024, got {rec.year}"
+    assert rec.completeness == "full", f"Expected completeness full, got {rec.completeness}"
+    assert rec.provenance.path_used == "publisher_xml"
+    assert rec.provenance.tool == "jats-xml"
+    assert rec.provenance.tool_version == "JATS XML (Publisher)"
+    assert len(rec.sections) >= 6, f"Expected >= 6 sections, got {len(rec.sections)}"
+    assert len(rec.references) >= 40, f"Expected >= 40 references, got {len(rec.references)}"
+    assert rec.sections[0].verified == "jats-verified"
+    assert rec.references[0].verified == "jats-verified"
+    assert rec.sha256 and len(rec.sha256) == 64
+    assert rec.paper_id > 0
+
+    out_path = os.path.join(REAL_DIR, "path_c_publisher_xml.json")
+    with open(out_path, "w", encoding="utf-8") as f:
+        json.dump(rec.to_dict(), f, indent=2, ensure_ascii=False)
+
+    print(f"Extracted: '{rec.title[:60]}...' by {len(rec.authors)} authors ({rec.year})")
+    print(f"Sections: {len(rec.sections)}, Figures: {len(rec.figures)}, Tables: {len(rec.tables)}, Equations: {len(rec.equations)}, Refs: {len(rec.references)}")
+    print(f"Completeness: {rec.completeness}, Provenance: {rec.provenance.path_used} ({rec.provenance.tool})")
+    print(f"SHA-256: {rec.sha256[:16]}..., Paper ID: {rec.paper_id}")
+    print(f"Saved record to {out_path}")
+    return rec
+
+
+def run_path_d_grobid_pdf() -> Optional[PaperRecord]:
+    print("\n" + "=" * 60)
+    print("Path d: Real PDF-Only Paper via Live GROBID (PMLR 119 - SimCLR chen20j.pdf)")
+    print("=" * 60)
+    pdf_url = "https://proceedings.mlr.press/v119/chen20j/chen20j.pdf"
+    local_pdf = os.path.join(REAL_DIR, "simclr_chen20j.pdf")
     if not os.path.exists(local_pdf):
-        print(f"Downloading real journal PDF from {pdf_url}...")
-        r = requests.get(pdf_url, headers={"User-Agent": "Mozilla/5.0"}, timeout=20)
+        print(f"Downloading real open-access PDF from {pdf_url}...")
+        r = requests.get(pdf_url, headers={"User-Agent": "Mozilla/5.0"}, timeout=30)
         r.raise_for_status()
         with open(local_pdf, "wb") as f:
             f.write(r.content)
@@ -248,9 +188,10 @@ def run_path_c_grobid_pdf() -> PaperRecord:
         pdf_bytes = f.read()
     pdf_hash = hashlib.sha256(pdf_bytes).hexdigest()
 
-    plugin = GrobidPdfPlugin()
+    grobid_url = os.environ.get("GROBID_URL", "http://localhost:8070")
+    plugin = GrobidPdfPlugin(grobid_url=grobid_url)
 
-    # Step 1: Demonstrate that unreachable GROBID fails loudly without falling back
+    # 1. Loud failure test on unreachable endpoint
     print("Verifying that offline GROBID fails loudly without silent fallback...")
     test_offline_plugin = GrobidPdfPlugin(grobid_url="http://127.0.0.1:59999")
     try:
@@ -259,28 +200,46 @@ def run_path_c_grobid_pdf() -> PaperRecord:
     except RuntimeError as e:
         print(f"Confirmed loud failure: {str(e)[:100]}...")
 
-    # Step 2: Extract with authoritative TEI XML for the real paper
-    cache_tei = os.path.join(TEI_CACHE_DIR, f"{pdf_hash}.tei.xml")
-    if not os.path.exists(cache_tei):
-        print("Caching authoritative TEI XML for PLOS ONE paper...")
-        tei_content = _build_plos_tei_xml("10.1371/journal.pone.0298888")
-        with open(cache_tei, "w", encoding="utf-8") as f:
-            f.write(tei_content)
+    # 2. Live GROBID check
+    is_live = False
+    try:
+        r = requests.get(f"{grobid_url}/api/isalive", timeout=3)
+        if r.status_code == 200:
+            is_live = True
+    except Exception:
+        pass
+
+    if not is_live:
+        if os.environ.get("CI"):
+            raise RuntimeError(f"GROBID service container at {grobid_url} is unreachable in CI environment!")
+        print(f"Notice: GROBID service at {grobid_url} is offline locally.")
+        print("Live GROBID extraction with /api/version verification executes in GitHub Actions CI (service container).")
+        return None
+
+    # 3. Live extraction via GROBID
+    grobid_version = plugin.get_grobid_version()
+    print(f"Live GROBID server detected. Version from /api/version: {grobid_version}")
 
     paper_input = {
-        "source_id": "SRC-REAL-C",
-        "title": "Adversarial AI applied to cross-user inter-domain and intra-domain adaptation in human activity recognition using wireless signals",
+        "source_id": "SRC-REAL-GROBID",
+        "title": "A Simple Framework for Contrastive Learning of Visual Representations",
         "original_path": local_pdf,
         "drive_path": local_pdf,
-        "sha256": pdf_hash,
+        "sha256": pdf_hash
     }
     rec = plugin.extract(paper_input)
 
-    # Assertions for Item 3
-    assert len(rec.authors) >= 3, f"Expected distinct authors, got {len(rec.authors)}: {rec.authors}"
-    assert len(rec.references) >= 30, f"Expected complete references list, got {len(rec.references)}"
-    assert rec.completeness == "pdf-extracted", f"Expected pdf-extracted, got {rec.completeness}"
-    assert rec.sections and rec.sections[0].verified == "pdf-extracted, verify"
+    # Assertions
+    assert "Contrastive Learning" in rec.title or "Visual Representations" in rec.title or "SimCLR" in rec.title, f"Extracted title: {rec.title}"
+    assert len(rec.authors) >= 2, f"Expected authors, got {len(rec.authors)}: {rec.authors}"
+    assert len(rec.sections) >= 3, f"Expected sections, got {len(rec.sections)}"
+    assert len(rec.references) >= 10, f"Expected references, got {len(rec.references)}"
+    assert rec.completeness == "pdf-extracted"
+    assert rec.provenance.path_used == "grobid_pdf"
+    assert rec.provenance.tool == "grobid-tei"
+    assert rec.provenance.tool_version.startswith("GROBID ")
+    assert grobid_version in rec.provenance.tool_version
+    assert rec.sections[0].verified == "pdf-extracted, verify"
     assert rec.references[0].verified == "pdf-extracted, verify"
     assert rec.sha256 == pdf_hash
     assert rec.paper_id > 0
@@ -289,17 +248,17 @@ def run_path_c_grobid_pdf() -> PaperRecord:
     with open(out_path, "w", encoding="utf-8") as f:
         json.dump(rec.to_dict(), f, indent=2, ensure_ascii=False)
 
-    print(f"Extracted: '{rec.title[:60]}...' by {len(rec.authors)} authors: {rec.authors[:3]}...")
-    print(f"Sections: {len(rec.sections)}, References: {len(rec.references)} (complete authors, titles, DOIs)")
-    print(f"Completeness: {rec.completeness}, Provenance: {rec.provenance.path_used}")
+    print(f"Extracted: '{rec.title}' by {len(rec.authors)} authors: {rec.authors}")
+    print(f"Sections: {len(rec.sections)}, References: {len(rec.references)}")
+    print(f"Completeness: {rec.completeness}, Provenance: {rec.provenance.path_used} ({rec.provenance.tool_version})")
     print(f"SHA-256: {rec.sha256[:16]}..., Paper ID: {rec.paper_id}")
     print(f"Saved record to {out_path}")
     return rec
 
 
-def run_path_d_doi_metadata() -> PaperRecord:
+def run_path_e_doi_metadata() -> PaperRecord:
     print("\n" + "=" * 60)
-    print("Path d: Real DOI-Only Metadata (ACM SIGCSE - 10.1145/3491101.3503719)")
+    print("Path e: Real DOI-Only Metadata (ACM SIGCSE - 10.1145/3491101.3503719)")
     print("=" * 60)
     plugin = CrossrefOpenAlexPlugin()
     paper_input = {
@@ -308,7 +267,7 @@ def run_path_d_doi_metadata() -> PaperRecord:
     }
     rec = plugin.extract(paper_input)
 
-    # Assertions for Item 4 & 5
+    # Assertions for metadata-only
     assert "GenAICHI" in rec.title, f"Expected GenAICHI in title, got {rec.title}"
     assert len(rec.authors) >= 1, f"Expected authors, got {len(rec.authors)}"
     assert rec.year == 2022, f"Expected year 2022, got {rec.year}"
@@ -333,8 +292,9 @@ def run_path_d_doi_metadata() -> PaperRecord:
 if __name__ == "__main__":
     r_a = run_path_a_arxiv_html()
     r_b = run_path_b_latex_source()
-    r_c = run_path_c_grobid_pdf()
-    r_d = run_path_d_doi_metadata()
+    r_c = run_path_c_publisher_xml()
+    r_d = run_path_d_grobid_pdf()
+    r_e = run_path_e_doi_metadata()
     print("\n" + "=" * 60)
-    print("All 4 real-paper smoke tests completed successfully!")
+    print("Real-paper smoke tests completed successfully!")
     print("=" * 60)

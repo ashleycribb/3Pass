@@ -63,7 +63,7 @@ class PartProvenance:
 
 @dataclass
 class RecordProvenance:
-    path_used: str  # "arxiv_html" | "latex_source" | "grobid_pdf" | "doi_metadata"
+    path_used: str  # "arxiv_html" | "latex_source" | "publisher_xml" | "grobid_pdf" | "doi_metadata"
     tool: str
     tool_version: str
     source_uri: str

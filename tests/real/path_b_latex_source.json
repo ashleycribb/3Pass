@@ -24,7 +24,7 @@
     "tool": "latexml-local",
     "tool_version": "LaTeXML-local",
     "source_uri": "https://arxiv.org/e-print/1706.03762",
-    "extracted_at": "2026-11-14T09:05:47.733659",
+    "extracted_at": "2026-11-14T09:28:23.373731",
     "per_part": {
       "metadata": {
         "tool": "latexml-local",
@@ -811,5 +811,5 @@
     "dissertation_gaps": ""
   },
   "sha256": "2e7a7d9ee2520d22eb23dae0cb148e167be02a30d6cb3f11b1c67723194339c6",
-  "created_at": "2026-11-14T09:05:47.733659"
+  "created_at": "2026-11-14T09:28:23.373731"
 }

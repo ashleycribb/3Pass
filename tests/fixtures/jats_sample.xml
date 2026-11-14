@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<article article-type="research-article" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <front>
+    <article-meta>
+      <article-id pub-id-type="doi">10.1371/journal.pone.0298888</article-id>
+      <title-group>
+        <article-title>Adversarial AI applied to cross-user inter-domain and intra-domain adaptation in human activity recognition using wireless signals</article-title>
+      </title-group>
+      <contrib-group>
+        <contrib contrib-type="author">
+          <name>
+            <surname>Hassan</surname>
+            <given-names>Muhammad</given-names>
+          </name>
+        </contrib>
+        <contrib contrib-type="author">
+          <name>
+            <surname>Kelsey</surname>
+            <given-names>Tom</given-names>
+          </name>
+        </contrib>
+        <contrib contrib-type="author">
+          <name>
+            <surname>Rahman</surname>
+            <given-names>Fahrurrozi</given-names>
+          </name>
+        </contrib>
+      </contrib-group>
+      <pub-date pub-type="epub">
+        <year>2024</year>
+      </pub-date>
+      <abstract>
+        <p>In recent years, researchers have successfully recognised human activities using commercially available WiFi devices.</p>
+      </abstract>
+    </article-meta>
+  </front>
+  <body>
+    <sec id="sec001">
+      <title>Introduction</title>
+      <p>Human activity recognition systems require domain adaptation across heterogeneous environments.</p>
+      <fig id="pone.0298888.g001">
+        <caption>
+          <title>Proposed adversarial network architecture.</title>
+          <p>Overview of the feature extractor and discriminator modules.</p>
+        </caption>
+      </fig>
+      <table-wrap id="pone.0298888.t001">
+        <caption>
+          <title>Summary of cross-domain classification accuracy.</title>
+        </caption>
+      </table-wrap>
+      <disp-formula id="pone.0298888.e001">
+        <label>(1)</label>
+        <tex-math>\mathcal{L}_{adv} = \mathbb{E}[\log D(G(x))]</tex-math>
+      </disp-formula>
+    </sec>
+    <sec id="sec002">
+      <title>Methodology</title>
+      <p>We formalize our adversarial training framework using domain-invariant gradient reversal.</p>
+    </sec>
+  </body>
+  <back>
+    <ref-list>
+      <ref id="pone.0298888.ref001">
+        <element-citation publication-type="journal">
+          <name><surname>Wang</surname><given-names>Z.</given-names></name>
+          <article-title>Device-free wireless sensing: Challenges and opportunities</article-title>
+          <source>IEEE Communications Surveys &amp; Tutorials</source>
+          <year>2020</year>
+          <pub-id pub-id-type="doi">10.1109/COMST.2020.1234567</pub-id>
+        </element-citation>
+      </ref>
+      <ref id="pone.0298888.ref002">
+        <element-citation publication-type="journal">
+          <name><surname>Ganin</surname><given-names>Y.</given-names></name>
+          <article-title>Domain-adversarial training of neural networks</article-title>
+          <source>Journal of Machine Learning Research</source>
+          <year>2016</year>
+        </element-citation>
+      </ref>
+    </ref-list>
+  </back>
+</article>
