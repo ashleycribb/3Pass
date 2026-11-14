@@ -317,3 +317,87 @@ def test_query_engine_s3a_graph_delegation(tmp_path, capsys):
     assert "S3A Knowledge Graph Subgraph: 'Learner_Agency'" in out
     assert "Found 1 associated S3A graph edge(s)" in out
     assert "0x0000000000002329" in out
+
+def test_all_paths_populate_sha256_and_positive_paper_id(arxiv_html, latex_tex, grobid_tei, crossref_json):
+    """Smoke fix 4: Asserts sha256 (64 hex characters) and positive paper_id (>0) are set on every record."""
+    router = create_default_router()
+    inputs = [
+        {"source_id": "SRC-A", "arxiv_id": "2402.12345", "html_fixture": arxiv_html},
+        {"source_id": "SRC-B", "latex_fixture": latex_tex},
+        {"source_id": "SRC-C", "tei_fixture": grobid_tei},
+        {"source_id": "SRC-D", "doi": "10.1145/3491101.3503719", "metadata_fixture": crossref_json}
+    ]
+    for inp in inputs:
+        rec = router.route(inp)
+        assert isinstance(rec.sha256, str), f"sha256 must be a string for {rec.source_id}"
+        assert len(rec.sha256) == 64, f"sha256 must be 64 characters for {rec.source_id}"
+        assert int(rec.sha256, 16) > 0, f"sha256 must be valid non-zero hex for {rec.source_id}"
+        assert isinstance(rec.paper_id, int), f"paper_id must be int for {rec.source_id}"
+        assert rec.paper_id > 0, f"paper_id must be positive (> 0) for {rec.source_id}"
+
+def test_path_a_fixture_metadata_inspection(arxiv_html):
+    """Smoke fix 5: Path a fixture inspection (title, first author, year)."""
+    plugin = ArxivHtmlPlugin()
+    rec = plugin.extract({
+        "source_id": "SRC-PATH-A",
+        "arxiv_id": "2402.12345",
+        "html_fixture": arxiv_html,
+        "fixture_uri": "https://arxiv.org/html/2402.12345"
+    })
+    assert rec.title == "Neuro-Symbolic Reasoning in Educational Systems"
+    assert rec.authors[0] == "Alice Scholar"
+    assert rec.year == 2025
+
+def test_path_b_fixture_metadata_inspection(latex_tex):
+    """Smoke fix 5: Path b fixture inspection (title, first author, year)."""
+    plugin = LatexSourcePlugin()
+    rec = plugin.extract({
+        "source_id": "SRC-PATH-B",
+        "latex_fixture": latex_tex,
+        "fixture_uri": "tests/fixtures/latex_sample.tex"
+    })
+    assert rec.title == "Formal Proof Verification in Undergraduate Mathematics"
+    assert rec.authors[0] == "Carol Professor"
+    assert rec.year == 2024
+
+def test_path_c_fixture_metadata_inspection(grobid_tei):
+    """Smoke fix 5: Path c fixture inspection (title, first author, year)."""
+    plugin = GrobidPdfPlugin()
+    rec = plugin.extract({
+        "source_id": "SRC-PATH-C",
+        "tei_fixture": grobid_tei,
+        "fixture_uri": "tests/fixtures/grobid_sample.tei.xml"
+    })
+    assert rec.title == "Empirical Study of Student Agency in Collaborative Inquiry"
+    assert rec.authors[0] == "Eve Analyst"
+    assert rec.year == 2024
+
+def test_path_d_fixture_metadata_inspection(crossref_json):
+    """Smoke fix 5: Path d fixture inspection (title, first author, year)."""
+    plugin = CrossrefOpenAlexPlugin()
+    rec = plugin.extract({
+        "source_id": "SRC-PATH-D",
+        "doi": "10.1145/3491101.3503719",
+        "metadata_fixture": crossref_json,
+        "fixture_uri": "https://api.crossref.org/works/10.1145/3491101.3503719"
+    })
+    assert rec.title == "Algorithmic Scaffolding in Higher Education: A Crossref Registered Record"
+    assert rec.authors[0] == "Frank Scientist"
+    assert rec.year == 2024
+
+def test_grobid_pdf_plugin_fails_loudly_when_offline(tmp_path):
+    """Smoke fix 3: GROBID plugin must fail loudly with RuntimeError when GROBID is unreachable."""
+    dummy_pdf = tmp_path / "offline_test.pdf"
+    dummy_pdf.write_bytes(b"%PDF-1.4 sample content")
+
+    plugin = GrobidPdfPlugin(grobid_url="http://127.0.0.1:59999")
+    paper_input = {
+        "source_id": "SRC-OFFLINE",
+        "original_path": str(dummy_pdf)
+    }
+
+    with pytest.raises(RuntimeError) as exc_info:
+        plugin.extract(paper_input)
+
+    assert "GROBID is unreachable" in str(exc_info.value)
+

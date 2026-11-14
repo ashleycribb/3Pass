@@ -74,11 +74,74 @@ def extract_doi(text: str) -> Optional[str]:
         return m.group(1).rstrip(".")
     return None
 
+def derive_paper_id(source_id: str, fallback_key: str = "") -> int:
+    """Extracts positive integer ID from source_id (e.g. SRC-1001 -> 1001) or non-zero hash."""
+    if source_id:
+        m = re.search(r"\d+", source_id)
+        if m and int(m.group(0)) > 0:
+            return int(m.group(0))
+    key = fallback_key or source_id or "default"
+    return (int(hashlib.md5(key.encode("utf-8")).hexdigest(), 16) % 900000) + 100000
+
+def fetch_arxiv_api_metadata(arxiv_id: Optional[str], session: Optional[requests.Session] = None) -> Dict[str, Any]:
+    """Queries authoritative arXiv Atom API for paper metadata (title, all authors, published year, DOI)."""
+    if not arxiv_id:
+        return {}
+    clean_id = re.sub(r"v\d+$", "", arxiv_id)
+    cache_file = os.path.join(METADATA_CACHE_DIR, f"arxiv_{clean_id}.json")
+    if os.path.exists(cache_file):
+        try:
+            with open(cache_file, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except Exception:
+            pass
+
+    url = f"https://export.arxiv.org/api/query?id_list={clean_id}"
+    req_session = session or requests.Session()
+    req_session.headers.update({"User-Agent": USER_AGENT})
+    try:
+        r = req_session.get(url, timeout=12)
+        if r.status_code == 200:
+            tree = ET.fromstring(r.text)
+            ns = {"atom": "http://www.w3.org/2005/Atom", "arxiv": "http://arxiv.org/schemas/atom"}
+            entry = tree.find("atom:entry", ns)
+            if entry is not None:
+                title_el = entry.find("atom:title", ns)
+                title = title_el.text.strip().replace("\n", " ") if title_el is not None else ""
+                title = re.sub(r"\s+", " ", title)
+                pub_el = entry.find("atom:published", ns)
+                pub_text = pub_el.text.strip() if pub_el is not None else ""
+                m_yr = re.search(r"\b(19\d{2}|20\d{2})\b", pub_text)
+                year = int(m_yr.group(1)) if m_yr else None
+                authors = [
+                    a.find("atom:name", ns).text.strip()
+                    for a in entry.findall("atom:author", ns)
+                    if a.find("atom:name", ns) is not None and a.find("atom:name", ns).text
+                ]
+                doi_el = entry.find("arxiv:doi", ns)
+                doi = doi_el.text.strip() if doi_el is not None and doi_el.text else None
+                data = {
+                    "title": title,
+                    "year": year,
+                    "authors": authors,
+                    "doi": doi
+                }
+                with open(cache_file, "w", encoding="utf-8") as f:
+                    json.dump(data, f, indent=2)
+                return data
+    except Exception:
+        pass
+    return {}
+
 
 class BaseSourcePlugin(ABC):
     """Abstract Base Class for Source Router Plugins."""
     name: str = "base"
     priority: int = 0
+
+    def __init__(self, session: Optional[requests.Session] = None):
+        self.session = session or requests.Session()
+        self.session.headers.update({"User-Agent": USER_AGENT})
 
     @abstractmethod
     def can_handle(self, paper_input: Dict[str, Any]) -> bool:
@@ -101,8 +164,7 @@ class ArxivHtmlPlugin(BaseSourcePlugin):
     priority = 100
 
     def __init__(self, session: Optional[requests.Session] = None):
-        self.session = session or requests.Session()
-        self.session.headers.update({"User-Agent": USER_AGENT})
+        super().__init__(session=session)
 
     def can_handle(self, paper_input: Dict[str, Any]) -> bool:
         if paper_input.get("html_fixture"):
@@ -158,26 +220,51 @@ class ArxivHtmlPlugin(BaseSourcePlugin):
     def _parse_latexml_html(self, html: str, paper_input: Dict[str, Any], source_uri: str, arxiv_id: Optional[str]) -> PaperRecord:
         soup = BeautifulSoup(html, "html.parser")
 
-        # 1. Metadata
-        title_tag = soup.find("h1", class_="ltx_title") or soup.find("h1")
-        title = title_tag.get_text(" ", strip=True) if title_tag else paper_input.get("title", "Untitled")
+        # 1. Metadata: Authoritative arXiv API first (for real papers), then header tags; NEVER from bibliography
+        clean_arxiv = arxiv_id or paper_input.get("arxiv_id")
+        is_fixture = bool(paper_input.get("html_fixture"))
+        api_meta = fetch_arxiv_api_metadata(clean_arxiv, self.session) if (clean_arxiv and not is_fixture) else {}
 
-        authors: List[str] = []
-        author_tags = soup.find_all(class_="ltx_personname") or soup.find_all(class_="ltx_creator")
-        for at in author_tags:
-            txt = at.get_text(" ", strip=True)
-            if txt and txt not in authors:
-                authors.append(txt)
-        if not authors and paper_input.get("author"):
-            authors = [a.strip() for a in str(paper_input["author"]).split(";") if a.strip()]
+        title_tag = soup.find("h1", class_=re.compile(r"ltx_title|ltx_title_document")) or soup.find("h1")
+        if api_meta.get("title"):
+            title = api_meta["title"]
+        elif title_tag:
+            title = title_tag.get_text(" ", strip=True)
+        else:
+            title = paper_input.get("title", "Untitled")
 
-        # Year
-        year = paper_input.get("year")
-        date_tag = soup.find(class_="ltx_date")
-        if date_tag:
-            m_yr = re.search(r"\b(19\d{2}|20\d{2})\b", date_tag.get_text())
-            if m_yr:
-                year = int(m_yr.group(1))
+        # Authors: take full list from arXiv API; fallback to header ltx_personname (excluding bibliography)
+        if api_meta.get("authors"):
+            authors = api_meta["authors"]
+        else:
+            authors = []
+            header_scope = soup.find(class_=re.compile(r"ltx_authors|ltx_header|ltx_role_doc_authors")) or soup.find("header") or soup
+            for at in header_scope.find_all(class_=re.compile(r"ltx_personname|ltx_creator")):
+                if at.find_parent(class_=re.compile(r"ltx_bibliography|ltx_biblist")):
+                    continue
+                txt = at.get_text(" ", strip=True)
+                if txt and txt not in authors:
+                    authors.append(txt)
+            if not authors and paper_input.get("author"):
+                authors = [a.strip() for a in str(paper_input["author"]).split(";") if a.strip()]
+
+        # Year: API published year > header ltx_date > paper_input
+        year = api_meta.get("year")
+        if not year:
+            date_tag = soup.find(class_=re.compile(r"ltx_date|ltx_dates"))
+            if date_tag:
+                m_yr = re.search(r"\b(19\d{2}|20\d{2})\b", date_tag.get_text())
+                if m_yr:
+                    year = int(m_yr.group(1))
+            if not year and paper_input.get("year"):
+                year = paper_input.get("year")
+
+        # DOI: only from arXiv API or HTML citation_doi header tag, NEVER bibliography
+        doi = api_meta.get("doi")
+        if not doi:
+            doi_meta = soup.find("meta", attrs={"name": re.compile(r"citation_doi|dc\.identifier", re.IGNORECASE)})
+            if doi_meta and doi_meta.get("content"):
+                doi = extract_doi(doi_meta["content"])
 
         # Abstract
         abs_tag = soup.find(class_="ltx_abstract")
@@ -299,11 +386,10 @@ class ArxivHtmlPlugin(BaseSourcePlugin):
         )
 
         sid = paper_input.get("source_id", "SRC-0000")
-        pid_m = re.search(r"SRC-(\d+)", sid)
-        pid = int(pid_m.group(1)) if pid_m else 0
+        pid = paper_input.get("paper_id") or derive_paper_id(sid, clean_arxiv or title)
 
-        clean_arxiv = arxiv_id or ""
         pdf_url = f"https://arxiv.org/pdf/{clean_arxiv}.pdf" if clean_arxiv else ""
+        sha256_val = paper_input.get("sha256") or hashlib.sha256(html.encode("utf-8")).hexdigest()
 
         return PaperRecord(
             source_id=sid,
@@ -311,7 +397,7 @@ class ArxivHtmlPlugin(BaseSourcePlugin):
             title=title,
             authors=authors,
             year=year,
-            doi=extract_doi(html),
+            doi=doi,
             arxiv_id=clean_arxiv or None,
             urls={"html": source_uri, "pdf": pdf_url, "landing": f"https://arxiv.org/abs/{clean_arxiv}" if clean_arxiv else ""},
             completeness="full",
@@ -322,7 +408,7 @@ class ArxivHtmlPlugin(BaseSourcePlugin):
             tables=tables,
             equations=equations,
             references=references,
-            sha256=paper_input.get("sha256")
+            sha256=sha256_val
         )
 
 
@@ -356,23 +442,69 @@ class LatexSourcePlugin(BaseSourcePlugin):
         return self._parse_latex_content(latex_text, paper_input, source_uri)
 
     def _parse_latex_content(self, latex: str, paper_input: Dict[str, Any], source_uri: str) -> PaperRecord:
+        # Multi-file expansion if latex_files map is passed
+        files_map = paper_input.get("latex_files") or {}
+        if files_map:
+            def expand_inputs(text, depth=0):
+                if depth > 5:
+                    return text
+                def repl(match):
+                    target = match.group(1).strip()
+                    content = files_map.get(target) or files_map.get(f"{target}.tex") or ""
+                    return expand_inputs(content, depth + 1) if content else match.group(0)
+                return re.sub(r"\\(?:input|include)\{([^}]+)\}", repl, text)
+            latex = expand_inputs(latex)
+
+        arxiv_id = paper_input.get("arxiv_id")
+        if not arxiv_id and paper_input.get("drive_path"):
+            arxiv_id = extract_arxiv_id(paper_input.get("drive_path", "") + " " + paper_input.get("original_filename", ""))
+
+        api_meta = fetch_arxiv_api_metadata(arxiv_id, self.session) if arxiv_id else {}
+
         # 1. Title
         m_title = re.search(r"\\title\{([^}]+)\}", latex, re.DOTALL)
-        title = m_title.group(1).strip() if m_title else paper_input.get("title", "Untitled")
-        title = re.sub(r"\s+", " ", title)
+        if m_title:
+            raw_title = m_title.group(1).strip()
+            raw_title = re.sub(r"\\(?:thanks|footnote)\{.*?\}", "", raw_title, flags=re.DOTALL)
+            raw_title = re.sub(r"\\[a-zA-Z]+", "", raw_title)
+            title = re.sub(r"\s+", " ", raw_title).strip()
+        elif api_meta.get("title"):
+            title = api_meta["title"]
+        else:
+            title = paper_input.get("title", "Untitled")
+
+        # Assertion: Title matches arxiv_id
+        if arxiv_id == "1706.03762":
+            assert "Attention Is All You Need" in title, f"Expected title for 1706.03762 to contain 'Attention Is All You Need', got '{title}'"
 
         # 2. Authors
         authors: List[str] = []
-        m_auth = re.search(r"\\author\{([^}]+)\}", latex, re.DOTALL)
-        if m_auth:
-            raw_auth = m_auth.group(1)
-            raw_auth = re.sub(r"\\and", ";", raw_auth)
-            for a in re.split(r"[;,\n]", raw_auth):
-                clean_a = re.sub(r"\\[a-zA-Z]+", "", a).strip()
-                if clean_a and len(clean_a) > 2 and clean_a not in authors:
-                    authors.append(clean_a)
+        if api_meta.get("authors"):
+            authors = api_meta["authors"]
+        else:
+            m_auth = re.search(r"\\author\{([^}]+)\}", latex, re.DOTALL)
+            if m_auth:
+                raw_auth = m_auth.group(1)
+                raw_auth = re.sub(r"\\(?:thanks|footnote)\{.*?\}", "", raw_auth, flags=re.DOTALL)
+                raw_auth = re.sub(r"\\and", ";", raw_auth)
+                for a in re.split(r"[;,\n]", raw_auth):
+                    clean_a = re.sub(r"\\[a-zA-Z]+", "", a).strip()
+                    clean_a = re.sub(r"[{}]", "", clean_a).strip()
+                    if clean_a and len(clean_a) > 2 and clean_a not in authors:
+                        authors.append(clean_a)
         if not authors and paper_input.get("author"):
             authors = [a.strip() for a in str(paper_input["author"]).split(";") if a.strip()]
+
+        # Year
+        year = api_meta.get("year") or paper_input.get("year")
+        if not year:
+            m_date = re.search(r"\\date\{([^}]+)\}", latex)
+            if m_date:
+                m_yr = re.search(r"\b(19\d{2}|20\d{2})\b", m_date.group(1))
+                if m_yr:
+                    year = int(m_yr.group(1))
+        if not year:
+            year = 2024
 
         # 3. Abstract
         abstract = ""
@@ -401,9 +533,9 @@ class LatexSourcePlugin(BaseSourcePlugin):
                 verified="latexml-verified"
             ))
 
-        # 5. Figures
+        # 5. Figures (match both figure and figure*)
         figures: List[FigureRecord] = []
-        fig_matches = re.findall(r"\\begin\{figure\}(.*?)\\end\{figure\}", latex, re.DOTALL)
+        fig_matches = re.findall(r"\\begin\{figure\*?\}(.*?)\\end\{figure\*?\}", latex, re.DOTALL)
         for i, fm in enumerate(fig_matches, 1):
             m_cap = re.search(r"\\caption\{([^}]+)\}", fm)
             cap = m_cap.group(1).strip() if m_cap else ""
@@ -416,9 +548,9 @@ class LatexSourcePlugin(BaseSourcePlugin):
                 verified="latexml-verified"
             ))
 
-        # 6. Tables
+        # 6. Tables (match both table and table*)
         tables: List[TableRecord] = []
-        tbl_matches = re.findall(r"\\begin\{table\}(.*?)\\end\{table\}", latex, re.DOTALL)
+        tbl_matches = re.findall(r"\\begin\{table\*?\}(.*?)\\end\{table\*?\}", latex, re.DOTALL)
         for i, tm in enumerate(tbl_matches, 1):
             m_cap = re.search(r"\\caption\{([^}]+)\}", tm)
             cap = m_cap.group(1).strip() if m_cap else ""
@@ -429,9 +561,9 @@ class LatexSourcePlugin(BaseSourcePlugin):
                 verified="latexml-verified"
             ))
 
-        # 7. Equations
+        # 7. Equations (match equation, equation*, align, align*, gather, gather*)
         equations: List[EquationRecord] = []
-        eq_matches = re.findall(r"\\begin\{equation\}(.*?)\\end\{equation\}", latex, re.DOTALL)
+        eq_matches = re.findall(r"\\begin\{(?:equation\*?|align\*?|gather\*?)\}(.*?)\\end\{(?:equation\*?|align\*?|gather\*?)\}", latex, re.DOTALL)
         for i, eqm in enumerate(eq_matches, 1):
             equations.append(EquationRecord(
                 id=f"eq_{i}",
@@ -470,17 +602,18 @@ class LatexSourcePlugin(BaseSourcePlugin):
         )
 
         sid = paper_input.get("source_id", "SRC-0000")
-        pid_m = re.search(r"SRC-(\d+)", sid)
-        pid = int(pid_m.group(1)) if pid_m else 0
+        clean_arxiv = arxiv_id or ""
+        pid = paper_input.get("paper_id") or derive_paper_id(sid, clean_arxiv or title)
+        sha256_val = paper_input.get("sha256") or hashlib.sha256(latex.encode("utf-8")).hexdigest()
 
         return PaperRecord(
             source_id=sid,
             paper_id=pid,
             title=title,
             authors=authors,
-            year=paper_input.get("year", 2024),
-            doi=extract_doi(latex),
-            arxiv_id=extract_arxiv_id(latex),
+            year=year,
+            doi=api_meta.get("doi") or paper_input.get("doi"),
+            arxiv_id=clean_arxiv or None,
             urls={"source": source_uri},
             completeness="full",
             provenance=prov,
@@ -490,7 +623,7 @@ class LatexSourcePlugin(BaseSourcePlugin):
             tables=tables,
             equations=equations,
             references=references,
-            sha256=paper_input.get("sha256")
+            sha256=sha256_val
         )
 
 
@@ -520,8 +653,14 @@ class GrobidPdfPlugin(BaseSourcePlugin):
         if paper_input.get("tei_fixture"):
             tei_xml = paper_input["tei_fixture"]
             source_uri = paper_input.get("fixture_uri", "fixture://grobid.tei.xml")
+        elif paper_input.get("tei_path") and os.path.exists(paper_input["tei_path"]):
+            source_uri = paper_input["tei_path"]
+            with open(source_uri, "r", encoding="utf-8") as fp:
+                tei_xml = fp.read()
         else:
             pdf_path = paper_input.get("drive_path") or paper_input.get("original_path")
+            if not pdf_path or not os.path.exists(pdf_path):
+                raise FileNotFoundError(f"PDF source file not found: {pdf_path}")
             source_uri = pdf_path
             # Check local TEI cache
             pdf_hash = paper_input.get("sha256") or hashlib.sha256(open(pdf_path, "rb").read()).hexdigest()
@@ -531,122 +670,132 @@ class GrobidPdfPlugin(BaseSourcePlugin):
                 with open(cache_file, "r", encoding="utf-8") as fp:
                     tei_xml = fp.read()
             else:
-                tei_xml = self._call_grobid_or_fallback(pdf_path)
+                tei_xml = self._call_grobid(pdf_path)
                 with open(cache_file, "w", encoding="utf-8") as fp:
                     fp.write(tei_xml)
 
         return self._parse_tei_xml(tei_xml, paper_input, source_uri)
 
-    def _call_grobid_or_fallback(self, pdf_path: str) -> str:
-        """Attempts live GROBID server; if offline, executes embedded TEI XML synthesizer."""
+    def _ensure_grobid_running(self) -> bool:
+        """Attempts to start Docker Desktop and GROBID container if not already answering."""
+        try:
+            r = requests.get(f"{self.grobid_url}/api/isalive", timeout=2)
+            if r.status_code == 200:
+                return True
+        except Exception:
+            pass
+
+        # Try starting existing grobid container
+        try:
+            subprocess.run(["docker", "start", "grobid"], capture_output=True, timeout=5)
+        except Exception:
+            pass
+
+        # Try launching new grobid container
+        try:
+            subprocess.run(
+                ["docker", "run", "-d", "--rm", "-p", "8070:8070", "--name", "grobid", "lfoppiano/grobid:0.8.1"],
+                capture_output=True,
+                timeout=5
+            )
+        except Exception:
+            pass
+
+        for _ in range(3):
+            try:
+                r = requests.get(f"{self.grobid_url}/api/isalive", timeout=2)
+                if r.status_code == 200:
+                    return True
+            except Exception:
+                time.sleep(1)
+
+        return False
+
+    def _call_grobid(self, pdf_path: str) -> str:
+        """Calls live GROBID server; if unreachable, fails loudly without fallback."""
+        self._ensure_grobid_running()
         try:
             with open(pdf_path, "rb") as f:
                 r = requests.post(
                     f"{self.grobid_url}/api/processFulltextDocument",
                     files={"input": f},
-                    timeout=5
+                    timeout=30
                 )
             if r.status_code == 200:
                 return r.text
-        except Exception:
-            pass
-
-        # Robust embedded TEI XML extractor using PyMuPDF
-        return self._fallback_pymupdf_to_tei(pdf_path)
-
-    def _fallback_pymupdf_to_tei(self, pdf_path: str) -> str:
-        doc = pymupdf.open(pdf_path)
-        meta = doc.metadata or {}
-        title = meta.get("title", "Untitled")
-        author = meta.get("author", "Unknown")
-
-        first_page = doc[0].get_text("text") if len(doc) > 0 else ""
-        abs_m = re.search(r"(?i)abstract[:\s\n]+(.*?)(?=\n\s*(?:1\.?|I\.?|introduction|keywords|\Z))", first_page, re.DOTALL)
-        abstract = abs_m.group(1).strip() if abs_m else first_page[:800].strip()
-
-        # Build valid TEI XML
-        tei_lines = [
-            '<?xml version="1.0" encoding="UTF-8"?>',
-            '<TEI xmlns="http://www.tei-c.org/ns/1.0">',
-            '  <teiHeader>',
-            '    <fileDesc>',
-            '      <titleStmt>',
-            f'        <title level="a" type="main">{title}</title>',
-            '        <author>',
-            f'          <persName>{author}</persName>',
-            '        </author>',
-            '      </titleStmt>',
-            '    </fileDesc>',
-            '    <profileDesc>',
-            '      <abstract>',
-            f'        <p>{abstract}</p>',
-            '      </abstract>',
-            '    </profileDesc>',
-            '  </teiHeader>',
-            '  <text>',
-            '    <body>'
-        ]
-
-        # Extract divs and tables
-        for p_idx in range(min(5, len(doc))):
-            p_text = doc[p_idx].get_text("text")
-            lines = [l.strip() for l in p_text.split("\n") if l.strip()]
-            sec_heading = lines[0] if lines else f"Section {p_idx+1}"
-            tei_lines.append(f'      <div>')
-            tei_lines.append(f'        <head>{sec_heading}</head>')
-            tei_lines.append(f'        <p>{" ".join(lines[1:10])}</p>')
-            tei_lines.append(f'      </div>')
-
-        tei_lines.extend([
-            '    </body>',
-            '    <back>',
-            '      <div type="references">',
-            '        <listBibl>',
-            '          <biblStruct>',
-            '            <monogr>',
-            f'              <title level="m">{title} references</title>',
-            '            </monogr>',
-            '          </biblStruct>',
-            '        </listBibl>',
-            '      </div>',
-            '    </back>',
-            '  </text>',
-            '</TEI>'
-        ])
-        doc.close()
-        return "\n".join(tei_lines)
+            raise RuntimeError(f"GROBID server error {r.status_code}: {r.text[:200]}")
+        except Exception as e:
+            raise RuntimeError(
+                f"GROBID is unreachable at {self.grobid_url}. Docker Desktop and the GROBID container "
+                f"(e.g. 'docker run -t --rm -p 8070:8070 lfoppiano/grobid:0.8.1') must be running. "
+                f"Failing loudly without fallback. Error: {e}"
+            ) from e
 
     def _parse_tei_xml(self, xml_content: str, paper_input: Dict[str, Any], source_uri: str) -> PaperRecord:
-        # Strip default TEI namespace for straightforward xpath/find
         clean_xml = re.sub(r'\sxmlns="[^"]+"', "", xml_content, count=1)
-        try:
-            root = ET.fromstring(clean_xml)
-        except Exception:
-            root = ET.fromstring(self._fallback_pymupdf_to_tei(source_uri))
+        root = ET.fromstring(clean_xml)
 
         # Title
         t_el = root.find(".//titleStmt/title")
-        title = t_el.text.strip() if t_el is not None and t_el.text else paper_input.get("title", "Untitled")
+        if t_el is None:
+            t_el = root.find(".//title")
+        title = " ".join(t_el.itertext()).strip() if t_el is not None else paper_input.get("title", "Untitled")
 
-        # Authors
-        authors = []
-        for a_el in root.findall(".//author/persName"):
-            if a_el.text:
-                authors.append(a_el.text.strip())
+        # Authors: extract all distinct authors
+        authors: List[str] = []
+        for author_node in (root.findall(".//teiHeader//author") or root.findall(".//author")):
+            pers = author_node.find("persName")
+            if pers is not None:
+                forenames = [fn.text.strip() for fn in pers.findall("forename") if fn.text]
+                surname = pers.find("surname")
+                s_text = surname.text.strip() if surname is not None and surname.text else ""
+                if forenames or s_text:
+                    full_name = (" ".join(forenames) + " " + s_text).strip()
+                else:
+                    full_name = " ".join(pers.itertext()).strip()
+                if ("," in full_name or ";" in full_name) and not (full_name.startswith("http") or len(full_name.split(",")) > 100):
+                    for sub_a in re.split(r"[,;]", full_name):
+                        sub_a = sub_a.strip()
+                        if sub_a and sub_a not in authors:
+                            authors.append(sub_a)
+                elif full_name and full_name not in authors:
+                    authors.append(full_name)
+            else:
+                t = " ".join(author_node.itertext()).strip()
+                if t and t not in authors:
+                    authors.append(t)
+
         if not authors and paper_input.get("author"):
             authors = [a.strip() for a in str(paper_input["author"]).split(";") if a.strip()]
 
+        # Year
+        year = paper_input.get("year")
+        date_el = root.find(".//teiHeader//date")
+        if date_el is None:
+            date_el = root.find(".//date")
+        if date_el is not None:
+            when = date_el.get("when") or date_el.text or ""
+            m_yr = re.search(r"\b(19\d{2}|20\d{2})\b", when)
+            if m_yr:
+                year = int(m_yr.group(1))
+
         # Abstract
-        abs_el = root.find(".//abstract/p")
-        abstract = abs_el.text.strip() if abs_el is not None and abs_el.text else ""
+        abstract = ""
+        abs_p = root.findall(".//abstract//p")
+        if abs_p:
+            abstract = "\n\n".join(" ".join(p.itertext()).strip() for p in abs_p if "".join(p.itertext()).strip())
+        else:
+            abs_el = root.find(".//abstract")
+            if abs_el is not None:
+                abstract = " ".join(abs_el.itertext()).strip()
 
         # Sections
         sections: List[SectionRecord] = []
         divs = root.findall(".//body/div")
         for i, div in enumerate(divs, 1):
             h_el = div.find("head")
-            head = h_el.text.strip() if h_el is not None and h_el.text else f"Section {i}"
-            paragraphs = [p.text.strip() for p in div.findall("p") if p.text]
+            head = " ".join(h_el.itertext()).strip() if h_el is not None else f"Section {i}"
+            paragraphs = [" ".join(p.itertext()).strip() for p in div.findall("p") if "".join(p.itertext()).strip()]
             sec_text = "\n\n".join(paragraphs) if paragraphs else ""
             sections.append(SectionRecord(
                 id=f"sec_{i}",
@@ -660,7 +809,7 @@ class GrobidPdfPlugin(BaseSourcePlugin):
         figures: List[FigureRecord] = []
         for i, fig in enumerate(root.findall(".//figure"), 1):
             cap_el = fig.find("figDesc") or fig.find("head")
-            cap = cap_el.text.strip() if cap_el is not None and cap_el.text else ""
+            cap = " ".join(cap_el.itertext()).strip() if cap_el is not None else ""
             figures.append(FigureRecord(
                 id=f"fig_{i}",
                 caption=cap,
@@ -671,7 +820,7 @@ class GrobidPdfPlugin(BaseSourcePlugin):
         tables: List[TableRecord] = []
         for i, tbl in enumerate(root.findall(".//figure[@type='table']") or root.findall(".//table"), 1):
             cap_el = tbl.find("head")
-            cap = cap_el.text.strip() if cap_el is not None and cap_el.text else ""
+            cap = " ".join(cap_el.itertext()).strip() if cap_el is not None else ""
             tables.append(TableRecord(
                 id=f"tab_{i}",
                 caption=cap,
@@ -679,14 +828,45 @@ class GrobidPdfPlugin(BaseSourcePlugin):
                 verified="pdf-extracted, verify"
             ))
 
-        # References
+        # References: complete extraction
         references: List[ReferenceRecord] = []
         for i, bib in enumerate(root.findall(".//listBibl/biblStruct"), 1):
-            t_bib = bib.find(".//title")
-            ref_title = t_bib.text.strip() if t_bib is not None and t_bib.text else f"Reference {i}"
+            t_bib = bib.find(".//analytic/title")
+            if t_bib is None:
+                t_bib = bib.find(".//monogr/title")
+            if t_bib is None:
+                t_bib = bib.find(".//title")
+            ref_title = " ".join(t_bib.itertext()).strip() if t_bib is not None else f"Reference {i}"
+
+            ref_authors = []
+            author_nodes = bib.findall(".//author/persName")
+            if not author_nodes:
+                author_nodes = bib.findall(".//author")
+            for a in author_nodes:
+                name = " ".join(a.itertext()).strip()
+                if name and name not in ref_authors:
+                    ref_authors.append(name)
+            ref_auth_str = "; ".join(ref_authors) if ref_authors else None
+
+            ref_year = None
+            date_el = bib.find(".//date")
+            if date_el is not None:
+                when = date_el.get("when") or date_el.text or ""
+                m_yr = re.search(r"\b(19\d{2}|20\d{2})\b", when)
+                if m_yr:
+                    ref_year = int(m_yr.group(1))
+
+            doi_el = bib.find(".//idno[@type='DOI']")
+            if doi_el is None:
+                doi_el = bib.find(".//idno")
+            ref_doi = doi_el.text.strip() if doi_el is not None and doi_el.text else None
+
             references.append(ReferenceRecord(
-                id=f"ref_{i}",
+                id=bib.get("{http://www.w3.org/XML/1998/namespace}id") or bib.get("id") or f"ref_{i}",
                 title=ref_title,
+                authors=ref_auth_str,
+                year=ref_year,
+                doi=ref_doi,
                 verified="pdf-extracted, verify"
             ))
 
@@ -707,15 +887,23 @@ class GrobidPdfPlugin(BaseSourcePlugin):
         )
 
         sid = paper_input.get("source_id", "SRC-0000")
-        pid_m = re.search(r"SRC-(\d+)", sid)
-        pid = int(pid_m.group(1)) if pid_m else 0
+        pid = paper_input.get("paper_id") or derive_paper_id(sid, title)
+
+        pdf_path = paper_input.get("drive_path") or paper_input.get("original_path")
+        sha256_val = paper_input.get("sha256")
+        if not sha256_val:
+            if pdf_path and os.path.exists(pdf_path):
+                with open(pdf_path, "rb") as f:
+                    sha256_val = hashlib.sha256(f.read()).hexdigest()
+            else:
+                sha256_val = hashlib.sha256(xml_content.encode("utf-8")).hexdigest()
 
         return PaperRecord(
             source_id=sid,
             paper_id=pid,
             title=title,
             authors=authors,
-            year=paper_input.get("year"),
+            year=year,
             doi=extract_doi(xml_content),
             arxiv_id=extract_arxiv_id(xml_content),
             urls={"pdf": source_uri},
@@ -727,7 +915,7 @@ class GrobidPdfPlugin(BaseSourcePlugin):
             tables=tables,
             equations=[],
             references=references,
-            sha256=paper_input.get("sha256")
+            sha256=sha256_val
         )
 
 
@@ -871,10 +1059,9 @@ class CrossrefOpenAlexPlugin(BaseSourcePlugin):
         )
 
         sid = paper_input.get("source_id", "SRC-0000")
-        pid_m = re.search(r"SRC-(\d+)", sid)
-        pid = int(pid_m.group(1)) if pid_m else 0
-
         clean_doi = doi or meta.get("DOI")
+        pid = paper_input.get("paper_id") or derive_paper_id(sid, clean_doi or title)
+        sha256_val = paper_input.get("sha256") or hashlib.sha256(json.dumps(meta, sort_keys=True).encode("utf-8")).hexdigest()
 
         return PaperRecord(
             source_id=sid,
@@ -893,7 +1080,7 @@ class CrossrefOpenAlexPlugin(BaseSourcePlugin):
             tables=[],
             equations=[],
             references=references,
-            sha256=paper_input.get("sha256")
+            sha256=sha256_val
         )
 
 

@@ -1,11 +1,15 @@
 {
   "source_id": "SRC-REAL-C",
-  "paper_id": 0,
+  "paper_id": 835241,
   "title": "Adversarial AI applied to cross-user inter-domain and intra-domain adaptation in human activity recognition using wireless signals",
   "authors": [
-    "Muhammad Hassan, Tom Kelsey, Fahrurrozi Rahman"
+    "Muhammad Hassan",
+    "Tom Kelsey",
+    "Fahrurrozi Rahman",
+    "Lei Chu",
+    "Sunder Ali Khowaja"
   ],
-  "year": null,
+  "year": 2024,
   "doi": null,
   "arxiv_id": null,
   "urls": {
@@ -17,7 +21,7 @@
     "tool": "grobid-tei",
     "tool_version": "GROBID 0.8.1 (pdf-extracted, verify)",
     "source_uri": "C:\\Users\\Ashley\\Downloads\\3Pass\\tests\\real\\plos_journal_paper.pdf",
-    "extracted_at": "2026-11-13T20:50:02.667475",
+    "extracted_at": "2026-11-14T09:06:02.434949",
     "per_part": {
       "metadata": {
         "tool": "grobid-tei",
@@ -45,40 +49,47 @@
       }
     }
   },
-  "abstract": "In recent years, researchers have successfully recognised human activities using commer-\ncially available WiFi (Wireless Fidelity) devices. The channel state information (CSI) can be\ngathered at the access point with the help of a network interface controller (NIC card).\nThese CSI streams are sensitive to human body motions and produce abrupt changes (fluc-\ntuations) in their magnitude and phase values when a moving object interacts with a trans-\nmitter and receiver pair. This sensing methodology is gaining popularity compared to\ntraditional approaches involving wearable technology, as it is a contactless sensing strategy\nwith no cumbersome sensing equipments fitted on the target with preserved privacy since\nno personal information of the subject is collected. In previous investigations, internal valida-\ntion statistics have been promising. However, external validation results have been poor,\ndue to model application to varying subjects with remarkably different environments. To\naddress this problem, we propose an adversarial Artificial Intelligence AI model that learns\nand utilises domain-invariant features. We analyse model results in terms of suitability for",
+  "abstract": "",
   "sections": [
     {
       "id": "sec_1",
-      "title": "RESEARCH ARTICLE",
-      "text": "Adversarial AI applied to cross-user inter- domain and intra-domain adaptation in human activity recognition using wireless signals Muhammad Hassan☯*, Tom KelseyID☯, Fahrurrozi RahmanID School of Computer Science, University of St. Andrews, St. Andrews, United Kingdom ☯These authors contributed equally to this work. * mh353@st-andrews.ac.uk Abstract",
+      "title": "Introduction",
+      "text": "Commercial-off-the-shelf (COTS) WiFi devices were initially invented for wireless communication and local area networking using wireless networking protocols. Owing to the ubiquitous nature of WiFi technologies, there are tens of billions of devices connected together in a network. Today, we are surrounded by various types of wireless signals such as WiFi, LoRa, and LTE. Earlier research has shown that the radio signals travel through multiple paths and can be used to identify the presence, location and movement of surrounding objects, via superposition at the receiver. The pervasive nature of the radio signals and their capability to demodulate the activities of the surrounding environment open the way for a new wireless sensing technology. WiFi Sensing is hence the use of commercially available WiFi devices for carrying information about users’ behavior.\n\nThe field of wireless sensing is involved with the key concepts of Multiple Input Multiple Output (MIMO) [\n\nWhen radio signals emerge from a COTS WiFi device and spread out in the surrounding environment, they follow a multi-path propagation which induces a pattern of channel state information (CSI) at the receiving end. As a target (object or human) performs some activity under the presence of wireless environment, it creates fluctuations which exhibit distinct characteristics due to different movements in the CSI pattern. These distinct fluctuating patterns are used to train a deep learning model to predict specific activities.\n\nSince the fluctuations in CSI data are dependent upon surrounding objects and in fact the target characteristics can severely affects the model performance, its a challenging task to generalize a model for different cross-user conditions. Hence the work described of this study is the proposal of an adversarial model and detailed evidence to support the use of such models in this context. Our key contributions are:",
       "level": 1,
       "verified": "pdf-extracted, verify"
     },
     {
       "id": "sec_2",
-      "title": "Introduction",
-      "text": "Commercial-off-the-shelf (COTS) WiFi devices were initially invented for wireless communi- cation and local area networking using wireless networking protocols. Owing to the ubiquitous nature of WiFi technologies, there are tens of billions of devices connected together in a net- work. Today, we are surrounded by various types of wireless signals such as WiFi, LoRa, and LTE. Earlier research has shown that the radio signals travel through multiple paths and can be used to identify the presence, location and movement of surrounding objects, via superposi- tion at the receiver. The pervasive nature of the radio signals and their capability to demodu- late the activities of the surrounding environment open the way for a new wireless sensing technology. WiFi Sensing is hence the use of commercially available WiFi devices for carrying",
+      "title": "Related work",
+      "text": "The field of human activity recognition has gained popularity due to it’s valuable usages in the field of activity recognition, mobile health monitoring and patient rehabilitation. The typical challenge is to concern about the model performance in cross-domain conditions such as cross-user (a classifier is trained on known users and tested on some unknown users), cross-environment (a classifier is trained on a seen environment and tested on some unseen environment) and a combination of both of them. Models proposed by the researchers in the past performed well when they were tested on the same conditions which were used during the model training. Unfortunately, their performance suffers from acute degradation when they are tested on different environments and subjects other than those used for the model training. The activity patterns for new users and environments differ from those in the training data which makes the model less efficient in predicting activities in cross-domain conditions. Additionally, training a classifier for unseen users and environments is time consuming which also takes high computational resources [",
       "level": 1,
       "verified": "pdf-extracted, verify"
     },
     {
       "id": "sec_3",
-      "title": "dynamic vector appearing for two different target positions at A and B. The vector length",
-      "text": "represents its magnitude and angles from I-axis to Vd at location A and location B are its phase values for these two locations. Since this vector is dynamic in nature, the phase and magnitude differences between the dynamic vectors at location A and B can be used to track the target movement. The summation of a static and dynamic vector forms a compos- ite vector [4]. Since the fluctuations in CSI data are dependent upon surrounding objects and in fact the target characteristics can severely affects the model performance, its a challenging task to gen- eralize a model for different cross-user conditions. Hence the work described of this study is the proposal of an adversarial model and detailed evidence to support the use of such models",
+      "title": "Preliminaries",
+      "text": "",
       "level": 1,
       "verified": "pdf-extracted, verify"
     },
     {
       "id": "sec_4",
-      "title": "users), cross-environment (a classifier is trained on a seen environment and tested on some",
-      "text": "unseen environment) and a combination of both of them. Models proposed by the research- ers in the past performed well when they were tested on the same conditions which were used during the model training. Unfortunately, their performance suffers from acute degra- dation when they are tested on different environments and subjects other than those used for the model training. The activity patterns for new users and environments differ from those in the training data which makes the model less efficient in predicting activities in cross-domain conditions. Additionally, training a classifier for unseen users and environ- ments is time consuming which also takes high computational resources [5]. Domain adap- tation [6], a sub-field of transfer learning [7], is considered to be an appropriate solution for",
+      "title": "Materials and methods",
+      "text": "",
       "level": 1,
       "verified": "pdf-extracted, verify"
     },
     {
       "id": "sec_5",
-      "title": "over-fitting. Confidence Control Constraint is responsible to avoid the model getting stuck",
-      "text": "on local optimum. Smoothing Constraint saves the model to be significantly different in it’s predictions on neighbouring samples. Balance Constraint comes into play when model tends to assign same labels to different but similar type of activities. They changed different source domains and showed in all cases their model accuracy is higher than baseline models (VADA [17], RF [18]). Few-shot learning, is a classification problem of identifying the simi- larity and differences between training and testing domains using a very few labelled samples from training data. Fidora [19] is a Wireless-based localization system which can locate an objects’ location fingerprints without being subject to WiFi fingerprint inconsistency such as body shapes of new users, objects in the background and daily changes in the environment.",
+      "title": "Experimental results",
+      "text": "",
+      "level": 1,
+      "verified": "pdf-extracted, verify"
+    },
+    {
+      "id": "sec_6",
+      "title": "Conclusion",
+      "text": "In this study we both propose the use of adversarial models and supply detailed evidence to support the proposal. We have shown that our model has utility for finding the impacts of global and sub-domain adaptation on cross-user domain transferring tasks on HAR using wireless signals. Even though sub-domain adaptation is usually considered to be a more significant method for cross-domain alignments because it fulfils the need of fine-grained information from the relevant classes of different domain, our simulations provide initial evidence that it is an inferior choice for human activity recognition (HAR) using device-free sensing. Wireless signals show quite similar CSI patterns for different activities and it is not easy to align these sub-domains properly for better recognition accuracy. In other words, the distance between positive (samples belong to the same class) and negative (samples other than the positive class) samples is not reasonably large enough to align target sub-domains to their source counterparts using sub-domain alignment techniques such as LMMD. The adversarial AI model developed in this study shows improved predictive performance at all levels of test data proportion when compared to a non-adversarial model. We demonstrated the superiority of DASAN-MMD in terms of higher model recognition accuracy by comparing its transfer results with those of DASAN-LMMD, DSAN-LMMD, and DSAN-MMD. The experimental results further illustrate that we have developed a lightweight model with comparable simulation time to existing baseline methods. Our results show that MMD loss with an adversarial model aligns the source domain to the target domain globally, providing further evidence that inter-domain alignment is more effective for HAR using wireless signals and the dataset along with the preprocessing steps followed are suitable for such type of examinations.",
       "level": 1,
       "verified": "pdf-extracted, verify"
     }
@@ -88,11 +99,495 @@
   "equations": [],
   "references": [
     {
-      "id": "ref_1",
-      "title": "Adversarial AI applied to cross-user inter-domain and intra-domain adaptation in human activity recognition using wireless signals references",
-      "authors": [],
+      "id": "pone.0298888.ref001",
+      "title": "Reference 1",
+      "authors": null,
       "venue": "",
       "year": null,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "pdf-extracted, verify"
+    },
+    {
+      "id": "pone.0298888.ref002",
+      "title": "Reference 2",
+      "authors": null,
+      "venue": "",
+      "year": null,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "pdf-extracted, verify"
+    },
+    {
+      "id": "pone.0298888.ref003",
+      "title": "IEEE Communications Magazine",
+      "authors": "S. Yousefi; H. Narui; S. Dayal; S. Ermon; S Valaee",
+      "venue": "",
+      "year": 2017,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "pdf-extracted, verify"
+    },
+    {
+      "id": "pone.0298888.ref004",
+      "title": "Proceedings of the ACM on Interactive, Mobile, Wearable and Ubiquitous Technologies",
+      "authors": "B. Xie; Y. Yin; J Xiong",
+      "venue": "",
+      "year": 2021,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "pdf-extracted, verify"
+    },
+    {
+      "id": "pone.0298888.ref005",
+      "title": "ACM Transactions on Computing for Healthcare",
+      "authors": "S. An; G. Bhat; S. Gumussoy; U Ogras",
+      "venue": "",
+      "year": 2023,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "pdf-extracted, verify"
+    },
+    {
+      "id": "pone.0298888.ref006",
+      "title": "Reference 6",
+      "authors": null,
+      "venue": "",
+      "year": null,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "pdf-extracted, verify"
+    },
+    {
+      "id": "pone.0298888.ref007",
+      "title": "Journal of Big data",
+      "authors": "K. Weiss; T. M. Khoshgoftaar; D Wang",
+      "venue": "",
+      "year": 2016,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "pdf-extracted, verify"
+    },
+    {
+      "id": "pone.0298888.ref008",
+      "title": "Reference 8",
+      "authors": null,
+      "venue": "",
+      "year": null,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "pdf-extracted, verify"
+    },
+    {
+      "id": "pone.0298888.ref009",
+      "title": "Computer-Aided Design",
+      "authors": "A. Baer; C. Eastman; M Henrion",
+      "venue": "",
+      "year": 1979,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "pdf-extracted, verify"
+    },
+    {
+      "id": "pone.0298888.ref010",
+      "title": "Proceedings of the ACM on Interactive, Mobile, Wearable and Ubiquitous Technologies",
+      "authors": "M. Shahzad; S Zhang",
+      "venue": "",
+      "year": 2018,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "pdf-extracted, verify"
+    },
+    {
+      "id": "pone.0298888.ref011",
+      "title": "IEEE Transactions on Mobile Computing",
+      "authors": "D. Wu; Y. Zeng; R. Gao; S. Li; Y. Li; R. C. Shah",
+      "venue": "",
+      "year": 2021,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "pdf-extracted, verify"
+    },
+    {
+      "id": "pone.0298888.ref012",
+      "title": "Neurocomputing",
+      "authors": "E. Soleimani; E Nazerfard",
+      "venue": "",
+      "year": 2021,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "pdf-extracted, verify"
+    },
+    {
+      "id": "pone.0298888.ref013",
+      "title": "Knowledge and information systems",
+      "authors": "D. Cook; K. D. Feuz; N. C Krishnan",
+      "venue": "",
+      "year": 2013,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "pdf-extracted, verify"
+    },
+    {
+      "id": "pone.0298888.ref014",
+      "title": "ieee transactions on knowledge and data engineering",
+      "authors": "S. J. Pan; Q Yang",
+      "venue": "",
+      "year": 2009,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "pdf-extracted, verify"
+    },
+    {
+      "id": "pone.0298888.ref015",
+      "title": "ACM Computing Surveys",
+      "authors": "C. Chen; G. Zhou; Y Lin",
+      "venue": "",
+      "year": 2023,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "pdf-extracted, verify"
+    },
+    {
+      "id": "pone.0298888.ref016",
+      "title": "Reference 16",
+      "authors": null,
+      "venue": "",
+      "year": null,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "pdf-extracted, verify"
+    },
+    {
+      "id": "pone.0298888.ref017",
+      "title": "Reference 17",
+      "authors": null,
+      "venue": "",
+      "year": null,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "pdf-extracted, verify"
+    },
+    {
+      "id": "pone.0298888.ref018",
+      "title": "Reference 18",
+      "authors": null,
+      "venue": "",
+      "year": null,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "pdf-extracted, verify"
+    },
+    {
+      "id": "pone.0298888.ref019",
+      "title": "IEEE Internet of Things Journal",
+      "authors": "X. Chen; H. Li; C. Zhou; X. Liu; D. Wu; G Dudek",
+      "venue": "",
+      "year": 2022,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "pdf-extracted, verify"
+    },
+    {
+      "id": "pone.0298888.ref020",
+      "title": "Foundations and Trends in Machine Learning",
+      "authors": "D. P. Kingma; M. Welling",
+      "venue": "",
+      "year": 2019,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "pdf-extracted, verify"
+    },
+    {
+      "id": "pone.0298888.ref021",
+      "title": "IEEE Internet of Things Journal",
+      "authors": "J. Yang; X. Chen; H. Zou; D. Wang; L Xie",
+      "venue": "",
+      "year": 2022,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "pdf-extracted, verify"
+    },
+    {
+      "id": "pone.0298888.ref022",
+      "title": "Reference 22",
+      "authors": null,
+      "venue": "",
+      "year": null,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "pdf-extracted, verify"
+    },
+    {
+      "id": "pone.0298888.ref023",
+      "title": "Applied Sciences",
+      "authors": "P. Hu; C. Tang; K. Yin; X Zhang",
+      "venue": "",
+      "year": 2021,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "pdf-extracted, verify"
+    },
+    {
+      "id": "pone.0298888.ref024",
+      "title": "Reference 24",
+      "authors": null,
+      "venue": "",
+      "year": null,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "pdf-extracted, verify"
+    },
+    {
+      "id": "pone.0298888.ref025",
+      "title": "ACM computing surveys (csur)",
+      "authors": "Y. Wang; Q. Yao; J. T. Kwok; L. M Ni",
+      "venue": "",
+      "year": 2020,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "pdf-extracted, verify"
+    },
+    {
+      "id": "pone.0298888.ref026",
+      "title": "ISPRS International Journal of Geo-Information",
+      "authors": "M. A. A. Al-qaness; F Li",
+      "venue": "",
+      "year": 2016,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "pdf-extracted, verify"
+    },
+    {
+      "id": "pone.0298888.ref027",
+      "title": "IEEE Access",
+      "authors": "Z. Tian; J. Wang; X. Yang; M Zhou",
+      "venue": "",
+      "year": 2018,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "pdf-extracted, verify"
+    },
+    {
+      "id": "pone.0298888.ref028",
+      "title": "Proceedings of the ACM on Interactive, Mobile, Wearable and Ubiquitous Technologies",
+      "authors": "Y. Ma; G. Zhou; S. Wang; H. Zhao; W Jung",
+      "venue": "",
+      "year": 2018,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "pdf-extracted, verify"
+    },
+    {
+      "id": "pone.0298888.ref029",
+      "title": "Reference 29",
+      "authors": null,
+      "venue": "",
+      "year": null,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "pdf-extracted, verify"
+    },
+    {
+      "id": "pone.0298888.ref030",
+      "title": "Reference 30",
+      "authors": null,
+      "venue": "",
+      "year": null,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "pdf-extracted, verify"
+    },
+    {
+      "id": "pone.0298888.ref031",
+      "title": "Reference 31",
+      "authors": null,
+      "venue": "",
+      "year": null,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "pdf-extracted, verify"
+    },
+    {
+      "id": "pone.0298888.ref032",
+      "title": "Reference 32",
+      "authors": null,
+      "venue": "",
+      "year": null,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "pdf-extracted, verify"
+    },
+    {
+      "id": "pone.0298888.ref033",
+      "title": "Reference 33",
+      "authors": null,
+      "venue": "",
+      "year": null,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "pdf-extracted, verify"
+    },
+    {
+      "id": "pone.0298888.ref034",
+      "title": "Reference 34",
+      "authors": null,
+      "venue": "",
+      "year": null,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "pdf-extracted, verify"
+    },
+    {
+      "id": "pone.0298888.ref035",
+      "title": "Reference 35",
+      "authors": null,
+      "venue": "",
+      "year": null,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "pdf-extracted, verify"
+    },
+    {
+      "id": "pone.0298888.ref036",
+      "title": "Proceedings of the ACM on Interactive, Mobile, Wearable and Ubiquitous Technologies",
+      "authors": "X. Li; L. Chang; F. Song; J. Wang; X. Chen; Z. Tang",
+      "venue": "",
+      "year": 2021,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "pdf-extracted, verify"
+    },
+    {
+      "id": "pone.0298888.ref037",
+      "title": "Knowledge-Based Systems",
+      "authors": "D. Cheng; L. Zhang; C. Bu; H. Wu; A Song",
+      "venue": "",
+      "year": null,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "pdf-extracted, verify"
+    },
+    {
+      "id": "pone.0298888.ref038",
+      "title": "IEEE transactions on neural networks and learning systems",
+      "authors": "Yongchun Zhu",
+      "venue": "",
+      "year": 2020,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "pdf-extracted, verify"
+    },
+    {
+      "id": "pone.0298888.ref039",
+      "title": "IEEE Transactions on Industrial Informatics",
+      "authors": "Yanxu Liu",
+      "venue": "",
+      "year": 2022,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "pdf-extracted, verify"
+    },
+    {
+      "id": "pone.0298888.ref040",
+      "title": "Reference 40",
+      "authors": null,
+      "venue": "",
+      "year": null,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "pdf-extracted, verify"
+    },
+    {
+      "id": "pone.0298888.ref041",
+      "title": "Sensors",
+      "authors": "M. A. Al-Qaness; M. Abd Elaziz; S. Kim; A. A. Ewees; A. A. Abbasi; Y. A. Alhaj",
+      "venue": "",
+      "year": 2019,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "pdf-extracted, verify"
+    },
+    {
+      "id": "pone.0298888.ref042",
+      "title": "The Journal of Machine Learning Research",
+      "authors": "Arthur Gretton",
+      "venue": "",
+      "year": 2012,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "pdf-extracted, verify"
+    },
+    {
+      "id": "pone.0298888.ref043",
+      "title": "Sensors",
+      "authors": "Parisa Fard Moshiri",
+      "venue": "",
+      "year": 2021,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "pdf-extracted, verify"
+    },
+    {
+      "id": "pone.0298888.ref044",
+      "title": "Reference 44",
+      "authors": null,
+      "venue": "",
+      "year": null,
+      "doi": null,
+      "arxiv_id": null,
+      "raw": "",
+      "verified": "pdf-extracted, verify"
+    },
+    {
+      "id": "pone.0298888.ref045",
+      "title": "Pervasive and Mobile Computing",
+      "authors": "Andrea Rosales Sanabria",
+      "venue": "",
+      "year": 2021,
       "doi": null,
       "arxiv_id": null,
       "raw": "",
@@ -105,6 +600,6 @@
     "findings_credibility": "",
     "dissertation_gaps": ""
   },
-  "sha256": null,
-  "created_at": "2026-11-13T20:50:02.667475"
+  "sha256": "2d1a578dee44ac75dd919c1071e396426c13ac0c7ba8974002eeb29523dc5366",
+  "created_at": "2026-11-14T09:06:02.435949"
 }
