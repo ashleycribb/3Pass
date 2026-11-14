@@ -19,7 +19,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: ashleycribb/s3a-storage
-          ref: 1c1b2b9
+          ref: 1c1b2b9428ff36cd4e6e92cfee79c054275315f5
           path: s3a
 
       - name: Setup Rust
