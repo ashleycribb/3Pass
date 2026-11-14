@@ -4,3 +4,4 @@
 - `[2026-11-13 20:56:45]` CI RUN 43543025671 FAILED (commit ba07f9a). Checkout S3A failed due to short 7-character commit SHA '1c1b2b9'.
 - `[2026-11-13 21:04:12]` CI RUN 43543158233 PASSED (commit dbf1a86). Fixed S3A checkout with full 40-character SHA 1c1b2b9428ff36cd4e6e92cfee79c054275315f5. 28 passed.
 - `[2026-11-14 09:06:20]` SMOKE_TEST_FIXES verified across all 4 real paper paths. Gemini 1.5 (2403.05530) authoritative metadata (1,137 authors, 2024, no COLING DOI); Attention Is All You Need (1706.03762) multi-file LaTeX extraction (6 figs, 7 tables, 11 eqs, 40 refs, 2017); PLOS ONE (10.1371/journal.pone.0298888) GROBID loud failure on offline + 45 complete references; GenAICHI (10.1145/3491101.3503719) metadata-only. Full suite: 34 passed.
+- `[2026-11-14 09:13:35]` CI RUN 43603273292 PASSED (commit d9f29d7). Test suite: 34 passed; Wiki Linter: 100% pass (294 docs, 2,185 wikilinks, 0 broken). S3A round-trip verified.
