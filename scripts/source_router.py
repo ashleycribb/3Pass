@@ -1044,7 +1044,11 @@ class GrobidPdfPlugin(BaseSourcePlugin):
         is_live_request: bool = False,
         grobid_version: Optional[str] = None
     ) -> PaperRecord:
-        clean_xml = re.sub(r'\sxmlns="[^"]+"', "", xml_content, count=1)
+        # Remove XML namespaces so simple element tags match reliably across all subtrees
+        clean_xml = re.sub(r'\sxmlns(?::\w+)?="[^"]*"', '', xml_content)
+        clean_xml = re.sub(r'<([a-zA-Z0-9_-]+):([a-zA-Z0-9_-]+)', r'<\2', clean_xml)
+        clean_xml = re.sub(r'</([a-zA-Z0-9_-]+):([a-zA-Z0-9_-]+)', r'</\2', clean_xml)
+        clean_xml = re.sub(r'\s(?!xml:)[a-zA-Z0-9_-]+:([a-zA-Z0-9_-]+)=', r' \1=', clean_xml)
         root = ET.fromstring(clean_xml)
 
         # Title
@@ -1104,6 +1108,10 @@ class GrobidPdfPlugin(BaseSourcePlugin):
         # Sections
         sections: List[SectionRecord] = []
         divs = root.findall(".//body/div")
+        if not divs:
+            divs = root.findall(".//body//div")
+        if not divs:
+            divs = [d for d in root.findall(".//div") if d.get("type") != "references" and d.find(".//listBibl") is None and d.find(".//biblStruct") is None]
         for i, div in enumerate(divs, 1):
             h_el = div.find("head")
             head = " ".join(h_el.itertext()).strip() if h_el is not None else f"Section {i}"

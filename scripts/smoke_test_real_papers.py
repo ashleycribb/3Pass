@@ -229,6 +229,9 @@ def run_path_d_grobid_pdf() -> Optional[PaperRecord]:
     }
     rec = plugin.extract(paper_input)
 
+    print(f"Extracted from GROBID: '{rec.title}' by {len(rec.authors)} authors ({rec.year})")
+    print(f"Sections: {len(rec.sections)}, Figures: {len(rec.figures)}, Tables: {len(rec.tables)}, Refs: {len(rec.references)}")
+
     # Assertions
     assert "Contrastive Learning" in rec.title or "Visual Representations" in rec.title or "SimCLR" in rec.title, f"Extracted title: {rec.title}"
     assert len(rec.authors) >= 2, f"Expected authors, got {len(rec.authors)}: {rec.authors}"
