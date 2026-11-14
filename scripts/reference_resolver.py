@@ -3,9 +3,10 @@ Reference Resolver Module (Existence Check Only, No Judgments)
 
 Provides authoritative reference resolution across four stages:
   1. Direct DOI verification (Crossref polite pool)
-  2. Title + Year fuzzy search via Crossref API
-  3. Title + Year fuzzy search via OpenAlex API
-  4. Title + Year fuzzy search via Semantic Scholar API (no API key required)
+  2. Direct arXiv ID verification (DataCite / arXiv API)
+  3. Title + Year fuzzy search via Crossref API (polite pool)
+  4. Title + Year fuzzy search via OpenAlex API
+  5. Title + Year fuzzy search via Semantic Scholar API (no API key required)
 
 Records status: 'resolved' | 'ambiguous' | 'not_found', the match score,
 matched DOI/ID, and service used.
@@ -23,6 +24,7 @@ import json
 import time
 import hashlib
 import difflib
+import xml.etree.ElementTree as ET
 from urllib.parse import quote
 from datetime import datetime
 from concurrent.futures import ThreadPoolExecutor
@@ -41,6 +43,22 @@ DEFAULT_CACHE_DIR = os.path.join(
 )
 
 
+def get_config_mailto(cfg_path: Optional[str] = None) -> Optional[str]:
+    """Retrieves Crossref polite pool contact email from config or environment."""
+    env_email = os.environ.get("CROSSREF_MAILTO")
+    if env_email and env_email.strip():
+        return env_email.strip()
+    try:
+        from scripts.corpus_common import load_config
+        cfg = load_config(cfg_path)
+        m = cfg.get("crossref_mailto")
+        if m and str(m).strip():
+            return str(m).strip()
+    except Exception:
+        pass
+    return None
+
+
 def normalize_title(title: str) -> str:
     """Normalizes title for robust fuzzy matching."""
     if not title:
@@ -56,6 +74,68 @@ def normalize_title(title: str) -> str:
     return re.sub(r"\s+", " ", t).strip()
 
 
+def strip_trailing_year(text: str) -> str:
+    """Removes trailing publication years like ', 2024' or ', 2023b' appended to titles."""
+    if not text:
+        return ""
+    return re.sub(r",\s*(?:19\d{2}|20\d{2})[a-z]?\s*$", "", text).strip().rstrip("., ")
+
+
+def extract_clean_reference_title(title: str, raw: str = "") -> str:
+    """
+    Extracts a clean, searchable paper title from a reference's title or raw string.
+    Handles:
+      - BibTeX \\newblock blocks
+      - Quoted titles: ``...'' or "..." or “...”
+      - Author-sentence separation: after 'and Author.' or 'et al.', the next sentence
+      - Raw text fallback
+    """
+    text = raw if raw and (len(raw) > len(title) or not title) else (title or "")
+    if not text:
+        return ""
+    text = re.sub(r"\s+", " ", text).strip()
+
+    # 1. LaTeX \newblock segmentation
+    if "\\newblock" in text:
+        blocks = [b.strip() for b in re.split(r"\\newblock\s*", text) if b.strip()]
+        if len(blocks) >= 2:
+            cand = blocks[1]
+            cand = re.sub(r"\\[a-zA-Z]+(?:\[.*?\])?\{([^}]*)\}", r"\1", cand)
+            cand = re.sub(r"[{}\\]", "", cand).strip().rstrip("., ")
+            cand = strip_trailing_year(cand)
+            cand = re.sub(r"\s+", " ", cand).strip()
+            if len(cand) >= 5:
+                return cand
+
+    # 2. Quoted title detection
+    m_q = re.search(r"(?:``|\"|“)(.*?)(?:''|\"|”)", text)
+    if m_q and len(m_q.group(1).strip()) >= 8:
+        return re.sub(r"\s+", " ", strip_trailing_year(m_q.group(1).strip().rstrip("., "))).strip()
+
+    # 3. Author sentence boundary: after 'and <Author>.' or 'et al.', next sentence is title
+    m_auth = re.search(r"(?:and\s+[A-Z][a-zA-Z\s\-]+|\bet\s+al\.)\.\s+([A-Z0-9][^.!?]+[.!?])", text)
+    if m_auth and len(m_auth.group(1).strip()) >= 8:
+        cand = m_auth.group(1).strip().rstrip("., ")
+        if not re.match(r"^(?:in\s|proceedings|proc\.|arxiv|corr|vol\.|pp\.|http)", cand, re.I):
+            return re.sub(r"\s+", " ", strip_trailing_year(cand)).strip()
+
+    # 4. Period-separated components
+    parts = [p.strip() for p in re.split(r"(?<=[a-z0-9])\.\s+", text) if p.strip()]
+    if len(parts) >= 2:
+        for part in parts[1:]:
+            if not re.match(r"^(?:in\s|proceedings|proc\.|arxiv|corr|vol\.|pp\.|http)", part, re.I):
+                cand = re.sub(r"[{}\\]", "", part).strip().rstrip("., ")
+                if len(cand) >= 10:
+                    return re.sub(r"\s+", " ", strip_trailing_year(cand)).strip()
+
+    # 5. Clean given title directly
+    cleaned = re.sub(r"\\[a-zA-Z]+(?:\[.*?\])?\{([^}]*)\}", r"\1", title or text)
+    cleaned = re.sub(r"\\[a-zA-Z]+", " ", cleaned)
+    cleaned = re.sub(r"[{}\\]", "", cleaned)
+    cleaned = re.sub(r"\s+", " ", cleaned).strip().rstrip("., ")
+    return re.sub(r"\s+", " ", strip_trailing_year(cleaned)).strip()
+
+
 def extract_doi_clean(doi_or_text: Optional[str]) -> Optional[str]:
     """Extracts a clean DOI string from a raw string or URL."""
     if not doi_or_text:
@@ -64,6 +144,21 @@ def extract_doi_clean(doi_or_text: Optional[str]) -> Optional[str]:
     if m:
         doi = m.group(1).rstrip(". ;,)")
         return doi.lower()
+    return None
+
+
+def extract_arxiv_id_clean(text: Optional[str], strict_prefix: bool = True) -> Optional[str]:
+    """Extracts a canonical arXiv ID (e.g. 1706.03762) from text, URL, or DOI."""
+    if not text:
+        return None
+    s = str(text)
+    m = re.search(r"(?:arxiv(?:\.org)?/(?:abs|pdf)/|arxiv[:\s/]|abs/|10\.48550/arxiv\.)\s*(\d{4}\.\d{4,5})(?:v\d+)?", s, re.I)
+    if m:
+        return m.group(1)
+    if not strict_prefix:
+        m2 = re.search(r"\b(\d{4}\.\d{4,5})(?:v\d+)?\b", s)
+        if m2:
+            return m2.group(1)
     return None
 
 
@@ -89,7 +184,7 @@ def fuzzy_title_score(title_a: str, title_b: str) -> float:
         min_len = min(len(words_a), len(words_b))
         containment = len(intersection) / min_len if min_len > 0 else 0
         if containment >= 0.90 and min_len >= 3:
-            return max(seq_ratio, 0.85)
+            return max(seq_ratio, 0.88)
         return max(seq_ratio, jaccard)
     return seq_ratio
 
@@ -97,30 +192,32 @@ def fuzzy_title_score(title_a: str, title_b: str) -> float:
 class ReferenceResolver:
     """
     Resolves academic references through polite existence checks:
-    DOI -> Crossref -> OpenAlex -> Semantic Scholar.
+    DOI -> arXiv ID -> Crossref -> OpenAlex -> Semantic Scholar.
     """
 
     def __init__(
         self,
         cache_dir: Optional[str] = None,
-        email: str = "scholar@antigravity.internal",
-        rate_limit_delay: float = 0.05,
+        email: Optional[str] = None,
+        rate_limit_delay: float = 0.04,
         session: Optional[requests.Session] = None
     ):
         self.cache_dir = cache_dir or DEFAULT_CACHE_DIR
         os.makedirs(self.cache_dir, exist_ok=True)
-        self.email = email
+        self.email = email if email is not None else get_config_mailto()
         self.rate_limit_delay = rate_limit_delay
         self.session = session or requests.Session()
-        self.session.headers.update({
-            "User-Agent": f"3PassResearchCorpus/1.0 (mailto:{self.email}; https://github.com/ashleycribb/3Pass)"
-        })
+        ua = f"3PassResearchCorpus/1.0 (mailto:{self.email}; https://github.com/ashleycribb/3Pass)" if self.email else "3PassResearchCorpus/1.0 (https://github.com/ashleycribb/3Pass)"
+        self.session.headers.update({"User-Agent": ua})
 
     def _cache_key(self, ref: ReferenceRecord) -> str:
         clean_doi = extract_doi_clean(ref.doi)
         if clean_doi:
             return f"doi:{clean_doi}"
-        norm_t = normalize_title(ref.title)
+        arx = extract_arxiv_id_clean(ref.arxiv_id, strict_prefix=False) or extract_arxiv_id_clean(ref.raw)
+        if arx:
+            return f"arxiv:{arx}"
+        norm_t = normalize_title(extract_clean_reference_title(ref.title, ref.raw))
         yr = str(ref.year) if ref.year else ""
         return f"title:{norm_t}|yr:{yr}"
 
@@ -141,6 +238,9 @@ class ReferenceResolver:
         return None
 
     def put_cached(self, ref: ReferenceRecord, res: ReferenceResolution) -> None:
+        if res.status == "not_found" and res.matched_service is None:
+            # Do not persist transient network/rate-limit failures
+            return
         key = self._cache_key(ref)
         path = self._cache_path(key)
         try:
@@ -167,40 +267,45 @@ class ReferenceResolver:
             return cached
 
         res: Optional[ReferenceResolution] = None
+        clean_title = extract_clean_reference_title(ref.title, ref.raw)
 
         # 2. DOI path (from ref.doi or embedded in ref.raw)
         clean_doi = extract_doi_clean(ref.doi) or extract_doi_clean(ref.raw)
-        if clean_doi:
-            res = self._resolve_by_doi(clean_doi, ref.title, ref.year, ref_raw=ref.raw)
+        if clean_doi and not clean_doi.startswith("10.48550/arxiv"):
+            res = self._resolve_by_doi(clean_doi, clean_title, ref.year, ref_raw=ref.raw)
 
-        # 3. ArXiv ID path (constructs canonical DataCite/Crossref DOI 10.48550/arxiv.<id>)
-        if not res or res.status == "not_found":
-            m_arx = re.search(
-                r"(?:arxiv[:\s/]|abs/)(\d{4}\.\d{4,5})",
-                f"{ref.arxiv_id or ''} {ref.doi or ''} {ref.raw} {ref.title}",
-                re.I
-            )
-            if m_arx:
-                arxiv_doi = f"10.48550/arxiv.{m_arx.group(1)}"
-                res = self._resolve_by_doi(arxiv_doi, ref.title, ref.year, ref_raw=ref.raw)
+        # 3. Direct arXiv ID path (DataCite or arXiv API lookup)
+        if not res or res.status != "resolved":
+            arx_id = extract_arxiv_id_clean(ref.arxiv_id, strict_prefix=False) or extract_arxiv_id_clean(ref.doi) or extract_arxiv_id_clean(ref.raw) or extract_arxiv_id_clean(ref.title)
+            if arx_id:
+                res = self._resolve_by_arxiv_id(arx_id, clean_title, ref.year, ref_raw=ref.raw)
 
         # 4. Title + Year path (Crossref -> OpenAlex -> Semantic Scholar)
         if not res or res.status != "resolved":
-            clean_title = normalize_title(ref.title)
-            if len(clean_title) >= 6 or len(ref.raw) >= 10:
+            if len(clean_title) >= 5 or len(ref.raw) >= 10:
                 # Stage A: Crossref title & author search
                 cr_res = self._search_crossref(clean_title, ref.year, authors=ref.authors, raw=ref.raw)
-                if cr_res:
+                if cr_res and cr_res.status == "resolved":
+                    res = cr_res
+                elif cr_res:
                     res = cr_res
 
-                # Stage B: OpenAlex fallback if not yet resolved
+                # Stage B: arXiv title search (if not resolved, for ML/CS preprints)
+                if not res or res.status != "resolved":
+                    arx_res = self._search_arxiv(clean_title, ref.year, raw=ref.raw)
+                    if arx_res and arx_res.status == "resolved":
+                        res = arx_res
+                    elif arx_res and (not res or res.status == "not_found"):
+                        res = arx_res
+
+                # Stage C: OpenAlex fallback if not yet resolved
                 if not res or res.status != "resolved":
                     alex_res = self._search_openalex(clean_title, ref.year, raw=ref.raw)
                     if alex_res:
                         if alex_res.status == "resolved" or not res or res.status == "not_found":
                             res = alex_res
 
-                # Stage C: Semantic Scholar fallback if not yet resolved
+                # Stage D: Semantic Scholar fallback if not yet resolved
                 if not res or res.status != "resolved":
                     s2_res = self._search_semanticscholar(clean_title, ref.year, raw=ref.raw)
                     if s2_res:
@@ -225,10 +330,13 @@ class ReferenceResolver:
     ) -> Optional[ReferenceResolution]:
         """Direct DOI lookup via polite Crossref pool."""
         url = f"https://api.crossref.org/works/{quote(doi)}"
+        params: Dict[str, Any] = {}
+        if self.email:
+            params["mailto"] = self.email
         try:
             if self.rate_limit_delay > 0:
                 time.sleep(self.rate_limit_delay)
-            r = self.session.get(url, timeout=10)
+            r = self.session.get(url, params=params, timeout=10)
             if r.status_code == 200:
                 data = r.json()
                 item = data.get("message", {})
@@ -238,10 +346,9 @@ class ReferenceResolver:
                 if ref_raw:
                     norm_cand = normalize_title(cand_title)
                     norm_raw = normalize_title(ref_raw)
-                    if norm_cand and len(norm_cand) >= 12 and norm_cand in norm_raw:
+                    if norm_cand and len(norm_cand) >= 10 and norm_cand in norm_raw:
                         score = max(score, 0.95)
 
-                # If reference title provided and significantly conflicts, mark ambiguous
                 if ref_title and score < 0.40 and len(ref_title) > 15 and not (ref_raw and normalize_title(cand_title) in normalize_title(ref_raw)):
                     return ReferenceResolution(
                         status="ambiguous",
@@ -264,26 +371,155 @@ class ReferenceResolver:
             return None
         return None
 
+    def _resolve_by_arxiv_id(
+        self, arxiv_id: str, ref_title: str, ref_year: Optional[int], ref_raw: str = ""
+    ) -> Optional[ReferenceResolution]:
+        """Direct arXiv ID verification via DataCite or arXiv API."""
+        clean_id = re.sub(r"v\d+$", "", arxiv_id.strip())
+        canonical_doi = f"10.48550/arXiv.{clean_id}"
+
+        # 1. Try DataCite
+        url = f"https://api.datacite.org/dois/{quote(canonical_doi)}"
+        try:
+            if self.rate_limit_delay > 0:
+                time.sleep(self.rate_limit_delay)
+            r = self.session.get(url, timeout=8)
+            if r.status_code == 200:
+                attrs = r.json().get("data", {}).get("attributes", {})
+                cand_titles = attrs.get("titles", [])
+                cand_title = cand_titles[0].get("title", "") if cand_titles else ""
+                score = fuzzy_title_score(ref_title, cand_title) if ref_title else 1.0
+
+                if ref_raw:
+                    norm_cand = normalize_title(cand_title)
+                    norm_raw = normalize_title(ref_raw)
+                    if norm_cand and len(norm_cand) >= 8 and norm_cand in norm_raw:
+                        score = max(score, 0.95)
+
+                return ReferenceResolution(
+                    status="resolved",
+                    match_score=max(round(score, 4), 0.95),
+                    matched_id=canonical_doi,
+                    matched_service="arxiv",
+                    resolved_at=datetime.now().isoformat()
+                )
+        except Exception:
+            pass
+
+        # 2. Fallback to arXiv API
+        api_url = f"https://export.arxiv.org/api/query?id_list={clean_id}"
+        try:
+            if self.rate_limit_delay > 0:
+                time.sleep(self.rate_limit_delay)
+            r = self.session.get(api_url, timeout=8)
+            if r.status_code == 200 and "<entry>" in r.text:
+                root = ET.fromstring(r.content)
+                entry = root.find("{http://www.w3.org/2005/Atom}entry")
+                if entry is not None:
+                    t_el = entry.find("{http://www.w3.org/2005/Atom}title")
+                    cand_title = t_el.text.strip() if t_el is not None and t_el.text else ""
+                    score = fuzzy_title_score(ref_title, cand_title) if ref_title else 1.0
+                    return ReferenceResolution(
+                        status="resolved",
+                        match_score=max(round(score, 4), 0.95),
+                        matched_id=canonical_doi,
+                        matched_service="arxiv",
+                        resolved_at=datetime.now().isoformat()
+                    )
+        except Exception:
+            pass
+
+        return None
+
     def _search_crossref(
         self, title: str, year: Optional[int], authors: Any = None, raw: str = ""
     ) -> Optional[ReferenceResolution]:
-        """Title + Year search on Crossref."""
+        """Title + Year search on Crossref with bibliographic fallback."""
         url = "https://api.crossref.org/works"
-        params: Dict[str, Any] = {"query.title": title[:200], "rows": 3}
-        if authors:
-            auth_str = " ".join(authors) if isinstance(authors, list) else str(authors)
-            clean_auth = re.sub(r"[^\w\s]", " ", auth_str).strip()
-            if clean_auth:
-                params["query.author"] = clean_auth[:100]
-        elif raw and len(raw) > len(title) + 10 and len(title) < 15:
-            params = {"query.bibliographic": raw[:250], "rows": 3}
+        clean_title = normalize_title(title)
+        if not clean_title or len(clean_title) < 5:
+            return None
+
+        # Pass A: query.title with rows=5 (unrestricted by author string)
+        params: Dict[str, Any] = {"query.title": clean_title[:200], "rows": 5}
+        if self.email:
+            params["mailto"] = self.email
+
         try:
             if self.rate_limit_delay > 0:
                 time.sleep(self.rate_limit_delay)
             r = self.session.get(url, params=params, timeout=10)
             if r.status_code == 200:
                 items = r.json().get("message", {}).get("items", [])
+                res = self._evaluate_candidates(title, year, items, service="crossref", ref_raw=raw)
+                if res and res.status == "resolved":
+                    return res
+        except Exception:
+            pass
+
+        # Pass B: query.bibliographic with first author + title
+        first_auth = ""
+        if authors:
+            first_auth = authors[0] if isinstance(authors, list) and authors else str(authors).split(";")[0]
+            first_auth = re.sub(r"[^\w\s]", "", first_auth).strip()
+        q_b = f"{first_auth} {clean_title}"[:180].strip()
+        params_b: Dict[str, Any] = {"query.bibliographic": q_b, "rows": 5}
+        if self.email:
+            params_b["mailto"] = self.email
+
+        try:
+            if self.rate_limit_delay > 0:
+                time.sleep(self.rate_limit_delay)
+            r = self.session.get(url, params=params_b, timeout=10)
+            if r.status_code == 200:
+                items = r.json().get("message", {}).get("items", [])
                 return self._evaluate_candidates(title, year, items, service="crossref", ref_raw=raw)
+        except Exception:
+            pass
+
+        return None
+
+    def _search_arxiv(
+        self, title: str, year: Optional[int], raw: str = ""
+    ) -> Optional[ReferenceResolution]:
+        """Title search on arXiv API for papers/preprints."""
+        clean = re.sub(r"[^\w\s]", " ", title).strip()
+        words = [w for w in clean.split() if len(w) > 3][:6]
+        if not words:
+            return None
+        query = " AND ".join([f"ti:{w}" for w in words])
+        url = "https://export.arxiv.org/api/query"
+        params = {"search_query": query, "max_results": 3}
+        try:
+            if self.rate_limit_delay > 0:
+                time.sleep(self.rate_limit_delay)
+            r = self.session.get(url, params=params, timeout=10)
+            if r.status_code == 200 and "<entry>" in r.text:
+                root = ET.fromstring(r.content)
+                ns = {"atom": "http://www.w3.org/2005/Atom"}
+                candidates = []
+                for entry in root.findall("atom:entry", ns):
+                    t_el = entry.find("atom:title", ns)
+                    cand_title = t_el.text.strip() if t_el is not None and t_el.text else ""
+                    id_el = entry.find("atom:id", ns)
+                    cand_url = id_el.text.strip() if id_el is not None and id_el.text else ""
+                    m = re.search(r"(\d{4}\.\d{4,5})", cand_url)
+                    aid = m.group(1) if m else cand_url
+                    canonical_doi = f"10.48550/arXiv.{aid}" if aid else ""
+
+                    cand_year = None
+                    pub_el = entry.find("atom:published", ns)
+                    if pub_el is not None and pub_el.text:
+                        m_y = re.match(r"^(\d{4})", pub_el.text.strip())
+                        if m_y:
+                            cand_year = int(m_y.group(1))
+
+                    candidates.append({
+                        "title": [cand_title],
+                        "DOI": canonical_doi,
+                        "issued": {"date-parts": [[cand_year]] if cand_year else []}
+                    })
+                return self._evaluate_candidates(title, year, candidates, service="arxiv", ref_raw=raw)
         except Exception:
             pass
         return None
@@ -291,9 +527,15 @@ class ReferenceResolver:
     def _search_openalex(
         self, title: str, year: Optional[int], raw: str = ""
     ) -> Optional[ReferenceResolution]:
-        """Title + Year search on OpenAlex."""
+        """Title + Year search on OpenAlex with rate limit backoff."""
         url = "https://api.openalex.org/works"
-        params = {"search": title if len(title) >= 6 else raw[:100], "per-page": 3}
+        clean_title = normalize_title(title)
+        params: Dict[str, Any] = {
+            "search": clean_title[:100] if len(clean_title) >= 5 else raw[:80],
+            "per-page": 3
+        }
+        if self.email:
+            params["mailto"] = self.email
         try:
             if self.rate_limit_delay > 0:
                 time.sleep(self.rate_limit_delay)
@@ -308,6 +550,8 @@ class ReferenceResolver:
                         "issued": {"date-parts": [[res.get("publication_year")]]}
                     })
                 return self._evaluate_candidates(title, year, candidates, service="openalex", ref_raw=raw)
+            elif r.status_code == 429:
+                return None
         except Exception:
             pass
         return None
@@ -317,7 +561,12 @@ class ReferenceResolver:
     ) -> Optional[ReferenceResolution]:
         """Title + Year search on Semantic Scholar (no API key required)."""
         url = "https://api.semanticscholar.org/graph/v1/paper/search"
-        params = {"query": title if len(title) >= 6 else raw[:100], "limit": 3, "fields": "title,year,externalIds"}
+        clean_title = normalize_title(title)
+        params = {
+            "query": clean_title[:100] if len(clean_title) >= 5 else raw[:80],
+            "limit": 3,
+            "fields": "title,year,externalIds"
+        }
         try:
             if self.rate_limit_delay > 0:
                 time.sleep(self.rate_limit_delay)
@@ -334,6 +583,8 @@ class ReferenceResolver:
                         "issued": {"date-parts": [[paper.get("year")]]}
                     })
                 return self._evaluate_candidates(title, year, candidates, service="semanticscholar", ref_raw=raw)
+            elif r.status_code == 429:
+                return None
         except Exception:
             pass
         return None
@@ -364,7 +615,7 @@ class ReferenceResolver:
                 if norm_cand and len(norm_cand) >= 10 and norm_cand in norm_raw:
                     score = max(score, 0.95)
 
-            # Year alignment check
+            # Year alignment check (allow year ±1 for preprint vs conference publication)
             cand_year = None
             try:
                 parts = it.get("issued", {}).get("date-parts", [[]])[0]
@@ -374,10 +625,11 @@ class ReferenceResolver:
                 pass
 
             if ref_year and cand_year:
-                if abs(ref_year - cand_year) == 0:
+                diff = abs(ref_year - cand_year)
+                if diff <= 1:
                     score = min(1.0, score + 0.05)
-                elif abs(ref_year - cand_year) > 4 and score < 0.95:
-                    score = max(0.0, score - 0.15)
+                elif diff > 5 and score < 0.75:
+                    score = max(0.0, score - 0.10)
 
             scored.append((score, cand_id, cand_title))
 
@@ -389,13 +641,13 @@ class ReferenceResolver:
 
         # Exact title match check
         is_exact = normalize_title(ref_title) == normalize_title(top_title)
-        if not is_exact and ref_raw and normalize_title(top_title) in normalize_title(ref_raw) and len(normalize_title(top_title)) >= 12:
+        if not is_exact and ref_raw and normalize_title(top_title) in normalize_title(ref_raw) and len(normalize_title(top_title)) >= 10:
             is_exact = True
 
-        # Thresholds
+        # Candidate selection
         if top_score >= 0.85:
-            # An exact title match resolves cleanly
-            if is_exact:
+            # An exact match or containment resolves directly
+            if is_exact or top_score >= 0.95:
                 return ReferenceResolution(
                     status="resolved",
                     match_score=round(top_score, 4),
@@ -404,8 +656,8 @@ class ReferenceResolver:
                     resolved_at=now_iso
                 )
 
-            # Check for ambiguity if the 2nd candidate has a different title and close score
-            if len(scored) > 1 and second_score >= 0.75 and (top_score - second_score) < 0.08:
+            # Only mark ambiguous if competing candidate has different title and tight margin < 0.04
+            if len(scored) > 1 and second_score >= 0.80 and (top_score - second_score) < 0.04:
                 second_title = scored[1][2]
                 if normalize_title(top_title) != normalize_title(second_title):
                     return ReferenceResolution(
@@ -450,9 +702,9 @@ def are_duplicate_papers(rec1: PaperRecord, rec2: PaperRecord) -> bool:
             return True
 
     if rec1.arxiv_id and rec2.arxiv_id:
-        a1 = rec1.arxiv_id.strip().lower()
-        a2 = rec2.arxiv_id.strip().lower()
-        if a1 == a2:
+        a1 = extract_arxiv_id_clean(rec1.arxiv_id)
+        a2 = extract_arxiv_id_clean(rec2.arxiv_id)
+        if a1 and a2 and a1 == a2:
             return True
 
     score = fuzzy_title_score(rec1.title, rec2.title)
@@ -547,7 +799,7 @@ def merge_paper_records(rec1: PaperRecord, rec2: PaperRecord) -> PaperRecord:
 def resolve_paper_references(
     paper: PaperRecord,
     resolver: Optional[ReferenceResolver] = None,
-    max_workers: int = 4
+    max_workers: int = 2
 ) -> PaperRecord:
     """
     Resolves all references in paper in-place (or threaded) and returns paper.

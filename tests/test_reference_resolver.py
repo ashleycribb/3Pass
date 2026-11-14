@@ -87,7 +87,7 @@ def test_resolution_resolved_via_title_search(temp_cache_dir):
     assert res.status == "resolved"
     assert res.match_score >= 0.85
     assert res.matched_id is not None
-    assert res.matched_service in ["crossref", "openalex", "semanticscholar"]
+    assert res.matched_service in ["crossref", "openalex", "semanticscholar", "arxiv"]
 
 
 def test_resolution_ambiguous_status(temp_cache_dir):
@@ -277,3 +277,122 @@ def test_human_only_citation_role():
 
     rec2 = PaperRecord.from_dict(d)
     assert rec2.human_notes["citation_role"] == "method"
+
+
+def test_crossref_mailto_from_config(temp_cache_dir):
+    """Crossref mailto must come from config / env, never a made-up address; skipped if unset."""
+    from scripts.reference_resolver import get_config_mailto
+
+    with patch.dict(os.environ, {"CROSSREF_MAILTO": "ashecribb@u.boisestate.edu"}):
+        assert get_config_mailto() == "ashecribb@u.boisestate.edu"
+        resolver = ReferenceResolver(cache_dir=temp_cache_dir)
+        assert resolver.email == "ashecribb@u.boisestate.edu"
+        assert "mailto:ashecribb@u.boisestate.edu" in resolver.session.headers["User-Agent"]
+
+    with patch.dict(os.environ, {"CROSSREF_MAILTO": ""}):
+        with patch("scripts.corpus_common.load_config", return_value={"crossref_mailto": None}):
+            resolver_no_mail = ReferenceResolver(cache_dir=temp_cache_dir, email=None)
+            assert resolver_no_mail.email is None
+            assert "mailto:" not in resolver_no_mail.session.headers["User-Agent"]
+
+
+def test_year_tolerance_plus_minus_one(temp_cache_dir):
+    """Year difference of ±1 (e.g. preprint vs conference year) is accepted."""
+    resolver = ReferenceResolver(cache_dir=temp_cache_dir)
+    # Layer Normalization: preprint 2016
+    ref = ReferenceRecord(
+        id="ref_year_tol",
+        title="Layer Normalization",
+        year=2017,  # cited as 2017
+        arxiv_id="1607.06450"
+    )
+    res = resolver.resolve_reference(ref)
+    assert res.status == "resolved"
+    assert "1607.06450" in res.matched_id
+
+
+def test_10_known_references_resolve(temp_cache_dir):
+    """10 known foundational references must all resolve."""
+    resolver = ReferenceResolver(cache_dir=temp_cache_dir)
+
+    known_references = [
+        ReferenceRecord(
+            id="known_1",
+            title="Attention Is All You Need",
+            authors=["Vaswani", "Shazeer"],
+            year=2017,
+            arxiv_id="1706.03762"
+        ),
+        ReferenceRecord(
+            id="known_2",
+            title="Deep Residual Learning for Image Recognition",
+            authors=["Kaiming He", "Xiangyu Zhang"],
+            year=2016,
+            doi="10.1109/CVPR.2016.90"
+        ),
+        ReferenceRecord(
+            id="known_3",
+            title="Layer Normalization",
+            authors=["Jimmy Lei Ba", "Jamie Ryan Kiros", "Geoffrey E Hinton"],
+            year=2016,
+            arxiv_id="1607.06450"
+        ),
+        ReferenceRecord(
+            id="known_4",
+            title="Neural Machine Translation by Jointly Learning to Align and Translate",
+            authors=["Dzmitry Bahdanau", "Kyunghyun Cho", "Yoshua Bengio"],
+            year=2014,
+            arxiv_id="1409.0473"
+        ),
+        ReferenceRecord(
+            id="known_5",
+            title="Adam: A Method for Stochastic Optimization",
+            authors=["Diederik P. Kingma", "Jimmy Ba"],
+            year=2014,
+            arxiv_id="1412.6980"
+        ),
+        ReferenceRecord(
+            id="known_6",
+            title="Convolutional Sequence to Sequence Learning",
+            authors=["Jonas Gehring", "Michael Auli", "David Grangier"],
+            year=2017,
+            arxiv_id="1705.03122"
+        ),
+        ReferenceRecord(
+            id="known_7",
+            title="Language Models are Few-Shot Learners",
+            authors=["Tom Brown", "Benjamin Mann"],
+            year=2020,
+            arxiv_id="2005.14165",
+            raw="Tom Brown et al. Language Models are Few-Shot Learners. arXiv:2005.14165, NeurIPS 2020."
+        ),
+        ReferenceRecord(
+            id="known_8",
+            title="Recurrent Neural Network Grammars",
+            authors=["Chris Dyer", "Adhiguna Kuncoro"],
+            year=2016,
+            doi="10.18653/v1/n16-1024"
+        ),
+        ReferenceRecord(
+            id="known_9",
+            title="Long Short-Term Memory",
+            authors=["Sepp Hochreiter", "Jürgen Schmidhuber"],
+            year=1997,
+            doi="10.1162/neco.1997.9.8.1735"
+        ),
+        ReferenceRecord(
+            id="known_10",
+            title="Sequence to Sequence Learning with Neural Networks",
+            authors=["Ilya Sutskever", "Oriol Vinyals", "Quoc V. Le"],
+            year=2014,
+            arxiv_id="1409.3215",
+            raw="Ilya Sutskever, Oriol Vinyals, Quoc V. Le. Sequence to sequence learning with neural networks. arXiv:1409.3215, 2014."
+        ),
+    ]
+
+    for ref in known_references:
+        res = resolver.resolve_reference(ref)
+        assert res.status == "resolved", f"Failed to resolve {ref.title} (status={res.status}, score={res.match_score}, id={res.matched_id})"
+        assert res.matched_id is not None
+        assert res.match_score >= 0.80
+

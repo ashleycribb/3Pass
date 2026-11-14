@@ -331,7 +331,7 @@ def resolve_and_report_smoke_papers(papers: List[Tuple[str, str, Optional[PaperR
             continue
 
         print(f"\nResolving references for [{path_key}] {rec.title[:60]} ({len(rec.references)} refs)...")
-        resolve_paper_references(rec, resolver=resolver, max_workers=5)
+        resolve_paper_references(rec, resolver=resolver, max_workers=2)
 
         total = len(rec.references)
         resolved = sum(1 for r in rec.references if r.resolution and r.resolution.status == "resolved")

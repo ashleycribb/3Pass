@@ -24,6 +24,7 @@ DEFAULTS = {
     "intermediate_dir": "cache/s3a_intermediate",
     "batch_size": 50,
     "s3a_binary_path": os.environ.get("S3A_CLI", "s3a-cli"),
+    "crossref_mailto": os.environ.get("CROSSREF_MAILTO", "ashecribb@u.boisestate.edu"),
 }
 
 

@@ -22,7 +22,7 @@
     "tool": "crossref-openalex",
     "tool_version": "Crossref REST API v1 (Polite Pool)",
     "source_uri": "https://api.crossref.org/works/10.1145/3491101.3503719",
-    "extracted_at": "2026-11-14T10:09:28.063538",
+    "extracted_at": "2026-11-14T11:05:38.582438",
     "per_part": {
       "metadata": {
         "tool": "crossref-openalex",
@@ -56,7 +56,7 @@
       "tool": "crossref-openalex",
       "tool_version": "Crossref REST API v1 (Polite Pool)",
       "source_uri": "https://api.crossref.org/works/10.1145/3491101.3503719",
-      "extracted_at": "2026-11-14T10:09:28.063538",
+      "extracted_at": "2026-11-14T11:05:38.582438",
       "per_part": {
         "metadata": {
           "tool": "crossref-openalex",
@@ -103,10 +103,10 @@
       "verified": "metadata-only, no body",
       "resolution": {
         "status": "not_found",
-        "match_score": 0.0,
+        "match_score": 0.4681,
         "matched_id": null,
-        "matched_service": null,
-        "resolved_at": "2026-11-14T10:10:01.136578"
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T11:06:17.550998"
       }
     },
     {
@@ -124,7 +124,7 @@
         "match_score": 0.95,
         "matched_id": "10.1145/2818052.2855518",
         "matched_service": "doi",
-        "resolved_at": "2026-11-14T10:10:00.813214"
+        "resolved_at": "2026-11-14T10:57:44.234422"
       }
     },
     {
@@ -138,11 +138,11 @@
       "raw": "Terence Broad Sebastian Berns Simon Colton and Mick Grierson. 2021. Active Divergence with Generative Deep Learning–A Survey and Taxonomy. arXiv preprint arXiv:2107.05599(2021).  Terence Broad Sebastian Berns Simon Colton and Mick Grierson. 2021. Active Divergence with Generative Deep Learning–A Survey and Taxonomy. arXiv preprint arXiv:2107.05599(2021).",
       "verified": "metadata-only, no body",
       "resolution": {
-        "status": "not_found",
-        "match_score": 0.2822,
-        "matched_id": null,
-        "matched_service": "crossref",
-        "resolved_at": "2026-11-14T10:10:02.662798"
+        "status": "resolved",
+        "match_score": 1.0,
+        "matched_id": "10.48550/arXiv.2107.05599",
+        "matched_service": "arxiv",
+        "resolved_at": "2026-11-14T10:57:44.415649"
       }
     },
     {
@@ -156,11 +156,11 @@
       "raw": "Andrew Brock Jeff Donahue and Karen Simonyan. 2019. Large Scale GAN Training for High Fidelity Natural Image Synthesis. arxiv:1809.11096 [cs.LG]  Andrew Brock Jeff Donahue and Karen Simonyan. 2019. Large Scale GAN Training for High Fidelity Natural Image Synthesis. arxiv:1809.11096 [cs.LG]",
       "verified": "metadata-only, no body",
       "resolution": {
-        "status": "not_found",
-        "match_score": 0.0,
-        "matched_id": null,
-        "matched_service": null,
-        "resolved_at": "2026-11-14T10:10:01.305274"
+        "status": "resolved",
+        "match_score": 1.0,
+        "matched_id": "10.48550/arXiv.1809.11096",
+        "matched_service": "arxiv",
+        "resolved_at": "2026-11-14T10:57:44.595469"
       }
     },
     {
@@ -178,7 +178,7 @@
         "match_score": 0.95,
         "matched_id": "10.1097/01.ncn.0000336496.42221.c5",
         "matched_service": "crossref",
-        "resolved_at": "2026-11-14T10:10:03.188109"
+        "resolved_at": "2026-11-14T10:57:44.863307"
       }
     },
     {
@@ -192,11 +192,11 @@
       "raw": "Katherine Crowson. 2021. Rivers Have Wings. https://twitter.com/RiversHaveWings  Katherine Crowson. 2021. Rivers Have Wings. https://twitter.com/RiversHaveWings",
       "verified": "metadata-only, no body",
       "resolution": {
-        "status": "not_found",
-        "match_score": 0.3654,
-        "matched_id": null,
+        "status": "ambiguous",
+        "match_score": 0.75,
+        "matched_id": "10.2307/j.ctt9qh8f2.69",
         "matched_service": "crossref",
-        "resolved_at": "2026-11-14T10:10:02.468293"
+        "resolved_at": "2026-11-14T11:06:17.537345"
       }
     },
     {
@@ -210,11 +210,11 @@
       "raw": "Nicholas Davis . 2013 . Human-computer co-creativity: Blending human and computational creativity . In Doctoral Consortium of the Ninth AAAI Conference on Artificial Intelligence and Interactive Digital Entertainment ( Boston, Massachusetts, USA, October 14-18,). AAAI, 9–12. Nicholas Davis. 2013. Human-computer co-creativity: Blending human and computational creativity. In Doctoral Consortium of the Ninth AAAI Conference on Artificial Intelligence and Interactive Digital Entertainment (Boston, Massachusetts, USA, October 14-18,). AAAI, 9–12.",
       "verified": "metadata-only, no body",
       "resolution": {
-        "status": "resolved",
-        "match_score": 1.0,
-        "matched_id": "10.1609/aiide.v9i6.12603",
+        "status": "not_found",
+        "match_score": 0.3103,
+        "matched_id": null,
         "matched_service": "crossref",
-        "resolved_at": "2026-11-14T10:10:02.794167"
+        "resolved_at": "2026-11-14T11:06:18.289062"
       }
     },
     {
@@ -232,7 +232,7 @@
         "match_score": 0.95,
         "matched_id": "10.1145/2856767.2856795",
         "matched_service": "doi",
-        "resolved_at": "2026-11-14T10:10:01.436043"
+        "resolved_at": "2026-11-14T10:57:45.679937"
       }
     },
     {
@@ -247,10 +247,10 @@
       "verified": "metadata-only, no body",
       "resolution": {
         "status": "not_found",
-        "match_score": 0.3594,
+        "match_score": 0.4113,
         "matched_id": null,
         "matched_service": "crossref",
-        "resolved_at": "2026-11-14T10:10:03.158800"
+        "resolved_at": "2026-11-14T11:06:18.289062"
       }
     },
     {
@@ -268,7 +268,7 @@
         "match_score": 0.95,
         "matched_id": "10.1145/3027063.3027072",
         "matched_service": "doi",
-        "resolved_at": "2026-11-14T10:10:02.906432"
+        "resolved_at": "2026-11-14T10:57:45.922983"
       }
     },
     {
@@ -282,11 +282,11 @@
       "raw": "Upol Ehsan , Philipp Wintersberger , Q Vera Liao , Martina Mara , Marc Streit , Sandra Wachter , Andreas Riener , and Mark  O Riedl . 2021 . Operationalizing Human-Centered Perspectives in Explainable AI. In Extended Abstracts of the 2021 CHI Conference on Human Factors in Computing Systems. 1–6. Upol Ehsan, Philipp Wintersberger, Q Vera Liao, Martina Mara, Marc Streit, Sandra Wachter, Andreas Riener, and Mark O Riedl. 2021. Operationalizing Human-Centered Perspectives in Explainable AI. In Extended Abstracts of the 2021 CHI Conference on Human Factors in Computing Systems. 1–6.",
       "verified": "metadata-only, no body",
       "resolution": {
-        "status": "not_found",
-        "match_score": 0.2333,
-        "matched_id": null,
+        "status": "resolved",
+        "match_score": 1.0,
+        "matched_id": "10.1145/3411763.3441342",
         "matched_service": "crossref",
-        "resolved_at": "2026-11-14T10:10:03.646927"
+        "resolved_at": "2026-11-14T10:57:47.123522"
       }
     },
     {
@@ -300,11 +300,11 @@
       "raw": "Ahmed Elgammal , Bingchen Liu , Mohamed Elhoseiny , and Marian Mazzone . 2017 . Can: Creative adversarial networks, generating ” art” by learning about styles and deviating from style norms. arXiv preprint arXiv:1706.07068(2017). Ahmed Elgammal, Bingchen Liu, Mohamed Elhoseiny, and Marian Mazzone. 2017. Can: Creative adversarial networks, generating” art” by learning about styles and deviating from style norms. arXiv preprint arXiv:1706.07068(2017).",
       "verified": "metadata-only, no body",
       "resolution": {
-        "status": "not_found",
-        "match_score": 0.5974,
-        "matched_id": null,
-        "matched_service": "crossref",
-        "resolved_at": "2026-11-14T10:10:04.178686"
+        "status": "resolved",
+        "match_score": 1.0,
+        "matched_id": "10.48550/arXiv.1706.07068",
+        "matched_service": "arxiv",
+        "resolved_at": "2026-11-14T10:57:47.305406"
       }
     },
     {
@@ -322,7 +322,7 @@
         "match_score": 0.95,
         "matched_id": "10.1145/3407662.3407757",
         "matched_service": "doi",
-        "resolved_at": "2026-11-14T10:10:03.188109"
+        "resolved_at": "2026-11-14T10:57:47.395865"
       }
     },
     {
@@ -337,10 +337,10 @@
       "verified": "metadata-only, no body",
       "resolution": {
         "status": "not_found",
-        "match_score": 0.2595,
+        "match_score": 0.592,
         "matched_id": null,
         "matched_service": "crossref",
-        "resolved_at": "2026-11-14T10:10:04.255613"
+        "resolved_at": "2026-11-14T11:06:19.518578"
       }
     },
     {
@@ -355,10 +355,10 @@
       "verified": "metadata-only, no body",
       "resolution": {
         "status": "resolved",
-        "match_score": 0.95,
-        "matched_id": "10.1167/16.12.326",
-        "matched_service": "crossref",
-        "resolved_at": "2026-11-14T10:10:04.292788"
+        "match_score": 1.0,
+        "matched_id": "10.48550/arXiv.1508.06576",
+        "matched_service": "arxiv",
+        "resolved_at": "2026-11-14T10:57:47.643902"
       }
     },
     {
@@ -372,11 +372,11 @@
       "raw": "Pablo Gervás . 2001. An Expert System for the Composition of Formal Spanish Poetry . In Applications and Innovations in Intelligent Systems VIII , Ann Macintosh, Mike Moulton, and Frans Coenen (Eds.). Springer London , London , 19–32. Pablo Gervás. 2001. An Expert System for the Composition of Formal Spanish Poetry. In Applications and Innovations in Intelligent Systems VIII, Ann Macintosh, Mike Moulton, and Frans Coenen (Eds.). Springer London, London, 19–32.",
       "verified": "metadata-only, no body",
       "resolution": {
-        "status": "not_found",
-        "match_score": 0.0,
-        "matched_id": null,
-        "matched_service": null,
-        "resolved_at": "2026-11-14T10:10:03.985086"
+        "status": "resolved",
+        "match_score": 0.95,
+        "matched_id": "10.1007/978-1-4471-0275-5_2",
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:57:48.125558"
       }
     },
     {
@@ -394,7 +394,7 @@
         "match_score": 0.95,
         "matched_id": "10.1145/3379336.3379355",
         "matched_service": "doi",
-        "resolved_at": "2026-11-14T10:10:04.121345"
+        "resolved_at": "2026-11-14T10:57:48.220294"
       }
     },
     {
@@ -412,7 +412,7 @@
         "match_score": 0.95,
         "matched_id": "10.1145/3397482.3450707",
         "matched_service": "doi",
-        "resolved_at": "2026-11-14T10:10:04.100625"
+        "resolved_at": "2026-11-14T10:57:48.320214"
       }
     },
     {
@@ -427,10 +427,10 @@
       "verified": "metadata-only, no body",
       "resolution": {
         "status": "resolved",
-        "match_score": 0.95,
+        "match_score": 1.0,
         "matched_id": "10.1162/leon_a_01930",
         "matched_service": "doi",
-        "resolved_at": "2026-11-14T10:10:04.206995"
+        "resolved_at": "2026-11-14T10:57:48.401442"
       }
     },
     {
@@ -444,11 +444,11 @@
       "raw": "Cheng- Zhi Anna Huang , Ashish Vaswani , Jakob Uszkoreit , Noam Shazeer , Ian Simon , Curtis Hawthorne , Andrew Dai , Matt Hoffman , Monica Dinculescu , and Douglas Eck . 2019 . Music Transformer: Generating Music with Long-Term Structure. https://arxiv.org/abs/1809.04281 Cheng-Zhi Anna Huang, Ashish Vaswani, Jakob Uszkoreit, Noam Shazeer, Ian Simon, Curtis Hawthorne, Andrew Dai, Matt Hoffman, Monica Dinculescu, and Douglas Eck. 2019. Music Transformer: Generating Music with Long-Term Structure. https://arxiv.org/abs/1809.04281",
       "verified": "metadata-only, no body",
       "resolution": {
-        "status": "not_found",
-        "match_score": 0.0,
-        "matched_id": null,
-        "matched_service": null,
-        "resolved_at": "2026-11-14T10:10:04.827001"
+        "status": "resolved",
+        "match_score": 0.95,
+        "matched_id": "10.48550/arXiv.1809.04281",
+        "matched_service": "arxiv",
+        "resolved_at": "2026-11-14T10:57:48.507637"
       }
     },
     {
@@ -463,10 +463,10 @@
       "verified": "metadata-only, no body",
       "resolution": {
         "status": "not_found",
-        "match_score": 0.4248,
+        "match_score": 0.0,
         "matched_id": null,
-        "matched_service": "crossref",
-        "resolved_at": "2026-11-14T10:10:04.891067"
+        "matched_service": null,
+        "resolved_at": "2026-11-14T11:06:19.701914"
       }
     },
     {
@@ -481,10 +481,10 @@
       "verified": "metadata-only, no body",
       "resolution": {
         "status": "not_found",
-        "match_score": 0.1207,
+        "match_score": 0.4859,
         "matched_id": null,
         "matched_service": "crossref",
-        "resolved_at": "2026-11-14T10:10:04.921091"
+        "resolved_at": "2026-11-14T11:06:20.274338"
       }
     },
     {
@@ -499,10 +499,10 @@
       "verified": "metadata-only, no body",
       "resolution": {
         "status": "not_found",
-        "match_score": 0.0,
+        "match_score": 0.5207,
         "matched_id": null,
-        "matched_service": null,
-        "resolved_at": "2026-11-14T10:10:05.140387"
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T11:06:20.210319"
       }
     },
     {
@@ -517,10 +517,10 @@
       "verified": "metadata-only, no body",
       "resolution": {
         "status": "not_found",
-        "match_score": 0.0605,
+        "match_score": 0.5207,
         "matched_id": null,
         "matched_service": "crossref",
-        "resolved_at": "2026-11-14T10:10:05.215654"
+        "resolved_at": "2026-11-14T11:06:21.156088"
       }
     },
     {
@@ -538,7 +538,7 @@
         "match_score": 0.95,
         "matched_id": "10.1145/3323994.3369898",
         "matched_service": "doi",
-        "resolved_at": "2026-11-14T10:10:05.029289"
+        "resolved_at": "2026-11-14T10:57:50.169403"
       }
     },
     {
@@ -553,10 +553,10 @@
       "verified": "metadata-only, no body",
       "resolution": {
         "status": "not_found",
-        "match_score": 0.3293,
+        "match_score": 0.404,
         "matched_id": null,
         "matched_service": "crossref",
-        "resolved_at": "2026-11-14T10:10:05.401844"
+        "resolved_at": "2026-11-14T11:06:21.513398"
       }
     },
     {
@@ -574,7 +574,7 @@
         "match_score": 0.95,
         "matched_id": "10.1145/3313831.3376739",
         "matched_service": "doi",
-        "resolved_at": "2026-11-14T10:10:05.260965"
+        "resolved_at": "2026-11-14T10:57:50.339599"
       }
     },
     {
@@ -589,10 +589,10 @@
       "verified": "metadata-only, no body",
       "resolution": {
         "status": "not_found",
-        "match_score": 0.0,
+        "match_score": 0.5207,
         "matched_id": null,
-        "matched_service": null,
-        "resolved_at": "2026-11-14T10:10:05.605617"
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T11:06:22.028046"
       }
     },
     {
@@ -606,11 +606,11 @@
       "raw": "Charles Patrick Martin , Fabio Morreale , Benedikte Wallace , and Hugo Scurto . 2021 . Critical Perspectives on AI/ML in Musical Interfaces. Workshop at NIME 2021. https://critical-ml-music-interfaces.github.io Charles Patrick Martin, Fabio Morreale, Benedikte Wallace, and Hugo Scurto. 2021. Critical Perspectives on AI/ML in Musical Interfaces. Workshop at NIME 2021. https://critical-ml-music-interfaces.github.io",
       "verified": "metadata-only, no body",
       "resolution": {
-        "status": "resolved",
-        "match_score": 0.95,
-        "matched_id": "10.21428/92fbeb44.14356b44",
+        "status": "ambiguous",
+        "match_score": 0.6383,
+        "matched_id": "10.21428/92fbeb44.b5dff8ab",
         "matched_service": "crossref",
-        "resolved_at": "2026-11-14T10:10:06.228077"
+        "resolved_at": "2026-11-14T11:06:22.973761"
       }
     },
     {
@@ -628,7 +628,7 @@
         "match_score": 0.95,
         "matched_id": "10.1145/3173574.3173943",
         "matched_service": "doi",
-        "resolved_at": "2026-11-14T10:10:05.387001"
+        "resolved_at": "2026-11-14T10:57:51.676736"
       }
     },
     {
@@ -646,7 +646,7 @@
         "match_score": 0.95,
         "matched_id": "10.1145/3173574.3173943",
         "matched_service": "doi",
-        "resolved_at": "2026-11-14T10:10:05.387001"
+        "resolved_at": "2026-11-14T10:57:51.676736"
       }
     },
     {
@@ -660,11 +660,11 @@
       "raw": "Sam Moore . 2021. Justin Bieber fooled into picking a fight with deepfake Tom Cruise. Independent (Oct 2021 ). https://www.independent.co.uk/arts-entertainment/music/news/justin-bieber-fight-tom-cruise-b1935148.html Sam Moore. 2021. Justin Bieber fooled into picking a fight with deepfake Tom Cruise. Independent (Oct 2021). https://www.independent.co.uk/arts-entertainment/music/news/justin-bieber-fight-tom-cruise-b1935148.html",
       "verified": "metadata-only, no body",
       "resolution": {
-        "status": "not_found",
-        "match_score": 0.0,
-        "matched_id": null,
-        "matched_service": null,
-        "resolved_at": "2026-11-14T10:10:05.810277"
+        "status": "resolved",
+        "match_score": 0.95,
+        "matched_id": "10.5040/9780755603749",
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:57:51.935667"
       }
     },
     {
@@ -678,11 +678,11 @@
       "raw": "Michael Muller , Cecilia Aragon , Shion Guha , Marina Kogan , Gina Neff , Cathrine Seidelin , Katie Shilton , and Anissa Tanweer . 2020 . Interrogating Data Science. In Conference Companion Publication of the 2020 on Computer Supported Cooperative Work and Social Computing. 467–473 . Michael Muller, Cecilia Aragon, Shion Guha, Marina Kogan, Gina Neff, Cathrine Seidelin, Katie Shilton, and Anissa Tanweer. 2020. Interrogating Data Science. In Conference Companion Publication of the 2020 on Computer Supported Cooperative Work and Social Computing. 467–473.",
       "verified": "metadata-only, no body",
       "resolution": {
-        "status": "not_found",
-        "match_score": 0.0,
-        "matched_id": null,
-        "matched_service": null,
-        "resolved_at": "2026-11-14T10:10:06.066116"
+        "status": "resolved",
+        "match_score": 1.0,
+        "matched_id": "10.1145/3406865.3418584",
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:57:52.351520"
       }
     },
     {
@@ -700,7 +700,7 @@
         "match_score": 0.95,
         "matched_id": "10.1145/3290607.3299018",
         "matched_service": "doi",
-        "resolved_at": "2026-11-14T10:10:05.798742"
+        "resolved_at": "2026-11-14T10:57:52.138452"
       }
     },
     {
@@ -714,11 +714,11 @@
       "raw": "Michael Muller , April  Y. Wang , Steven  I. Ross , Justin  D. Weisz , Mayank Agarwal , Kartik Talamadupula , Stephanie Houde , Fernando Martinez , John Richards , Jaimie Drozdal , Xie Lui , David Piorkowski , and Dakuo Wang . 2021. How data scientists improve generated code documentation in Jupyter notebooks. Retrieved October 5, 2021 from https://hai-gen2021.github.io/program/ Michael Muller, April Y. Wang, Steven I. Ross, Justin D. Weisz, Mayank Agarwal, Kartik Talamadupula, Stephanie Houde, Fernando Martinez, John Richards, Jaimie Drozdal, Xie Lui, David Piorkowski, and Dakuo Wang. 2021. How data scientists improve generated code documentation in Jupyter notebooks. Retrieved October 5, 2021 from https://hai-gen2021.github.io/program/",
       "verified": "metadata-only, no body",
       "resolution": {
-        "status": "not_found",
-        "match_score": 0.164,
-        "matched_id": null,
+        "status": "ambiguous",
+        "match_score": 0.6354,
+        "matched_id": "10.18653/v1/2021.findings-emnlp.381",
         "matched_service": "crossref",
-        "resolved_at": "2026-11-14T10:10:06.226070"
+        "resolved_at": "2026-11-14T11:06:23.128518"
       }
     },
     {
@@ -733,10 +733,10 @@
       "verified": "metadata-only, no body",
       "resolution": {
         "status": "not_found",
-        "match_score": 0.418,
+        "match_score": 0.5714,
         "matched_id": null,
         "matched_service": "crossref",
-        "resolved_at": "2026-11-14T10:10:06.325696"
+        "resolved_at": "2026-11-14T11:06:23.836980"
       }
     },
     {
@@ -750,11 +750,11 @@
       "raw": "AkshatKumar Nigam , Robert Pollice , Mario Krenn , Gabriel dos Passos Gomes , and Alan Aspuru-Guzik . 2021. Beyond generative models: superfast traversal, optimization, novelty, exploration and discovery (STONED) algorithm for molecules using SELFIES. Chemical science ( 2021 ). AkshatKumar Nigam, Robert Pollice, Mario Krenn, Gabriel dos Passos Gomes, and Alan Aspuru-Guzik. 2021. Beyond generative models: superfast traversal, optimization, novelty, exploration and discovery (STONED) algorithm for molecules using SELFIES. Chemical science (2021).",
       "verified": "metadata-only, no body",
       "resolution": {
-        "status": "not_found",
-        "match_score": 0.254,
-        "matched_id": null,
+        "status": "resolved",
+        "match_score": 1.0,
+        "matched_id": "10.1039/d1sc00231g",
         "matched_service": "crossref",
-        "resolved_at": "2026-11-14T10:10:06.336593"
+        "resolved_at": "2026-11-14T10:57:53.732687"
       }
     },
     {
@@ -769,10 +769,10 @@
       "verified": "metadata-only, no body",
       "resolution": {
         "status": "resolved",
-        "match_score": 0.95,
+        "match_score": 1.0,
         "matched_id": "10.1115/detc2021-68103",
         "matched_service": "doi",
-        "resolved_at": "2026-11-14T10:10:06.214993"
+        "resolved_at": "2026-11-14T10:57:53.880847"
       }
     },
     {
@@ -786,11 +786,11 @@
       "raw": "NPR. 2021. Team uses AI to complete Beethoven’s unfinished masterpiece. NPR (Oct 2021 ). https://www.npr.org/2021/10/02/1042742330/team-uses-ai-to-complete-beethovens-unfinished-masterpiece NPR. 2021. Team uses AI to complete Beethoven’s unfinished masterpiece. NPR (Oct 2021). https://www.npr.org/2021/10/02/1042742330/team-uses-ai-to-complete-beethovens-unfinished-masterpiece",
       "verified": "metadata-only, no body",
       "resolution": {
-        "status": "not_found",
-        "match_score": 0.0833,
-        "matched_id": null,
+        "status": "ambiguous",
+        "match_score": 0.637,
+        "matched_id": "10.1017/9781108552813.004",
         "matched_service": "crossref",
-        "resolved_at": "2026-11-14T10:10:06.569612"
+        "resolved_at": "2026-11-14T11:06:23.944703"
       }
     },
     {
@@ -808,7 +808,7 @@
         "match_score": 0.95,
         "matched_id": "10.1080/09528130010029820",
         "matched_service": "doi",
-        "resolved_at": "2026-11-14T10:10:06.365459"
+        "resolved_at": "2026-11-14T10:57:53.991486"
       }
     },
     {
@@ -822,11 +822,11 @@
       "raw": "Alec Radford Jong Wook Kim Chris Hallacy Aditya Ramesh Gabriel Goh Sandhini Agarwal Girish Sastry Amanda Askell Pamela Mishkin Jack Clark Gretchen Krueger and Ilya Sutskever. 2021. Learning Transferable Visual Models From Natural Language Supervision. arxiv:2103.00020 [cs.CV]  Alec Radford Jong Wook Kim Chris Hallacy Aditya Ramesh Gabriel Goh Sandhini Agarwal Girish Sastry Amanda Askell Pamela Mishkin Jack Clark Gretchen Krueger and Ilya Sutskever. 2021. Learning Transferable Visual Models From Natural Language Supervision. arxiv:2103.00020 [cs.CV]",
       "verified": "metadata-only, no body",
       "resolution": {
-        "status": "not_found",
-        "match_score": 0.1955,
-        "matched_id": null,
-        "matched_service": "crossref",
-        "resolved_at": "2026-11-14T10:10:06.832416"
+        "status": "resolved",
+        "match_score": 1.0,
+        "matched_id": "10.48550/arXiv.2103.00020",
+        "matched_service": "arxiv",
+        "resolved_at": "2026-11-14T10:57:54.179855"
       }
     },
     {
@@ -840,11 +840,11 @@
       "raw": "Aditya Ramesh Mikhail Pavlov Gabriel Goh Scott Gray Chelsea Voss Alec Radford Mark Chen and Ilya Sutskever. 2021. Zero-Shot Text-to-Image Generation. arxiv:2102.12092 [cs.CV]  Aditya Ramesh Mikhail Pavlov Gabriel Goh Scott Gray Chelsea Voss Alec Radford Mark Chen and Ilya Sutskever. 2021. Zero-Shot Text-to-Image Generation. arxiv:2102.12092 [cs.CV]",
       "verified": "metadata-only, no body",
       "resolution": {
-        "status": "not_found",
-        "match_score": 0.0,
-        "matched_id": null,
-        "matched_service": null,
-        "resolved_at": "2026-11-14T10:10:07.067892"
+        "status": "resolved",
+        "match_score": 1.0,
+        "matched_id": "10.48550/arXiv.2102.12092",
+        "matched_service": "arxiv",
+        "resolved_at": "2026-11-14T10:57:54.367187"
       }
     },
     {
@@ -859,10 +859,10 @@
       "verified": "metadata-only, no body",
       "resolution": {
         "status": "not_found",
-        "match_score": 0.0,
+        "match_score": 0.4302,
         "matched_id": null,
-        "matched_service": null,
-        "resolved_at": "2026-11-14T10:10:07.100911"
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T11:06:25.161469"
       }
     },
     {
@@ -876,11 +876,11 @@
       "raw": "Adam Roberts , Curtis Hawthorne , and Ian Simon . 2018 . Magenta.js: A JavaScript API for Augmenting Creativity with Deep Learning . In Joint Workshop on Machine Learning for Music (ICML). Adam Roberts, Curtis Hawthorne, and Ian Simon. 2018. Magenta.js: A JavaScript API for Augmenting Creativity with Deep Learning. In Joint Workshop on Machine Learning for Music (ICML).",
       "verified": "metadata-only, no body",
       "resolution": {
-        "status": "not_found",
-        "match_score": 0.0,
-        "matched_id": null,
-        "matched_service": null,
-        "resolved_at": "2026-11-14T10:10:07.100911"
+        "status": "resolved",
+        "match_score": 0.95,
+        "matched_id": "10.1007/978-1-4302-3091-5_4",
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:57:55.188945"
       }
     },
     {
@@ -898,7 +898,7 @@
         "match_score": 0.95,
         "matched_id": "10.1080/10400419.2012.650092",
         "matched_service": "doi",
-        "resolved_at": "2026-11-14T10:10:07.023646"
+        "resolved_at": "2026-11-14T10:57:55.283501"
       }
     },
     {
@@ -912,11 +912,11 @@
       "raw": "Huzaifah Saleem . 2020. What is generative AI and how much power does it have. https://developer.ibm.com/blogs/what-is-generative-ai-and-how-much-power-does-it-have [Online ; accessed 12. Oct. 2021 ]. Huzaifah Saleem. 2020. What is generative AI and how much power does it have. https://developer.ibm.com/blogs/what-is-generative-ai-and-how-much-power-does-it-have [Online; accessed 12. Oct. 2021].",
       "verified": "metadata-only, no body",
       "resolution": {
-        "status": "not_found",
-        "match_score": 0.0,
-        "matched_id": null,
-        "matched_service": null,
-        "resolved_at": "2026-11-14T10:10:07.491730"
+        "status": "ambiguous",
+        "match_score": 0.6142,
+        "matched_id": "10.64628/aa.vfr9nvjyn",
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T11:06:25.451033"
       }
     },
     {
@@ -930,11 +930,11 @@
       "raw": "Othman Sbai , Mohamed Elhoseiny , Antoine Bordes , Yann LeCun , and Camille Couprie . 2018 . Design: Design inspiration from generative networks . In Proceedings of the European Conference on Computer Vision (ECCV) Workshops. 0–0. Othman Sbai, Mohamed Elhoseiny, Antoine Bordes, Yann LeCun, and Camille Couprie. 2018. Design: Design inspiration from generative networks. In Proceedings of the European Conference on Computer Vision (ECCV) Workshops. 0–0.",
       "verified": "metadata-only, no body",
       "resolution": {
-        "status": "not_found",
-        "match_score": 0.0,
-        "matched_id": null,
-        "matched_service": null,
-        "resolved_at": "2026-11-14T10:10:07.396959"
+        "status": "resolved",
+        "match_score": 0.95,
+        "matched_id": "10.1007/978-1-4302-6599-3_3",
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:57:55.757332"
       }
     },
     {
@@ -948,11 +948,11 @@
       "raw": "Isabella Seeber , Eva Bittner , Robert  O Briggs , Triparna De Vreede , Gert-Jan De Vreede , Aaron Elkins , Ronald Maier , Alexander  B Merz , Sarah Oeste-Reiß , Nils Randrup , 2020. Machines as teammates: A research agenda on AI in team collaboration. Information & management 57, 2 ( 2020 ), 103174. Isabella Seeber, Eva Bittner, Robert O Briggs, Triparna De Vreede, Gert-Jan De Vreede, Aaron Elkins, Ronald Maier, Alexander B Merz, Sarah Oeste-Reiß, Nils Randrup, 2020. Machines as teammates: A research agenda on AI in team collaboration. Information & management 57, 2 (2020), 103174.",
       "verified": "metadata-only, no body",
       "resolution": {
-        "status": "not_found",
-        "match_score": 0.2649,
-        "matched_id": null,
+        "status": "resolved",
+        "match_score": 1.0,
+        "matched_id": "10.1016/j.im.2019.103174",
         "matched_service": "crossref",
-        "resolved_at": "2026-11-14T10:10:07.422621"
+        "resolved_at": "2026-11-14T10:57:55.983132"
       }
     },
     {
@@ -970,7 +970,7 @@
         "match_score": 0.95,
         "matched_id": "10.1145/1323688.1323689",
         "matched_service": "doi",
-        "resolved_at": "2026-11-14T10:10:07.223663"
+        "resolved_at": "2026-11-14T10:57:56.075665"
       }
     },
     {
@@ -984,11 +984,11 @@
       "raw": "Angie Spoto and Natalia Oleynik . [n. d.]. Library of Mixed Initiative Creative Interfaces . Retrieved Oct 10, 2021 from http://mici.codingconduct.cc/ Angie Spoto and Natalia Oleynik. [n. d.]. Library of Mixed Initiative Creative Interfaces. Retrieved Oct 10, 2021 from http://mici.codingconduct.cc/",
       "verified": "metadata-only, no body",
       "resolution": {
-        "status": "not_found",
-        "match_score": 0.0,
-        "matched_id": null,
-        "matched_service": null,
-        "resolved_at": "2026-11-14T10:10:07.615927"
+        "status": "resolved",
+        "match_score": 0.95,
+        "matched_id": "10.1145/3027063.3027072",
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:57:56.282298"
       }
     },
     {
@@ -1006,7 +1006,7 @@
         "match_score": 0.95,
         "matched_id": "10.1007/978-3-642-10643-9_10",
         "matched_service": "doi",
-        "resolved_at": "2026-11-14T10:10:07.332390"
+        "resolved_at": "2026-11-14T10:57:56.316880"
       }
     },
     {
@@ -1020,11 +1020,11 @@
       "raw": "ICCC’20 The Eleventh International Conference on Computational Creativity. 2020. Workshop on the Future of Co-Creative Systems. Retrieved Oct 11, 2021 from https://computationalcreativity.net/workshops/cocreative-iccc20/ ICCC’20 The Eleventh International Conference on Computational Creativity. 2020. Workshop on the Future of Co-Creative Systems. Retrieved Oct 11, 2021 from https://computationalcreativity.net/workshops/cocreative-iccc20/",
       "verified": "metadata-only, no body",
       "resolution": {
-        "status": "not_found",
-        "match_score": 0.0,
-        "matched_id": null,
-        "matched_service": null,
-        "resolved_at": "2026-11-14T10:10:07.706178"
+        "status": "ambiguous",
+        "match_score": 0.617,
+        "matched_id": "10.1109/iccvw.2019.00383",
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T11:06:26.243910"
       }
     },
     {
@@ -1039,10 +1039,10 @@
       "verified": "metadata-only, no body",
       "resolution": {
         "status": "not_found",
-        "match_score": 0.0,
+        "match_score": 0.5119,
         "matched_id": null,
-        "matched_service": null,
-        "resolved_at": "2026-11-14T10:10:07.762142"
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T11:06:26.228529"
       }
     },
     {
@@ -1057,10 +1057,10 @@
       "verified": "metadata-only, no body",
       "resolution": {
         "status": "not_found",
-        "match_score": 0.0,
+        "match_score": 0.5833,
         "matched_id": null,
-        "matched_service": null,
-        "resolved_at": "2026-11-14T10:10:07.973011"
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T11:06:27.063910"
       }
     },
     {
@@ -1075,10 +1075,10 @@
       "verified": "metadata-only, no body",
       "resolution": {
         "status": "not_found",
-        "match_score": 0.0,
+        "match_score": 0.3878,
         "matched_id": null,
-        "matched_service": null,
-        "resolved_at": "2026-11-14T10:10:08.110161"
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T11:06:27.012000"
       }
     },
     {
@@ -1096,7 +1096,7 @@
         "match_score": 0.95,
         "matched_id": "10.1021/acsmedchemlett.0c00088",
         "matched_service": "doi",
-        "resolved_at": "2026-11-14T10:10:07.848364"
+        "resolved_at": "2026-11-14T10:57:57.878500"
       }
     },
     {
@@ -1114,7 +1114,7 @@
         "match_score": 0.95,
         "matched_id": "10.1007/978-3-030-72914-1_23",
         "matched_service": "doi",
-        "resolved_at": "2026-11-14T10:10:07.878955"
+        "resolved_at": "2026-11-14T10:57:58.224786"
       }
     },
     {
@@ -1128,11 +1128,11 @@
       "raw": "April Yi Wang , Dakuo Wang , Jaimie Drozdal , Michael Muller , Soya Park , Justin  D Weisz , Xuye Liu , Lingfei Wu , and Casey Dugan . 2021 . Themisto: Towards Automated Documentation Generation in Computational Notebooks. arXiv preprint arXiv:2102.12592(2021). April Yi Wang, Dakuo Wang, Jaimie Drozdal, Michael Muller, Soya Park, Justin D Weisz, Xuye Liu, Lingfei Wu, and Casey Dugan. 2021. Themisto: Towards Automated Documentation Generation in Computational Notebooks. arXiv preprint arXiv:2102.12592(2021).",
       "verified": "metadata-only, no body",
       "resolution": {
-        "status": "not_found",
-        "match_score": 0.0,
-        "matched_id": null,
-        "matched_service": null,
-        "resolved_at": "2026-11-14T10:10:08.488677"
+        "status": "resolved",
+        "match_score": 0.95,
+        "matched_id": "10.48550/arXiv.2102.12592",
+        "matched_service": "arxiv",
+        "resolved_at": "2026-11-14T10:57:58.283319"
       }
     },
     {
@@ -1146,11 +1146,11 @@
       "raw": "Justin  D Weisz , Michael Muller , Stephanie Houde , John Richards , Steven  I Ross , Fernando Martinez , Mayank Agarwal , and Kartik Talamadupula . 2021 . Perfection Not Required? Human-AI Partnerships in Code Translation. In 26th International Conference on Intelligent User Interfaces. 402–412 . Justin D Weisz, Michael Muller, Stephanie Houde, John Richards, Steven I Ross, Fernando Martinez, Mayank Agarwal, and Kartik Talamadupula. 2021. Perfection Not Required? Human-AI Partnerships in Code Translation. In 26th International Conference on Intelligent User Interfaces. 402–412.",
       "verified": "metadata-only, no body",
       "resolution": {
-        "status": "not_found",
-        "match_score": 0.0,
-        "matched_id": null,
-        "matched_service": null,
-        "resolved_at": "2026-11-14T10:10:08.377573"
+        "status": "resolved",
+        "match_score": 1.0,
+        "matched_id": "10.1145/3397481.3450656",
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:57:59.031510"
       }
     },
     {
@@ -1164,11 +1164,11 @@
       "raw": "Mark Wilson . 2021. This amazing AI tool lets you create human faces from scratch . Fast Company (Apr 2021 ). https://www.fastcompany.com/90628866/this-amazing-ai-tool-lets-you-create-human-faces-from-scratch Mark Wilson. 2021. This amazing AI tool lets you create human faces from scratch. Fast Company (Apr 2021). https://www.fastcompany.com/90628866/this-amazing-ai-tool-lets-you-create-human-faces-from-scratch",
       "verified": "metadata-only, no body",
       "resolution": {
-        "status": "not_found",
-        "match_score": 0.0,
-        "matched_id": null,
-        "matched_service": null,
-        "resolved_at": "2026-11-14T10:10:08.301177"
+        "status": "resolved",
+        "match_score": 0.95,
+        "matched_id": "10.1016/s1474-4422(09)70075-4",
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:57:58.663643"
       }
     },
     {
@@ -1182,11 +1182,11 @@
       "raw": "Georgios  N Yannakakis , Antonios Liapis , and Constantine Alexopoulos . 2014 . Mixed-initiative co-creativity . In Proceedings of the 9th International Conference on the Foundations of Digital Games, FDG 2014 (Liberty of the Seas, Caribbean, April 3-7). Georgios N Yannakakis, Antonios Liapis, and Constantine Alexopoulos. 2014. Mixed-initiative co-creativity. In Proceedings of the 9th International Conference on the Foundations of Digital Games, FDG 2014 (Liberty of the Seas, Caribbean, April 3-7).",
       "verified": "metadata-only, no body",
       "resolution": {
-        "status": "not_found",
-        "match_score": 0.0,
-        "matched_id": null,
-        "matched_service": null,
-        "resolved_at": "2026-11-14T10:10:08.494676"
+        "status": "ambiguous",
+        "match_score": 0.88,
+        "matched_id": "10.1145/3759914",
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T11:06:28.025889"
       }
     },
     {
@@ -1200,11 +1200,11 @@
       "raw": "Yijun Zhou Yuki Koyama Masataka Goto and Takeo Igarashi. 2020. Generative Melody Composition with Human-in-the-Loop Bayesian Optimization. arXiv preprint arXiv:2010.03190(2020).  Yijun Zhou Yuki Koyama Masataka Goto and Takeo Igarashi. 2020. Generative Melody Composition with Human-in-the-Loop Bayesian Optimization. arXiv preprint arXiv:2010.03190(2020).",
       "verified": "metadata-only, no body",
       "resolution": {
-        "status": "not_found",
-        "match_score": 0.0,
-        "matched_id": null,
-        "matched_service": null,
-        "resolved_at": "2026-11-14T10:10:08.697658"
+        "status": "resolved",
+        "match_score": 1.0,
+        "matched_id": "10.48550/arXiv.2010.03190",
+        "matched_service": "arxiv",
+        "resolved_at": "2026-11-14T10:57:59.272437"
       }
     }
   ],
@@ -1217,5 +1217,5 @@
   },
   "as_of": null,
   "sha256": "456cf59f29c5dfa5a106796fc96f86e758b1d6e6afae2ec0b5ab0e15cd59aa80",
-  "created_at": "2026-11-14T10:09:28.064537"
+  "created_at": "2026-11-14T11:05:38.582438"
 }

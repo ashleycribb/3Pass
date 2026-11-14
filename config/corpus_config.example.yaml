@@ -25,6 +25,9 @@ batch_size: 50
 # tile_ids:
 #   HUMAN_LRS: 10
 
+# Optional: Crossref polite pool contact email
+crossref_mailto: "ashecribb@u.boisestate.edu"
+
 topics:
   - name: "Learner Agency"
     description: "Autonomy, self-regulation, scaffolding reduction, student initiative in AI-assisted learning environments"

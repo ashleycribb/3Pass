@@ -41,6 +41,11 @@ from scripts.models import (
     EquationRecord,
     ReferenceRecord,
 )
+from scripts.reference_resolver import (
+    extract_clean_reference_title,
+    get_config_mailto,
+    strip_trailing_year,
+)
 
 DEFAULT_CACHE_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "cache")
 METADATA_CACHE_DIR = os.path.join(DEFAULT_CACHE_DIR, "metadata")
@@ -52,10 +57,14 @@ os.makedirs(METADATA_CACHE_DIR, exist_ok=True)
 os.makedirs(HTML_CACHE_DIR, exist_ok=True)
 os.makedirs(TEI_CACHE_DIR, exist_ok=True)
 os.makedirs(JATS_CACHE_DIR, exist_ok=True)
-os.makedirs(HTML_CACHE_DIR, exist_ok=True)
-os.makedirs(TEI_CACHE_DIR, exist_ok=True)
 
-USER_AGENT = "3PassResearchCorpus/1.0 (mailto:ashleycribb@users.noreply.github.com)"
+def get_router_user_agent() -> str:
+    email = get_config_mailto()
+    if email:
+        return f"3PassResearchCorpus/1.0 (mailto:{email}; https://github.com/ashleycribb/3Pass)"
+    return "3PassResearchCorpus/1.0 (https://github.com/ashleycribb/3Pass)"
+
+USER_AGENT = get_router_user_agent()
 
 def extract_arxiv_id(text: str) -> Optional[str]:
     """Extracts standardized arXiv ID (e.g. 2402.01234 or 2402.01234v1)."""
@@ -358,13 +367,27 @@ class ArxivHtmlPlugin(BaseSourcePlugin):
             raw_ref = bi.get_text(" ", strip=True)
             ref_doi = extract_doi(raw_ref)
             ref_arxiv = extract_arxiv_id(raw_ref)
-            # Try to extract title/year
             m_yr = re.search(r"\b(19\d{2}|20\d{2})\b", raw_ref)
             ref_year = int(m_yr.group(1)) if m_yr else None
+
+            # Extract title and authors from ltx_bibblock spans
+            blocks = bi.find_all(class_="ltx_bibblock")
+            ref_title = ""
+            ref_authors: List[str] = []
+            if len(blocks) >= 2:
+                auth_str = blocks[0].get_text(" ", strip=True)
+                for a in re.split(r",|\band\b", auth_str):
+                    ca = re.sub(r"\s+", " ", a).strip().strip(".")
+                    if ca and len(ca) > 1 and ca not in ref_authors:
+                        ref_authors.append(ca)
+                ref_title = strip_trailing_year(blocks[1].get_text(" ", strip=True).rstrip("., "))
+            else:
+                ref_title = extract_clean_reference_title(raw_ref, raw_ref)
+
             references.append(ReferenceRecord(
                 id=ref_id,
-                title=raw_ref[:120],
-                authors=[],
+                title=ref_title or raw_ref[:120],
+                authors=ref_authors if ref_authors else None,
                 venue="",
                 year=ref_year,
                 doi=ref_doi,
@@ -577,15 +600,41 @@ class LatexSourcePlugin(BaseSourcePlugin):
 
         # 8. References
         references: List[ReferenceRecord] = []
-        bib_items = re.findall(r"\\bibitem(?:\[.*?\])?\{([^}]+)\}(.*?)(?=\\bibitem|\Z)", latex, re.DOTALL)
+        bib_sec = re.search(r"\\begin\{thebibliography\}(.*?)\\end\{thebibliography\}", latex, re.DOTALL)
+        bib_text = bib_sec.group(1) if bib_sec else latex
+        bib_items = re.findall(r"\\bibitem(?:\[.*?\])?\{([^}]+)\}(.*?)(?=\\bibitem|\Z)", bib_text, re.DOTALL)
         for i, (bkey, btext) in enumerate(bib_items, 1):
             raw_b = re.sub(r"\s+", " ", btext.strip())
+            clean_b = re.sub(r"%.*?\n", "\n", raw_b)
+            ref_doi = extract_doi(clean_b)
+            ref_arxiv = extract_arxiv_id(clean_b)
+            m_yr = re.search(r"\b(19\d{2}|20\d{2})\b", clean_b)
+            ref_year = int(m_yr.group(1)) if m_yr else None
+
+            ref_title = ""
+            ref_authors: List[str] = []
+            if "\\newblock" in clean_b:
+                blocks = [b.strip() for b in re.split(r"\\newblock\s*", clean_b) if b.strip()]
+                if len(blocks) >= 2:
+                    auth_raw = re.sub(r"\\[a-zA-Z]+(?:\[.*?\])?\{([^}]*)\}", r"\1", blocks[0])
+                    auth_raw = re.sub(r"[{}\\]", "", auth_raw).replace("~", " ")
+                    for a in re.split(r",|\band\b", auth_raw):
+                        ca = a.strip().strip(".")
+                        if ca and len(ca) > 1 and ca not in ref_authors:
+                            ref_authors.append(ca)
+                    t_cand = re.sub(r"\\[a-zA-Z]+(?:\[.*?\])?\{([^}]*)\}", r"\1", blocks[1])
+                    ref_title = re.sub(r"[{}\\]", "", t_cand).strip().rstrip("., ")
+            if not ref_title:
+                ref_title = extract_clean_reference_title(clean_b, clean_b)
+
             references.append(ReferenceRecord(
                 id=bkey,
-                title=raw_b[:120],
-                raw=raw_b,
-                doi=extract_doi(raw_b),
-                arxiv_id=extract_arxiv_id(raw_b),
+                title=ref_title or clean_b[:120],
+                authors=ref_authors if ref_authors else None,
+                year=ref_year,
+                doi=ref_doi,
+                arxiv_id=ref_arxiv,
+                raw=clean_b,
                 verified="latexml-verified"
             ))
 
@@ -1300,9 +1349,11 @@ class CrossrefOpenAlexPlugin(BaseSourcePlugin):
     def _fetch_with_backoff(self, url: str, max_retries: int = 3) -> Dict[str, Any]:
         """Fetches URL respecting polite pool and backoff on HTTP 429."""
         backoff = 1.0
+        email = get_config_mailto()
+        params: Dict[str, Any] = {"mailto": email} if email else {}
         for attempt in range(max_retries):
             try:
-                r = self.session.get(url, timeout=10)
+                r = self.session.get(url, params=params, timeout=10)
                 if r.status_code == 200:
                     return r.json().get("message", r.json())
                 elif r.status_code in (429, 503):

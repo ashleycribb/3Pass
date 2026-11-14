@@ -24,7 +24,7 @@
     "tool": "latexml-local",
     "tool_version": "LaTeXML-local",
     "source_uri": "https://arxiv.org/e-print/1706.03762",
-    "extracted_at": "2026-11-14T10:09:08.648530",
+    "extracted_at": "2026-11-14T11:05:17.989601",
     "per_part": {
       "metadata": {
         "tool": "latexml-local",
@@ -58,7 +58,7 @@
       "tool": "latexml-local",
       "tool_version": "LaTeXML-local",
       "source_uri": "https://arxiv.org/e-print/1706.03762",
-      "extracted_at": "2026-11-14T10:09:08.648530",
+      "extracted_at": "2026-11-14T11:05:17.989601",
       "per_part": {
         "metadata": {
           "tool": "latexml-local",
@@ -400,722 +400,918 @@
   "references": [
     {
       "id": "layernorm2016",
-      "title": "Jimmy~Lei Ba, Jamie~Ryan Kiros, and Geoffrey~E Hinton. \\newblock Layer normalization. \\newblock {\\em arXiv preprint arXi",
-      "authors": [],
+      "title": "Layer normalization",
+      "authors": [
+        "Jimmy Lei Ba",
+        "Jamie Ryan Kiros",
+        "Geoffrey E Hinton"
+      ],
       "venue": "",
-      "year": null,
+      "year": 2016,
       "doi": null,
       "arxiv_id": "1607.06450",
       "raw": "Jimmy~Lei Ba, Jamie~Ryan Kiros, and Geoffrey~E Hinton. \\newblock Layer normalization. \\newblock {\\em arXiv preprint arXiv:1607.06450}, 2016.",
       "verified": "latexml-verified",
       "resolution": {
-        "status": "not_found",
-        "match_score": 0.0,
-        "matched_id": null,
-        "matched_service": null,
-        "resolved_at": "2026-11-14T10:09:52.527356"
+        "status": "resolved",
+        "match_score": 1.0,
+        "matched_id": "10.48550/arXiv.1607.06450",
+        "matched_service": "arxiv",
+        "resolved_at": "2026-11-14T10:57:22.511154"
       }
     },
     {
       "id": "bahdanau2014neural",
-      "title": "Dzmitry Bahdanau, Kyunghyun Cho, and Yoshua Bengio. \\newblock Neural machine translation by jointly learning to align an",
-      "authors": [],
+      "title": "Neural machine translation by jointly learning to align and translate",
+      "authors": [
+        "Dzmitry Bahdanau",
+        "Kyunghyun Cho",
+        "Yoshua Bengio"
+      ],
       "venue": "",
-      "year": null,
+      "year": 2014,
       "doi": null,
       "arxiv_id": "1409.0473",
       "raw": "Dzmitry Bahdanau, Kyunghyun Cho, and Yoshua Bengio. \\newblock Neural machine translation by jointly learning to align and translate. \\newblock {\\em CoRR}, abs/1409.0473, 2014.",
       "verified": "latexml-verified",
       "resolution": {
-        "status": "not_found",
-        "match_score": 0.0,
-        "matched_id": null,
-        "matched_service": null,
-        "resolved_at": "2026-11-14T10:09:52.380735"
+        "status": "resolved",
+        "match_score": 1.0,
+        "matched_id": "10.48550/arXiv.1409.0473",
+        "matched_service": "arxiv",
+        "resolved_at": "2026-11-14T10:57:22.513191"
       }
     },
     {
       "id": "DBLP:journals/corr/BritzGLL17",
-      "title": "Denny Britz, Anna Goldie, Minh{-}Thang Luong, and Quoc~V. Le. \\newblock Massive exploration of neural machine translatio",
-      "authors": [],
+      "title": "Massive exploration of neural machine translation architectures",
+      "authors": [
+        "Denny Britz",
+        "Anna Goldie",
+        "Minh-Thang Luong",
+        "Quoc V. Le"
+      ],
       "venue": "",
-      "year": null,
+      "year": 2017,
       "doi": null,
       "arxiv_id": "1703.03906",
       "raw": "Denny Britz, Anna Goldie, Minh{-}Thang Luong, and Quoc~V. Le. \\newblock Massive exploration of neural machine translation architectures. \\newblock {\\em CoRR}, abs/1703.03906, 2017.",
       "verified": "latexml-verified",
       "resolution": {
-        "status": "not_found",
-        "match_score": 0.0,
-        "matched_id": null,
-        "matched_service": null,
-        "resolved_at": "2026-11-14T10:09:52.527356"
+        "status": "resolved",
+        "match_score": 1.0,
+        "matched_id": "10.48550/arXiv.1703.03906",
+        "matched_service": "arxiv",
+        "resolved_at": "2026-11-14T10:57:22.696061"
       }
     },
     {
       "id": "cheng2016long",
-      "title": "Jianpeng Cheng, Li~Dong, and Mirella Lapata. \\newblock Long short-term memory-networks for machine reading. \\newblock {\\",
-      "authors": [],
+      "title": "Long short-term memory-networks for machine reading",
+      "authors": [
+        "Jianpeng Cheng",
+        "Li Dong",
+        "Mirella Lapata"
+      ],
       "venue": "",
-      "year": null,
+      "year": 2016,
       "doi": null,
       "arxiv_id": "1601.06733",
       "raw": "Jianpeng Cheng, Li~Dong, and Mirella Lapata. \\newblock Long short-term memory-networks for machine reading. \\newblock {\\em arXiv preprint arXiv:1601.06733}, 2016.",
       "verified": "latexml-verified",
       "resolution": {
         "status": "resolved",
-        "match_score": 0.95,
-        "matched_id": "10.18653/v1/d16-1053",
-        "matched_service": "crossref",
-        "resolved_at": "2026-11-14T10:09:52.251598"
+        "match_score": 1.0,
+        "matched_id": "10.48550/arXiv.1601.06733",
+        "matched_service": "arxiv",
+        "resolved_at": "2026-11-14T10:57:22.697075"
       }
     },
     {
       "id": "cho2014learning",
-      "title": "Kyunghyun Cho, Bart van Merrienboer, Caglar Gulcehre, Fethi Bougares, Holger Schwenk, and Yoshua Bengio. \\newblock Learn",
-      "authors": [],
+      "title": "Learning phrase representations using rnn encoder-decoder for statistical machine translation",
+      "authors": [
+        "Kyunghyun Cho",
+        "Bart van Merrienboer",
+        "Caglar Gulcehre",
+        "Fethi Bougares",
+        "Holger Schwenk",
+        "Yoshua Bengio"
+      ],
       "venue": "",
-      "year": null,
+      "year": 2014,
       "doi": null,
       "arxiv_id": "1406.1078",
       "raw": "Kyunghyun Cho, Bart van Merrienboer, Caglar Gulcehre, Fethi Bougares, Holger Schwenk, and Yoshua Bengio. \\newblock Learning phrase representations using rnn encoder-decoder for statistical machine translation. \\newblock {\\em CoRR}, abs/1406.1078, 2014.",
       "verified": "latexml-verified",
       "resolution": {
-        "status": "not_found",
-        "match_score": 0.0,
-        "matched_id": null,
-        "matched_service": null,
-        "resolved_at": "2026-11-14T10:09:52.528356"
+        "status": "resolved",
+        "match_score": 1.0,
+        "matched_id": "10.48550/arXiv.1406.1078",
+        "matched_service": "arxiv",
+        "resolved_at": "2026-11-14T10:57:22.923785"
       }
     },
     {
       "id": "xception2016",
-      "title": "Francois Chollet. \\newblock Xception: Deep learning with depthwise separable convolutions. \\newblock {\\em arXiv preprint",
-      "authors": [],
+      "title": "Xception: Deep learning with depthwise separable convolutions",
+      "authors": [
+        "Francois Chollet"
+      ],
       "venue": "",
-      "year": null,
+      "year": 2016,
       "doi": null,
       "arxiv_id": "1610.02357",
       "raw": "Francois Chollet. \\newblock Xception: Deep learning with depthwise separable convolutions. \\newblock {\\em arXiv preprint arXiv:1610.02357}, 2016.",
       "verified": "latexml-verified",
       "resolution": {
-        "status": "not_found",
-        "match_score": 0.0,
-        "matched_id": null,
-        "matched_service": null,
-        "resolved_at": "2026-11-14T10:09:52.721514"
+        "status": "resolved",
+        "match_score": 1.0,
+        "matched_id": "10.48550/arXiv.1610.02357",
+        "matched_service": "arxiv",
+        "resolved_at": "2026-11-14T10:57:22.941998"
       }
     },
     {
       "id": "gruEval14",
-      "title": "Junyoung Chung, {\\c{C}}aglar G{\\\"{u}}l{\\c{c}}ehre, Kyunghyun Cho, and Yoshua Bengio. \\newblock Empirical evaluation of g",
-      "authors": [],
+      "title": "Empirical evaluation of gated recurrent neural networks on sequence modeling",
+      "authors": [
+        "Junyoung Chung",
+        "Caglar G\"ulcehre",
+        "Kyunghyun Cho",
+        "Yoshua Bengio"
+      ],
       "venue": "",
-      "year": null,
+      "year": 2014,
       "doi": null,
       "arxiv_id": "1412.3555",
       "raw": "Junyoung Chung, {\\c{C}}aglar G{\\\"{u}}l{\\c{c}}ehre, Kyunghyun Cho, and Yoshua Bengio. \\newblock Empirical evaluation of gated recurrent neural networks on sequence modeling. \\newblock {\\em CoRR}, abs/1412.3555, 2014.",
       "verified": "latexml-verified",
       "resolution": {
-        "status": "not_found",
-        "match_score": 0.0,
-        "matched_id": null,
-        "matched_service": null,
-        "resolved_at": "2026-11-14T10:09:53.009666"
+        "status": "resolved",
+        "match_score": 1.0,
+        "matched_id": "10.48550/arXiv.1412.3555",
+        "matched_service": "arxiv",
+        "resolved_at": "2026-11-14T10:57:23.272721"
       }
     },
     {
       "id": "dyer-rnng:16",
-      "title": "Chris Dyer, Adhiguna Kuncoro, Miguel Ballesteros, and Noah~A. Smith. \\newblock Recurrent neural network grammars. \\newbl",
-      "authors": [],
+      "title": "Recurrent neural network grammars",
+      "authors": [
+        "Chris Dyer",
+        "Adhiguna Kuncoro",
+        "Miguel Ballesteros",
+        "Noah A. Smith"
+      ],
       "venue": "",
-      "year": null,
+      "year": 2016,
       "doi": null,
       "arxiv_id": null,
       "raw": "Chris Dyer, Adhiguna Kuncoro, Miguel Ballesteros, and Noah~A. Smith. \\newblock Recurrent neural network grammars. \\newblock In {\\em Proc. of NAACL}, 2016.",
       "verified": "latexml-verified",
       "resolution": {
-        "status": "not_found",
-        "match_score": 0.0,
-        "matched_id": null,
-        "matched_service": null,
-        "resolved_at": "2026-11-14T10:09:52.867457"
+        "status": "resolved",
+        "match_score": 1.0,
+        "matched_id": "10.18653/v1/n16-1024",
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:57:23.226783"
       }
     },
     {
       "id": "JonasFaceNet2017",
-      "title": "Jonas Gehring, Michael Auli, David Grangier, Denis Yarats, and Yann~N. Dauphin. \\newblock Convolutional sequence to sequ",
-      "authors": [],
+      "title": "Convolutional sequence to sequence learning",
+      "authors": [
+        "Jonas Gehring",
+        "Michael Auli",
+        "David Grangier",
+        "Denis Yarats",
+        "Yann N. Dauphin"
+      ],
       "venue": "",
-      "year": null,
+      "year": 2017,
       "doi": null,
       "arxiv_id": "1705.03122v2",
       "raw": "Jonas Gehring, Michael Auli, David Grangier, Denis Yarats, and Yann~N. Dauphin. \\newblock Convolutional sequence to sequence learning. \\newblock {\\em arXiv preprint arXiv:1705.03122v2}, 2017.",
       "verified": "latexml-verified",
       "resolution": {
-        "status": "not_found",
-        "match_score": 0.0,
-        "matched_id": null,
-        "matched_service": null,
-        "resolved_at": "2026-11-14T10:09:53.104406"
+        "status": "resolved",
+        "match_score": 1.0,
+        "matched_id": "10.48550/arXiv.1705.03122",
+        "matched_service": "arxiv",
+        "resolved_at": "2026-11-14T10:57:23.472436"
       }
     },
     {
       "id": "graves2013generating",
-      "title": "Alex Graves. \\newblock Generating sequences with recurrent neural networks. \\newblock {\\em arXiv preprint arXiv:1308.085",
-      "authors": [],
+      "title": "Generating sequences with recurrent neural networks",
+      "authors": [
+        "Alex Graves"
+      ],
       "venue": "",
-      "year": null,
+      "year": 2013,
       "doi": null,
       "arxiv_id": "1308.0850",
       "raw": "Alex Graves. \\newblock Generating sequences with recurrent neural networks. \\newblock {\\em arXiv preprint arXiv:1308.0850}, 2013.",
       "verified": "latexml-verified",
       "resolution": {
-        "status": "not_found",
-        "match_score": 0.0,
-        "matched_id": null,
-        "matched_service": null,
-        "resolved_at": "2026-11-14T10:09:53.109187"
+        "status": "resolved",
+        "match_score": 1.0,
+        "matched_id": "10.48550/arXiv.1308.0850",
+        "matched_service": "arxiv",
+        "resolved_at": "2026-11-14T10:57:23.503013"
       }
     },
     {
       "id": "he2016deep",
-      "title": "Kaiming He, Xiangyu Zhang, Shaoqing Ren, and Jian Sun. \\newblock Deep residual learning for image recognition. \\newblock",
-      "authors": [],
+      "title": "Deep residual learning for image recognition",
+      "authors": [
+        "Kaiming He",
+        "Xiangyu Zhang",
+        "Shaoqing Ren",
+        "Jian Sun"
+      ],
       "venue": "",
-      "year": null,
+      "year": 2016,
       "doi": null,
       "arxiv_id": null,
       "raw": "Kaiming He, Xiangyu Zhang, Shaoqing Ren, and Jian Sun. \\newblock Deep residual learning for image recognition. \\newblock In {\\em Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition}, pages 770--778, 2016.",
       "verified": "latexml-verified",
       "resolution": {
-        "status": "not_found",
-        "match_score": 0.0,
-        "matched_id": null,
-        "matched_service": null,
-        "resolved_at": "2026-11-14T10:09:53.175684"
+        "status": "resolved",
+        "match_score": 1.0,
+        "matched_id": "10.1109/cvpr.2016.90",
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:57:23.640180"
       }
     },
     {
       "id": "hochreiter2001gradient",
-      "title": "Sepp Hochreiter, Yoshua Bengio, Paolo Frasconi, and J{\\\"u}rgen Schmidhuber. \\newblock Gradient flow in recurrent nets: t",
-      "authors": [],
+      "title": "Gradient flow in recurrent nets: the difficulty of learning long-term dependencies, 2001",
+      "authors": [
+        "Sepp Hochreiter",
+        "Yoshua Bengio",
+        "Paolo Frasconi",
+        "J\"urgen Schmidhuber"
+      ],
       "venue": "",
-      "year": null,
+      "year": 2001,
       "doi": null,
       "arxiv_id": null,
       "raw": "Sepp Hochreiter, Yoshua Bengio, Paolo Frasconi, and J{\\\"u}rgen Schmidhuber. \\newblock Gradient flow in recurrent nets: the difficulty of learning long-term dependencies, 2001.",
       "verified": "latexml-verified",
       "resolution": {
-        "status": "not_found",
-        "match_score": 0.0,
-        "matched_id": null,
-        "matched_service": null,
-        "resolved_at": "2026-11-14T10:09:53.339255"
+        "status": "resolved",
+        "match_score": 0.9938,
+        "matched_id": "10.1109/9780470544037.ch14",
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:57:23.682256"
       }
     },
     {
       "id": "hochreiter1997",
-      "title": "Sepp Hochreiter and J{\\\"u}rgen Schmidhuber. \\newblock Long short-term memory. \\newblock {\\em Neural computation}, 9(8):1",
-      "authors": [],
+      "title": "Long short-term memory",
+      "authors": [
+        "Sepp Hochreiter",
+        "J\"urgen Schmidhuber"
+      ],
       "venue": "",
-      "year": null,
+      "year": 1997,
       "doi": null,
       "arxiv_id": null,
       "raw": "Sepp Hochreiter and J{\\\"u}rgen Schmidhuber. \\newblock Long short-term memory. \\newblock {\\em Neural computation}, 9(8):1735--1780, 1997.",
       "verified": "latexml-verified",
       "resolution": {
-        "status": "not_found",
-        "match_score": 0.0,
-        "matched_id": null,
-        "matched_service": null,
-        "resolved_at": "2026-11-14T10:09:53.479857"
+        "status": "resolved",
+        "match_score": 1.0,
+        "matched_id": "10.1007/978-3-030-63416-2_856",
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:57:23.939451"
       }
     },
     {
       "id": "huang-harper:2009:EMNLP",
-      "title": "Zhongqiang Huang and Mary Harper. \\newblock Self-training {PCFG} grammars with latent annotations across languages. \\new",
-      "authors": [],
+      "title": "Self-training PCFG grammars with latent annotations across languages",
+      "authors": [
+        "Zhongqiang Huang",
+        "Mary Harper"
+      ],
       "venue": "",
-      "year": null,
+      "year": 2009,
       "doi": null,
       "arxiv_id": null,
       "raw": "Zhongqiang Huang and Mary Harper. \\newblock Self-training {PCFG} grammars with latent annotations across languages. \\newblock In {\\em Proceedings of the 2009 Conference on Empirical Methods in Natural Language Processing}, pages 832--841. ACL, August 2009.",
       "verified": "latexml-verified",
       "resolution": {
-        "status": "not_found",
-        "match_score": 0.0,
-        "matched_id": null,
-        "matched_service": null,
-        "resolved_at": "2026-11-14T10:09:53.484207"
+        "status": "resolved",
+        "match_score": 1.0,
+        "matched_id": "10.3115/1699571.1699621",
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:57:23.940518"
       }
     },
     {
       "id": "jozefowicz2016exploring",
-      "title": "Rafal Jozefowicz, Oriol Vinyals, Mike Schuster, Noam Shazeer, and Yonghui Wu. \\newblock Exploring the limits of language",
-      "authors": [],
+      "title": "Exploring the limits of language modeling",
+      "authors": [
+        "Rafal Jozefowicz",
+        "Oriol Vinyals",
+        "Mike Schuster",
+        "Noam Shazeer",
+        "Yonghui Wu"
+      ],
       "venue": "",
-      "year": null,
+      "year": 2016,
       "doi": null,
       "arxiv_id": "1602.02410",
       "raw": "Rafal Jozefowicz, Oriol Vinyals, Mike Schuster, Noam Shazeer, and Yonghui Wu. \\newblock Exploring the limits of language modeling. \\newblock {\\em arXiv preprint arXiv:1602.02410}, 2016.",
       "verified": "latexml-verified",
       "resolution": {
-        "status": "not_found",
-        "match_score": 0.0,
-        "matched_id": null,
-        "matched_service": null,
-        "resolved_at": "2026-11-14T10:09:53.713004"
+        "status": "resolved",
+        "match_score": 1.0,
+        "matched_id": "10.48550/arXiv.1602.02410",
+        "matched_service": "arxiv",
+        "resolved_at": "2026-11-14T10:56:58.779254"
       }
     },
     {
       "id": "extendedngpu",
-      "title": "{\\L}ukasz Kaiser and Samy Bengio. \\newblock Can active memory replace attention? \\newblock In {\\em Advances in Neural In",
-      "authors": [],
+      "title": "Can active memory replace attention?",
+      "authors": [
+        "Lukasz Kaiser",
+        "Samy Bengio"
+      ],
       "venue": "",
-      "year": null,
+      "year": 2016,
       "doi": null,
       "arxiv_id": null,
       "raw": "{\\L}ukasz Kaiser and Samy Bengio. \\newblock Can active memory replace attention? \\newblock In {\\em Advances in Neural Information Processing Systems, ({NIPS})}, 2016.",
       "verified": "latexml-verified",
       "resolution": {
-        "status": "not_found",
-        "match_score": 0.0,
-        "matched_id": null,
-        "matched_service": null,
-        "resolved_at": "2026-11-14T10:09:53.570983"
+        "status": "resolved",
+        "match_score": 1.0,
+        "matched_id": "10.48550/arXiv.1610.08613",
+        "matched_service": "arxiv",
+        "resolved_at": "2026-11-14T11:06:05.584068"
       }
     },
     {
       "id": "neural_gpu",
-      "title": "\\L{}ukasz Kaiser and Ilya Sutskever. \\newblock Neural {GPU}s learn algorithms. \\newblock In {\\em International Conferenc",
-      "authors": [],
+      "title": "Neural GPUs learn algorithms",
+      "authors": [
+        "ukasz Kaiser",
+        "Ilya Sutskever"
+      ],
       "venue": "",
-      "year": null,
+      "year": 2016,
       "doi": null,
       "arxiv_id": null,
       "raw": "\\L{}ukasz Kaiser and Ilya Sutskever. \\newblock Neural {GPU}s learn algorithms. \\newblock In {\\em International Conference on Learning Representations ({ICLR})}, 2016.",
       "verified": "latexml-verified",
       "resolution": {
-        "status": "not_found",
-        "match_score": 0.0,
-        "matched_id": null,
-        "matched_service": null,
-        "resolved_at": "2026-11-14T10:09:53.793471"
+        "status": "resolved",
+        "match_score": 1.0,
+        "matched_id": "10.48550/arXiv.1511.08228",
+        "matched_service": "arxiv",
+        "resolved_at": "2026-11-14T11:06:05.504821"
       }
     },
     {
       "id": "NalBytenet2017",
-      "title": "Nal Kalchbrenner, Lasse Espeholt, Karen Simonyan, Aaron van~den Oord, Alex Graves, and Koray Kavukcuoglu. \\newblock Neur",
-      "authors": [],
+      "title": "Neural machine translation in linear time",
+      "authors": [
+        "Nal Kalchbrenner",
+        "Lasse Espeholt",
+        "Karen Simonyan",
+        "Aaron van den Oord",
+        "Alex Graves",
+        "Koray Kavukcuoglu"
+      ],
       "venue": "",
-      "year": null,
+      "year": 2017,
       "doi": null,
       "arxiv_id": "1610.10099v2",
       "raw": "Nal Kalchbrenner, Lasse Espeholt, Karen Simonyan, Aaron van~den Oord, Alex Graves, and Koray Kavukcuoglu. \\newblock Neural machine translation in linear time. \\newblock {\\em arXiv preprint arXiv:1610.10099v2}, 2017.",
       "verified": "latexml-verified",
       "resolution": {
-        "status": "not_found",
-        "match_score": 0.0,
-        "matched_id": null,
-        "matched_service": null,
-        "resolved_at": "2026-11-14T10:09:54.054379"
+        "status": "resolved",
+        "match_score": 1.0,
+        "matched_id": "10.48550/arXiv.1610.10099",
+        "matched_service": "arxiv",
+        "resolved_at": "2026-11-14T10:57:24.734552"
       }
     },
     {
       "id": "structuredAttentionNetworks",
-      "title": "Yoon Kim, Carl Denton, Luong Hoang, and Alexander~M. Rush. \\newblock Structured attention networks. \\newblock In {\\em In",
-      "authors": [],
+      "title": "Structured attention networks",
+      "authors": [
+        "Yoon Kim",
+        "Carl Denton",
+        "Luong Hoang",
+        "Alexander M. Rush"
+      ],
       "venue": "",
-      "year": null,
+      "year": 2017,
       "doi": null,
       "arxiv_id": null,
       "raw": "Yoon Kim, Carl Denton, Luong Hoang, and Alexander~M. Rush. \\newblock Structured attention networks. \\newblock In {\\em International Conference on Learning Representations}, 2017.",
       "verified": "latexml-verified",
       "resolution": {
-        "status": "not_found",
-        "match_score": 0.0,
-        "matched_id": null,
-        "matched_service": null,
-        "resolved_at": "2026-11-14T10:09:53.925227"
+        "status": "resolved",
+        "match_score": 0.93,
+        "matched_id": "10.1109/cvpr.2018.00360",
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:57:24.675641"
       }
     },
     {
       "id": "kingma2014adam",
-      "title": "Diederik Kingma and Jimmy Ba. \\newblock Adam: A method for stochastic optimization. \\newblock In {\\em ICLR}, 2015.",
-      "authors": [],
+      "title": "Adam: A method for stochastic optimization",
+      "authors": [
+        "Diederik Kingma",
+        "Jimmy Ba"
+      ],
       "venue": "",
-      "year": null,
+      "year": 2015,
       "doi": null,
       "arxiv_id": null,
       "raw": "Diederik Kingma and Jimmy Ba. \\newblock Adam: A method for stochastic optimization. \\newblock In {\\em ICLR}, 2015.",
       "verified": "latexml-verified",
       "resolution": {
-        "status": "not_found",
-        "match_score": 0.0,
-        "matched_id": null,
-        "matched_service": null,
-        "resolved_at": "2026-11-14T10:09:54.045640"
+        "status": "resolved",
+        "match_score": 0.8791,
+        "matched_id": "10.32614/cran.package.madgrad",
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T11:06:07.282277"
       }
     },
     {
       "id": "Kuchaiev2017Factorization",
-      "title": "Oleksii Kuchaiev and Boris Ginsburg. \\newblock Factorization tricks for {LSTM} networks. \\newblock {\\em arXiv preprint a",
-      "authors": [],
+      "title": "Factorization tricks for LSTM networks",
+      "authors": [
+        "Oleksii Kuchaiev",
+        "Boris Ginsburg"
+      ],
       "venue": "",
-      "year": null,
+      "year": 2017,
       "doi": null,
       "arxiv_id": "1703.10722",
       "raw": "Oleksii Kuchaiev and Boris Ginsburg. \\newblock Factorization tricks for {LSTM} networks. \\newblock {\\em arXiv preprint arXiv:1703.10722}, 2017.",
       "verified": "latexml-verified",
       "resolution": {
-        "status": "not_found",
-        "match_score": 0.2239,
-        "matched_id": null,
-        "matched_service": "crossref",
-        "resolved_at": "2026-11-14T10:09:54.011919"
+        "status": "resolved",
+        "match_score": 1.0,
+        "matched_id": "10.48550/arXiv.1703.10722",
+        "matched_service": "arxiv",
+        "resolved_at": "2026-11-14T10:57:24.942188"
       }
     },
     {
       "id": "lin2017structured",
-      "title": "Zhouhan Lin, Minwei Feng, Cicero Nogueira~dos Santos, Mo~Yu, Bing Xiang, Bowen Zhou, and Yoshua Bengio. \\newblock A stru",
-      "authors": [],
+      "title": "A structured self-attentive sentence embedding",
+      "authors": [
+        "Zhouhan Lin",
+        "Minwei Feng",
+        "Cicero Nogueira dos Santos",
+        "Mo Yu",
+        "Bing Xiang",
+        "Bowen Zhou",
+        "Yoshua Bengio"
+      ],
       "venue": "",
-      "year": null,
+      "year": 2017,
       "doi": null,
       "arxiv_id": "1703.03130",
       "raw": "Zhouhan Lin, Minwei Feng, Cicero Nogueira~dos Santos, Mo~Yu, Bing Xiang, Bowen Zhou, and Yoshua Bengio. \\newblock A structured self-attentive sentence embedding. \\newblock {\\em arXiv preprint arXiv:1703.03130}, 2017.",
       "verified": "latexml-verified",
       "resolution": {
-        "status": "not_found",
-        "match_score": 0.0,
-        "matched_id": null,
-        "matched_service": null,
-        "resolved_at": "2026-11-14T10:09:54.417888"
+        "status": "resolved",
+        "match_score": 1.0,
+        "matched_id": "10.48550/arXiv.1703.03130",
+        "matched_service": "arxiv",
+        "resolved_at": "2026-11-14T10:57:25.122043"
       }
     },
     {
       "id": "multiseq2seq",
-      "title": "Minh-Thang Luong, Quoc~V. Le, Ilya Sutskever, Oriol Vinyals, and Lukasz Kaiser. \\newblock Multi-task sequence to sequenc",
-      "authors": [],
+      "title": "Multi-task sequence to sequence learning",
+      "authors": [
+        "Minh-Thang Luong",
+        "Quoc V. Le",
+        "Ilya Sutskever",
+        "Oriol Vinyals",
+        "Lukasz Kaiser"
+      ],
       "venue": "",
-      "year": null,
+      "year": 2015,
       "doi": null,
       "arxiv_id": "1511.06114",
       "raw": "Minh-Thang Luong, Quoc~V. Le, Ilya Sutskever, Oriol Vinyals, and Lukasz Kaiser. \\newblock Multi-task sequence to sequence learning. \\newblock {\\em arXiv preprint arXiv:1511.06114}, 2015.",
       "verified": "latexml-verified",
       "resolution": {
-        "status": "not_found",
-        "match_score": 0.0,
-        "matched_id": null,
-        "matched_service": null,
-        "resolved_at": "2026-11-14T10:09:54.612776"
+        "status": "resolved",
+        "match_score": 1.0,
+        "matched_id": "10.48550/arXiv.1511.06114",
+        "matched_service": "arxiv",
+        "resolved_at": "2026-11-14T10:57:25.311905"
       }
     },
     {
       "id": "luong2015effective",
-      "title": "Minh-Thang Luong, Hieu Pham, and Christopher~D Manning. \\newblock Effective approaches to attention-based neural machine",
-      "authors": [],
+      "title": "Effective approaches to attention-based neural machine translation",
+      "authors": [
+        "Minh-Thang Luong",
+        "Hieu Pham",
+        "Christopher D Manning"
+      ],
       "venue": "",
-      "year": null,
+      "year": 2015,
       "doi": null,
       "arxiv_id": "1508.04025",
       "raw": "Minh-Thang Luong, Hieu Pham, and Christopher~D Manning. \\newblock Effective approaches to attention-based neural machine translation. \\newblock {\\em arXiv preprint arXiv:1508.04025}, 2015.",
       "verified": "latexml-verified",
       "resolution": {
-        "status": "not_found",
-        "match_score": 0.0,
-        "matched_id": null,
-        "matched_service": null,
-        "resolved_at": "2026-11-14T10:09:54.583207"
+        "status": "resolved",
+        "match_score": 1.0,
+        "matched_id": "10.48550/arXiv.1508.04025",
+        "matched_service": "arxiv",
+        "resolved_at": "2026-11-14T10:57:25.412377"
       }
     },
     {
       "id": "marcus1993building",
-      "title": "Mitchell~P Marcus, Mary~Ann Marcinkiewicz, and Beatrice Santorini. \\newblock Building a large annotated corpus of englis",
-      "authors": [],
+      "title": "Building a large annotated corpus of english: The penn treebank",
+      "authors": [
+        "Mitchell P Marcus",
+        "Mary Ann Marcinkiewicz",
+        "Beatrice Santorini"
+      ],
       "venue": "",
-      "year": null,
+      "year": 1993,
       "doi": null,
       "arxiv_id": null,
       "raw": "Mitchell~P Marcus, Mary~Ann Marcinkiewicz, and Beatrice Santorini. \\newblock Building a large annotated corpus of english: The penn treebank. \\newblock {\\em Computational linguistics}, 19(2):313--330, 1993.",
       "verified": "latexml-verified",
       "resolution": {
-        "status": "not_found",
-        "match_score": 0.4762,
-        "matched_id": null,
+        "status": "resolved",
+        "match_score": 1.0,
+        "matched_id": "10.21236/ada273556",
         "matched_service": "crossref",
-        "resolved_at": "2026-11-14T10:09:54.253218"
+        "resolved_at": "2026-11-14T10:57:25.609827"
       }
     },
     {
       "id": "mcclosky-etAl:2006:NAACL",
-      "title": "David McClosky, Eugene Charniak, and Mark Johnson. \\newblock Effective self-training for parsing. \\newblock In {\\em Proc",
-      "authors": [],
+      "title": "Effective self-training for parsing",
+      "authors": [
+        "David McClosky",
+        "Eugene Charniak",
+        "Mark Johnson"
+      ],
       "venue": "",
-      "year": null,
+      "year": 2006,
       "doi": null,
       "arxiv_id": null,
       "raw": "David McClosky, Eugene Charniak, and Mark Johnson. \\newblock Effective self-training for parsing. \\newblock In {\\em Proceedings of the Human Language Technology Conference of the NAACL, Main Conference}, pages 152--159. ACL, June 2006.",
       "verified": "latexml-verified",
       "resolution": {
-        "status": "not_found",
-        "match_score": 0.0,
-        "matched_id": null,
-        "matched_service": null,
-        "resolved_at": "2026-11-14T10:09:54.791251"
+        "status": "resolved",
+        "match_score": 1.0,
+        "matched_id": "10.3115/1220835.1220855",
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:57:25.707960"
       }
     },
     {
       "id": "decomposableAttnModel",
-      "title": "Ankur Parikh, Oscar Täckström, Dipanjan Das, and Jakob Uszkoreit. \\newblock A decomposable attention model. \\newblock In",
-      "authors": [],
+      "title": "A decomposable attention model",
+      "authors": [
+        "Ankur Parikh",
+        "Oscar Täckström",
+        "Dipanjan Das",
+        "Jakob Uszkoreit"
+      ],
       "venue": "",
-      "year": null,
+      "year": 2016,
       "doi": null,
       "arxiv_id": null,
       "raw": "Ankur Parikh, Oscar Täckström, Dipanjan Das, and Jakob Uszkoreit. \\newblock A decomposable attention model. \\newblock In {\\em Empirical Methods in Natural Language Processing}, 2016.",
       "verified": "latexml-verified",
       "resolution": {
-        "status": "not_found",
-        "match_score": 0.0,
-        "matched_id": null,
-        "matched_service": null,
-        "resolved_at": "2026-11-14T10:09:54.812477"
+        "status": "resolved",
+        "match_score": 0.93,
+        "matched_id": "10.18653/v1/d16-1244",
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:57:26.143499"
       }
     },
     {
       "id": "paulus2017deep",
-      "title": "Romain Paulus, Caiming Xiong, and Richard Socher. \\newblock A deep reinforced model for abstractive summarization. \\newb",
-      "authors": [],
+      "title": "A deep reinforced model for abstractive summarization",
+      "authors": [
+        "Romain Paulus",
+        "Caiming Xiong",
+        "Richard Socher"
+      ],
       "venue": "",
-      "year": null,
+      "year": 2017,
       "doi": null,
       "arxiv_id": "1705.04304",
       "raw": "Romain Paulus, Caiming Xiong, and Richard Socher. \\newblock A deep reinforced model for abstractive summarization. \\newblock {\\em arXiv preprint arXiv:1705.04304}, 2017.",
       "verified": "latexml-verified",
       "resolution": {
-        "status": "not_found",
-        "match_score": 0.0,
-        "matched_id": null,
-        "matched_service": null,
-        "resolved_at": "2026-11-14T10:09:55.026328"
+        "status": "resolved",
+        "match_score": 1.0,
+        "matched_id": "10.48550/arXiv.1705.04304",
+        "matched_service": "arxiv",
+        "resolved_at": "2026-11-14T10:57:26.194816"
       }
     },
     {
       "id": "petrov-EtAl:2006:ACL",
-      "title": "Slav Petrov, Leon Barrett, Romain Thibaux, and Dan Klein. \\newblock Learning accurate, compact, and interpretable tree a",
-      "authors": [],
+      "title": "Learning accurate, compact, and interpretable tree annotation",
+      "authors": [
+        "Slav Petrov",
+        "Leon Barrett",
+        "Romain Thibaux",
+        "Dan Klein"
+      ],
       "venue": "",
-      "year": null,
+      "year": 2006,
       "doi": null,
       "arxiv_id": null,
       "raw": "Slav Petrov, Leon Barrett, Romain Thibaux, and Dan Klein. \\newblock Learning accurate, compact, and interpretable tree annotation. \\newblock In {\\em Proceedings of the 21st International Conference on Computational Linguistics and 44th Annual Meeting of the ACL}, pages 433--440. ACL, July 2006.",
       "verified": "latexml-verified",
       "resolution": {
-        "status": "not_found",
-        "match_score": 0.0,
-        "matched_id": null,
-        "matched_service": null,
-        "resolved_at": "2026-11-14T10:09:55.081773"
+        "status": "resolved",
+        "match_score": 1.0,
+        "matched_id": "10.3115/1220175.1220230",
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:57:26.472722"
       }
     },
     {
       "id": "press2016using",
-      "title": "Ofir Press and Lior Wolf. \\newblock Using the output embedding to improve language models. \\newblock {\\em arXiv preprint",
-      "authors": [],
+      "title": "Using the output embedding to improve language models",
+      "authors": [
+        "Ofir Press",
+        "Lior Wolf"
+      ],
       "venue": "",
-      "year": null,
+      "year": 2016,
       "doi": null,
       "arxiv_id": "1608.05859",
       "raw": "Ofir Press and Lior Wolf. \\newblock Using the output embedding to improve language models. \\newblock {\\em arXiv preprint arXiv:1608.05859}, 2016.",
       "verified": "latexml-verified",
       "resolution": {
-        "status": "not_found",
-        "match_score": 0.0,
-        "matched_id": null,
-        "matched_service": null,
-        "resolved_at": "2026-11-14T10:09:55.187817"
+        "status": "resolved",
+        "match_score": 1.0,
+        "matched_id": "10.48550/arXiv.1608.05859",
+        "matched_service": "arxiv",
+        "resolved_at": "2026-11-14T10:57:26.494587"
       }
     },
     {
       "id": "sennrich2015neural",
-      "title": "Rico Sennrich, Barry Haddow, and Alexandra Birch. \\newblock Neural machine translation of rare words with subword units.",
-      "authors": [],
+      "title": "Neural machine translation of rare words with subword units",
+      "authors": [
+        "Rico Sennrich",
+        "Barry Haddow",
+        "Alexandra Birch"
+      ],
       "venue": "",
-      "year": null,
+      "year": 2015,
       "doi": null,
       "arxiv_id": "1508.07909",
       "raw": "Rico Sennrich, Barry Haddow, and Alexandra Birch. \\newblock Neural machine translation of rare words with subword units. \\newblock {\\em arXiv preprint arXiv:1508.07909}, 2015.",
       "verified": "latexml-verified",
       "resolution": {
-        "status": "not_found",
-        "match_score": 0.0,
-        "matched_id": null,
-        "matched_service": null,
-        "resolved_at": "2026-11-14T10:09:55.361217"
+        "status": "resolved",
+        "match_score": 1.0,
+        "matched_id": "10.48550/arXiv.1508.07909",
+        "matched_service": "arxiv",
+        "resolved_at": "2026-11-14T10:57:27.095753"
       }
     },
     {
       "id": "shazeer2017outrageously",
-      "title": "Noam Shazeer, Azalia Mirhoseini, Krzysztof Maziarz, Andy Davis, Quoc Le, Geoffrey Hinton, and Jeff Dean. \\newblock Outra",
-      "authors": [],
+      "title": "Outrageously large neural networks: The sparsely-gated mixture-of-experts layer",
+      "authors": [
+        "Noam Shazeer",
+        "Azalia Mirhoseini",
+        "Krzysztof Maziarz",
+        "Andy Davis",
+        "Quoc Le",
+        "Geoffrey Hinton",
+        "Jeff Dean"
+      ],
       "venue": "",
-      "year": null,
+      "year": 2017,
       "doi": null,
       "arxiv_id": "1701.06538",
       "raw": "Noam Shazeer, Azalia Mirhoseini, Krzysztof Maziarz, Andy Davis, Quoc Le, Geoffrey Hinton, and Jeff Dean. \\newblock Outrageously large neural networks: The sparsely-gated mixture-of-experts layer. \\newblock {\\em arXiv preprint arXiv:1701.06538}, 2017.",
       "verified": "latexml-verified",
       "resolution": {
-        "status": "not_found",
-        "match_score": 0.0,
-        "matched_id": null,
-        "matched_service": null,
-        "resolved_at": "2026-11-14T10:09:55.370969"
+        "status": "resolved",
+        "match_score": 1.0,
+        "matched_id": "10.48550/arXiv.1701.06538",
+        "matched_service": "arxiv",
+        "resolved_at": "2026-11-14T10:57:27.202677"
       }
     },
     {
       "id": "srivastava2014dropout",
-      "title": "Nitish Srivastava, Geoffrey~E Hinton, Alex Krizhevsky, Ilya Sutskever, and Ruslan Salakhutdinov. \\newblock Dropout: a si",
-      "authors": [],
+      "title": "Dropout: a simple way to prevent neural networks from overfitting",
+      "authors": [
+        "Nitish Srivastava",
+        "Geoffrey E Hinton",
+        "Alex Krizhevsky",
+        "Ilya Sutskever",
+        "Ruslan Salakhutdinov"
+      ],
       "venue": "",
-      "year": null,
+      "year": 1929,
       "doi": null,
       "arxiv_id": null,
       "raw": "Nitish Srivastava, Geoffrey~E Hinton, Alex Krizhevsky, Ilya Sutskever, and Ruslan Salakhutdinov. \\newblock Dropout: a simple way to prevent neural networks from overfitting. \\newblock {\\em Journal of Machine Learning Research}, 15(1):1929--1958, 2014.",
       "verified": "latexml-verified",
       "resolution": {
-        "status": "not_found",
-        "match_score": 0.0,
-        "matched_id": null,
-        "matched_service": null,
-        "resolved_at": "2026-11-14T10:09:55.505600"
+        "status": "resolved",
+        "match_score": 1.0,
+        "matched_id": "10.5555/2627435.2670313",
+        "matched_service": "semanticscholar",
+        "resolved_at": "2026-11-14T10:57:28.836199"
       }
     },
     {
       "id": "sukhbaatar2015",
-      "title": "Sainbayar Sukhbaatar, Arthur Szlam, Jason Weston, and Rob Fergus. \\newblock End-to-end memory networks. \\newblock In C.~",
-      "authors": [],
+      "title": "End-to-end memory networks",
+      "authors": [
+        "Sainbayar Sukhbaatar",
+        "Arthur Szlam",
+        "Jason Weston",
+        "Rob Fergus"
+      ],
       "venue": "",
-      "year": null,
+      "year": 2015,
       "doi": null,
       "arxiv_id": null,
       "raw": "Sainbayar Sukhbaatar, Arthur Szlam, Jason Weston, and Rob Fergus. \\newblock End-to-end memory networks. \\newblock In C.~Cortes, N.~D. Lawrence, D.~D. Lee, M.~Sugiyama, and R.~Garnett, editors, {\\em Advances in Neural Information Processing Systems 28}, pages 2440--2448. Curran Associates, Inc., 2015.",
       "verified": "latexml-verified",
       "resolution": {
-        "status": "not_found",
-        "match_score": 0.0,
-        "matched_id": null,
-        "matched_service": null,
-        "resolved_at": "2026-11-14T10:09:55.461321"
+        "status": "resolved",
+        "match_score": 1.0,
+        "matched_id": "10.48550/arXiv.1410.3916",
+        "matched_service": "arxiv",
+        "resolved_at": "2026-11-14T11:06:07.177601"
       }
     },
     {
       "id": "sutskever14",
-      "title": "Ilya Sutskever, Oriol Vinyals, and Quoc~VV Le. \\newblock Sequence to sequence learning with neural networks. \\newblock I",
-      "authors": [],
+      "title": "Sequence to sequence learning with neural networks",
+      "authors": [
+        "Ilya Sutskever",
+        "Oriol Vinyals",
+        "Quoc VV Le"
+      ],
       "venue": "",
-      "year": null,
+      "year": 2014,
       "doi": null,
       "arxiv_id": null,
       "raw": "Ilya Sutskever, Oriol Vinyals, and Quoc~VV Le. \\newblock Sequence to sequence learning with neural networks. \\newblock In {\\em Advances in Neural Information Processing Systems}, pages 3104--3112, 2014.",
       "verified": "latexml-verified",
       "resolution": {
-        "status": "not_found",
-        "match_score": 0.0,
-        "matched_id": null,
-        "matched_service": null,
-        "resolved_at": "2026-11-14T10:09:55.663303"
+        "status": "resolved",
+        "match_score": 0.88,
+        "matched_id": "10.2139/ssrn.5320533",
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:57:28.813005"
       }
     },
     {
       "id": "DBLP:journals/corr/SzegedyVISW15",
-      "title": "Christian Szegedy, Vincent Vanhoucke, Sergey Ioffe, Jonathon Shlens, and Zbigniew Wojna. \\newblock Rethinking the incept",
-      "authors": [],
+      "title": "Rethinking the inception architecture for computer vision",
+      "authors": [
+        "Christian Szegedy",
+        "Vincent Vanhoucke",
+        "Sergey Ioffe",
+        "Jonathon Shlens",
+        "Zbigniew Wojna"
+      ],
       "venue": "",
-      "year": null,
+      "year": 2015,
       "doi": null,
       "arxiv_id": "1512.00567",
       "raw": "Christian Szegedy, Vincent Vanhoucke, Sergey Ioffe, Jonathon Shlens, and Zbigniew Wojna. \\newblock Rethinking the inception architecture for computer vision. \\newblock {\\em CoRR}, abs/1512.00567, 2015.",
       "verified": "latexml-verified",
       "resolution": {
-        "status": "not_found",
-        "match_score": 0.0,
-        "matched_id": null,
-        "matched_service": null,
-        "resolved_at": "2026-11-14T10:09:56.025387"
+        "status": "resolved",
+        "match_score": 1.0,
+        "matched_id": "10.48550/arXiv.1512.00567",
+        "matched_service": "arxiv",
+        "resolved_at": "2026-11-14T10:57:29.001574"
       }
     },
     {
       "id": "KVparse15",
-      "title": "{Vinyals {\\&} Kaiser}, Koo, Petrov, Sutskever, and Hinton. \\newblock Grammar as a foreign language. \\newblock In {\\em Ad",
-      "authors": [],
+      "title": "Grammar as a foreign language",
+      "authors": [
+        "Vinyals & Kaiser",
+        "Koo",
+        "Petrov",
+        "Sutskever",
+        "Hinton"
+      ],
       "venue": "",
-      "year": null,
+      "year": 2015,
       "doi": null,
       "arxiv_id": null,
       "raw": "{Vinyals {\\&} Kaiser}, Koo, Petrov, Sutskever, and Hinton. \\newblock Grammar as a foreign language. \\newblock In {\\em Advances in Neural Information Processing Systems}, 2015.",
       "verified": "latexml-verified",
       "resolution": {
-        "status": "not_found",
-        "match_score": 0.3817,
-        "matched_id": null,
+        "status": "resolved",
+        "match_score": 0.88,
+        "matched_id": "10.1016/j.neucom.2022.12.045",
         "matched_service": "crossref",
-        "resolved_at": "2026-11-14T10:09:55.665303"
+        "resolved_at": "2026-11-14T10:57:28.986747"
       }
     },
     {
       "id": "wu2016google",
-      "title": "Yonghui Wu, Mike Schuster, Zhifeng Chen, Quoc~V Le, Mohammad Norouzi, Wolfgang Macherey, Maxim Krikun, Yuan Cao, Qin Gao",
-      "authors": [],
+      "title": "Google's neural machine translation system: Bridging the gap between human and machine translation",
+      "authors": [
+        "Yonghui Wu",
+        "Mike Schuster",
+        "Zhifeng Chen",
+        "Quoc V Le",
+        "Mohammad Norouzi",
+        "Wolfgang Macherey",
+        "Maxim Krikun",
+        "Yuan Cao",
+        "Qin Gao",
+        "Klaus Macherey",
+        "et al"
+      ],
       "venue": "",
-      "year": null,
+      "year": 2016,
       "doi": null,
       "arxiv_id": "1609.08144",
       "raw": "Yonghui Wu, Mike Schuster, Zhifeng Chen, Quoc~V Le, Mohammad Norouzi, Wolfgang Macherey, Maxim Krikun, Yuan Cao, Qin Gao, Klaus Macherey, et~al. \\newblock Google's neural machine translation system: Bridging the gap between human and machine translation. \\newblock {\\em arXiv preprint arXiv:1609.08144}, 2016.",
       "verified": "latexml-verified",
       "resolution": {
-        "status": "not_found",
-        "match_score": 0.0,
-        "matched_id": null,
-        "matched_service": null,
-        "resolved_at": "2026-11-14T10:09:56.041163"
+        "status": "resolved",
+        "match_score": 1.0,
+        "matched_id": "10.48550/arXiv.1609.08144",
+        "matched_service": "arxiv",
+        "resolved_at": "2026-11-14T10:57:29.263357"
       }
     },
     {
       "id": "DBLP:journals/corr/ZhouCWLX16",
-      "title": "Jie Zhou, Ying Cao, Xuguang Wang, Peng Li, and Wei Xu. \\newblock Deep recurrent models with fast-forward connections for",
-      "authors": [],
+      "title": "Deep recurrent models with fast-forward connections for neural machine translation",
+      "authors": [
+        "Jie Zhou",
+        "Ying Cao",
+        "Xuguang Wang",
+        "Peng Li",
+        "Wei Xu"
+      ],
       "venue": "",
-      "year": null,
+      "year": 2016,
       "doi": null,
       "arxiv_id": "1606.04199",
       "raw": "Jie Zhou, Ying Cao, Xuguang Wang, Peng Li, and Wei Xu. \\newblock Deep recurrent models with fast-forward connections for neural machine translation. \\newblock {\\em CoRR}, abs/1606.04199, 2016.",
       "verified": "latexml-verified",
       "resolution": {
-        "status": "not_found",
-        "match_score": 0.0,
-        "matched_id": null,
-        "matched_service": null,
-        "resolved_at": "2026-11-14T10:09:56.080891"
+        "status": "resolved",
+        "match_score": 1.0,
+        "matched_id": "10.48550/arXiv.1606.04199",
+        "matched_service": "arxiv",
+        "resolved_at": "2026-11-14T10:57:29.263357"
       }
     },
     {
       "id": "zhu-EtAl:2013:ACL",
-      "title": "Muhua Zhu, Yue Zhang, Wenliang Chen, Min Zhang, and Jingbo Zhu. \\newblock Fast and accurate shift-reduce constituent par",
-      "authors": [],
+      "title": "Fast and accurate shift-reduce constituent parsing",
+      "authors": [
+        "Muhua Zhu",
+        "Yue Zhang",
+        "Wenliang Chen",
+        "Min Zhang",
+        "Jingbo Zhu"
+      ],
       "venue": "",
-      "year": null,
+      "year": 2013,
       "doi": null,
       "arxiv_id": null,
-      "raw": "Muhua Zhu, Yue Zhang, Wenliang Chen, Min Zhang, and Jingbo Zhu. \\newblock Fast and accurate shift-reduce constituent parsing. \\newblock In {\\em Proceedings of the 51st Annual Meeting of the ACL (Volume 1: Long Papers)}, pages 434--443. ACL, August 2013. \\end{thebibliography} %\\newpage \\pagebreak \\section*{Attention Visualizations}\\label{sec:viz-att} \\begin{figure*}[h] {\\includegraphics[width=\\textwidth, trim=0 0 0 36, clip]{./vis/making_more_difficult5_new.pdf}} \\caption{An example of the attention mechanism following long-distance dependencies in the encoder self-attention in layer 5 of 6. Many of the attention heads attend to a distant dependency of the verb `making', completing the phrase `making...more difficult'. Attentions here shown only for the word `making'. Different colors represent different heads. Best viewed in color.} \\end{figure*} \\begin{figure*} {\\includegraphics[width=\\textwidth, trim=0 0 0 45, clip]{./vis/anaphora_resolution_new.pdf}} {\\includegraphics[width=\\textwidth, trim=0 0 0 37, clip]{./vis/anaphora_resolution2_new.pdf}} \\caption{Two attention heads, also in layer 5 of 6, apparently involved in anaphora resolution. Top: Full attentions for head 5. Bottom: Isolated attentions from just the word `its' for attention heads 5 and 6. Note that the attentions are very sharp for this word.} \\end{figure*} \\begin{figure*} {\\includegraphics[width=\\textwidth, trim=0 0 0 36, clip]{./vis/attending_to_head_new.pdf}} {\\includegraphics[width=\\textwidth, trim=0 0 0 36, clip]{./vis/attending_to_head2_new.pdf}} \\caption{Many of the attention heads exhibit behaviour that seems related to the structure of the sentence. We give two such examples above, from two different heads from the encoder self-attention at layer 5 of 6. The heads clearly learned to perform different tasks.} \\end{figure*} %\\appendix %\\newpage %\\pagebreak \\section*{Two Feed-Forward Layers = Attention over Parameters}\\label{sec:parameter_attention} In addition to attention layers, our model contains position-wise feed-forward networks (Section \\ref{sec:ffn}), which consist of two linear transformations with a ReLU activation in between. In fact, these networks too can be seen as a form of attention. Compare the formula for such a network with the formula for a simple dot-product attention layer (biases and scaling factors omitted): \\begin{align*} FFN(x, W_1, W_2) = ReLU(xW_1)W_2 \\\\ A(q, K, V) = Softmax(qK^T)V \\end{align*} Based on the similarity of these formulae, the two-layer feed-forward network can be seen as a kind of attention, where the keys and values are the rows of the trainable parameter matrices $W_1$ and $W_2$, and where we use ReLU instead of Softmax in the compatibility function. %the compatablity function is $compat(q, k_i) = ReLU(q \\cdot k_i)$ instead of $Softmax(qK_T)_i$. Given this similarity, we experimented with replacing the position-wise feed-forward networks with attention layers similar to the ones we use everywhere else our model. The multi-head-attention-over-parameters sublayer is identical to the multi-head attention described in \\ref{sec:multihead}, except that the \"keys\" and \"values\" inputs to each attention head are trainable model parameters, as opposed to being linear projections of a previous layer. These parameters are scaled up by a factor of $\\sqrt{d_{model}}$ in order to be more similar to activations. In our first experiment, we replaced each position-wise feed-forward network with a multi-head-attention-over-parameters sublayer with $h_p=8$ heads, key-dimensionality $d_{pk}=64$, and value-dimensionality $d_{pv}=64$, using $n_p=1536$ key-value pairs for each attention head. The sublayer has a total of $2097152$ parameters, including the parameters in the query projection and the output projection. This matches the number of parameters in the position-wise feed-forward network that we replaced. While the theoretical amount of computation is also the same, in practice, the attention version caused the step times to be about 30\\% longer. In our second experiment, we used $h_p=8$ heads, and $n_p=512$ key-value pairs for each attention head, again matching the total number of parameters in the base model. Results for the first experiment were slightly worse than for the base model, and results for the second experiment were slightly better, see Table~\\ref{tab:parameter_attention}. \\begin{table}[h] \\caption{Replacing the position-wise feed-forward networks with multihead-attention-over-parameters produces similar results to the base model. All metrics are on the English-to-German translation development set, newstest2013.} \\label{tab:parameter_attention} \\begin{center} \\vspace{-2mm} %\\scalebox{1.0}{ \\begin{tabular}{c|cccccc|cccc} \\hline\\rule{0pt}{2.0ex} & \\multirow{2}{*}{$\\dmodel$} & \\multirow{2}{*}{$\\dff$} & \\multirow{2}{*}{$h_p$} & \\multirow{2}{*}{$d_{pk}$} & \\multirow{2}{*}{$d_{pv}$} & \\multirow{2}{*}{$n_p$} & PPL & BLEU & params & training\\\\ & & & & & & & (dev) & (dev) & $\\times10^6$ & time \\\\ \\hline\\rule{0pt}{2.0ex} base & 512 & 2048 & & & & & 4.92 & 25.8 & 65 & 12 hours\\\\ \\hline\\rule{0pt}{2.0ex} AOP$_1$ & 512 & & 8 & 64 & 64 & 1536 & 4.92& 25.5 & 65 & 16 hours\\\\ AOP$_2$ & 512 & & 16 & 64 & 64 & 512 & \\textbf{4.86} & \\textbf{25.9} & 65 & 16 hours \\\\ \\hline \\end{tabular} %} \\end{center} \\end{table} %\\section*{Justfication of the Scaling Factor in Dot-product Attention} In Section~\\ref{sec:scaled-dot-prod}, we introduced Scaled dot-product attention, where we scale down the dot products by $\\sqrt{d_k}$. In this section, we will give a rough justification of this scaling factor. If we assume that $q$ and $k$ are $d_k$-dimensional vectors whose components are independent random variables with mean $0$ and variance $1$, then their dot product, $q \\cdot k = \\sum_{i=1}^{d_k} u_iv_i$, has mean $0$ and variance $d_k$. Since we would prefer these values to have variance $1$, we divide by $\\sqrt{d_k}$. %For any two $d_k$-dimension vectors $\\vec{u}$ and $\\vec{v}$, whose dimensions are independent, the mean and variance of the dot product will be the summation of the product of means and variances over the dimensions, that is, $E[<\\vec{u},\\vec{v}>] = \\sum_{i=1}^{d_k} E[u_i]E[v_i]$, and $E[(<\\vec{u},\\vec{v}>-E[<\\vec{u},\\vec{v}>])^2] = \\sum_{i=1}^{d_k} E[({u_i}-E[u_i])^2] E[({v_i}-E[v_i])^2]$. Layer norm encourages the mean and variance of each dimension to be $0$ and $1$ respectively, resultig in the dot product having mean $0$ and $d_k$ respectively. Therefore, scaling by $\\sqrt{d_k}$ encourages the logits to be normalized as well. \\iffalse In this section, we will give a rough justification of this scaling factor, that is, we will show that for any two vectors, $\\vec{u}$ and $\\vec{v}$, whose variance and mean are $1$ and $0$ respectively, the variance and the mean of the dot product are $d_k$ and $0$ respectively. Therefore, dividing by $\\sqrt{d_k}$ ensures that each component of the attention logits are normalized. The repeated layer norms at each transformer layer encourage $\\vec{u}$ and $\\vec{v}$ to be normalized. \\begin{align*} E[<\\vec{u},\\vec{v}>] & = \\sum_k E[u_i v_i] &\\text{By linearity of expectation} \\\\ & =\\sum_k E[u_i]E[v_i] & \\text{Assuming independence} \\\\ & = 0 \\end{align*} \\begin{align*} E[(<\\vec{u},\\vec{v}>-E[<\\vec{u},\\vec{v}>])^2] & = E[(<\\vec{u},\\vec{v}>)^2] - E[<\\vec{u},\\vec{v}>]^2 \\\\ & = E[(<\\vec{u},\\vec{v}>)^2] \\\\ & = \\sum_k E[{u_i}^2] E[{v_i}^2] &\\text{By linearity of expectation and indepedence} \\\\ & = d_k \\end{align*} \\fi \\end{document}",
+      "raw": "Muhua Zhu, Yue Zhang, Wenliang Chen, Min Zhang, and Jingbo Zhu. \\newblock Fast and accurate shift-reduce constituent parsing. \\newblock In {\\em Proceedings of the 51st Annual Meeting of the ACL (Volume 1: Long Papers)}, pages 434--443. ACL, August 2013.",
       "verified": "latexml-verified",
       "resolution": {
-        "status": "not_found",
-        "match_score": 0.3687,
-        "matched_id": null,
+        "status": "ambiguous",
+        "match_score": 0.6774,
+        "matched_id": "10.18653/v1/d18-1161",
         "matched_service": "crossref",
-        "resolved_at": "2026-11-14T10:09:56.028393"
+        "resolved_at": "2026-11-14T11:06:07.755422"
       }
     }
   ],
@@ -1128,5 +1324,5 @@
   },
   "as_of": null,
   "sha256": "2e7a7d9ee2520d22eb23dae0cb148e167be02a30d6cb3f11b1c67723194339c6",
-  "created_at": "2026-11-14T10:09:08.648530"
+  "created_at": "2026-11-14T11:05:17.989601"
 }

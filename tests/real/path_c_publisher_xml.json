@@ -22,7 +22,7 @@
     "tool": "jats-xml",
     "tool_version": "JATS XML (Publisher)",
     "source_uri": "https://doi.org/10.1371/journal.pone.0298888",
-    "extracted_at": "2026-11-14T10:09:08.666063",
+    "extracted_at": "2026-11-14T11:05:18.005601",
     "per_part": {
       "metadata": {
         "tool": "jats-xml",
@@ -56,7 +56,7 @@
       "tool": "jats-xml",
       "tool_version": "JATS XML (Publisher)",
       "source_uri": "https://doi.org/10.1371/journal.pone.0298888",
-      "extracted_at": "2026-11-14T10:09:08.666063",
+      "extracted_at": "2026-11-14T11:05:18.005601",
       "per_part": {
         "metadata": {
           "tool": "jats-xml",
@@ -398,11 +398,11 @@
       "raw": "",
       "verified": "jats-verified",
       "resolution": {
-        "status": "not_found",
-        "match_score": 0.4,
-        "matched_id": null,
+        "status": "ambiguous",
+        "match_score": 0.6667,
+        "matched_id": "10.1300/j120v28n59_11",
         "matched_service": "crossref",
-        "resolved_at": "2026-11-14T10:09:56.709293"
+        "resolved_at": "2026-11-14T11:06:08.678646"
       }
     },
     {
@@ -416,11 +416,11 @@
       "raw": "",
       "verified": "jats-verified",
       "resolution": {
-        "status": "not_found",
-        "match_score": 0.4,
-        "matched_id": null,
+        "status": "ambiguous",
+        "match_score": 0.6667,
+        "matched_id": "10.1300/j120v28n59_11",
         "matched_service": "crossref",
-        "resolved_at": "2026-11-14T10:09:56.783968"
+        "resolved_at": "2026-11-14T11:06:08.763379"
       }
     },
     {
@@ -438,7 +438,7 @@
         "match_score": 1.0,
         "matched_id": "10.1109/mcom.2017.1700082",
         "matched_service": "crossref",
-        "resolved_at": "2026-11-14T10:09:56.709293"
+        "resolved_at": "2026-11-14T10:57:31.635551"
       }
     },
     {
@@ -452,11 +452,11 @@
       "raw": "",
       "verified": "jats-verified",
       "resolution": {
-        "status": "not_found",
-        "match_score": 0.0,
-        "matched_id": null,
-        "matched_service": null,
-        "resolved_at": "2026-11-14T10:09:56.818533"
+        "status": "resolved",
+        "match_score": 1.0,
+        "matched_id": "10.1145/3478080",
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:57:31.603831"
       }
     },
     {
@@ -474,7 +474,7 @@
         "match_score": 1.0,
         "matched_id": "10.1145/3563948",
         "matched_service": "crossref",
-        "resolved_at": "2026-11-14T10:09:56.668076"
+        "resolved_at": "2026-11-14T10:57:32.019291"
       }
     },
     {
@@ -488,11 +488,11 @@
       "raw": "",
       "verified": "jats-verified",
       "resolution": {
-        "status": "not_found",
-        "match_score": 0.4,
-        "matched_id": null,
+        "status": "ambiguous",
+        "match_score": 0.6667,
+        "matched_id": "10.1300/j120v28n59_11",
         "matched_service": "crossref",
-        "resolved_at": "2026-11-14T10:09:56.978961"
+        "resolved_at": "2026-11-14T11:06:09.364318"
       }
     },
     {
@@ -510,7 +510,7 @@
         "match_score": 1.0,
         "matched_id": "10.1186/s40537-016-0043-6",
         "matched_service": "crossref",
-        "resolved_at": "2026-11-14T10:09:57.079230"
+        "resolved_at": "2026-11-14T10:57:32.419777"
       }
     },
     {
@@ -528,7 +528,7 @@
         "match_score": 0.0,
         "matched_id": null,
         "matched_service": null,
-        "resolved_at": "2026-11-14T10:09:57.469192"
+        "resolved_at": "2026-11-14T11:06:10.063617"
       }
     },
     {
@@ -546,7 +546,7 @@
         "match_score": 1.0,
         "matched_id": "10.1016/0010-4485(79)90071-x",
         "matched_service": "crossref",
-        "resolved_at": "2026-11-14T10:09:57.270735"
+        "resolved_at": "2026-11-14T10:57:32.547807"
       }
     },
     {
@@ -564,7 +564,7 @@
         "match_score": 1.0,
         "matched_id": "10.1145/3264944",
         "matched_service": "crossref",
-        "resolved_at": "2026-11-14T10:09:57.454646"
+        "resolved_at": "2026-11-14T10:57:32.965417"
       }
     },
     {
@@ -578,11 +578,11 @@
       "raw": "",
       "verified": "jats-verified",
       "resolution": {
-        "status": "not_found",
-        "match_score": 0.0,
-        "matched_id": null,
-        "matched_service": null,
-        "resolved_at": "2026-11-14T10:09:57.710683"
+        "status": "resolved",
+        "match_score": 1.0,
+        "matched_id": "10.1109/tmc.2021.3133114",
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:57:33.589141"
       }
     },
     {
@@ -596,11 +596,11 @@
       "raw": "",
       "verified": "jats-verified",
       "resolution": {
-        "status": "not_found",
-        "match_score": 0.0,
-        "matched_id": null,
-        "matched_service": null,
-        "resolved_at": "2026-11-14T10:09:57.627214"
+        "status": "resolved",
+        "match_score": 1.0,
+        "matched_id": "10.1016/j.neucom.2020.10.056",
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:57:33.704042"
       }
     },
     {
@@ -614,11 +614,11 @@
       "raw": "",
       "verified": "jats-verified",
       "resolution": {
-        "status": "not_found",
-        "match_score": 0.0,
-        "matched_id": null,
-        "matched_service": null,
-        "resolved_at": "2026-11-14T10:09:57.684077"
+        "status": "resolved",
+        "match_score": 1.0,
+        "matched_id": "10.1007/s10115-013-0665-3",
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:57:34.231761"
       }
     },
     {
@@ -632,11 +632,11 @@
       "raw": "",
       "verified": "jats-verified",
       "resolution": {
-        "status": "not_found",
-        "match_score": 0.0,
-        "matched_id": null,
-        "matched_service": null,
-        "resolved_at": "2026-11-14T10:09:57.885260"
+        "status": "resolved",
+        "match_score": 1.0,
+        "matched_id": "10.1007/978-981-15-5971-6_83",
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:57:34.049161"
       }
     },
     {
@@ -654,7 +654,7 @@
         "match_score": 1.0,
         "matched_id": "10.1145/3570325",
         "matched_service": "crossref",
-        "resolved_at": "2026-11-14T10:09:57.806916"
+        "resolved_at": "2026-11-14T10:57:34.244068"
       }
     },
     {
@@ -669,10 +669,10 @@
       "verified": "jats-verified",
       "resolution": {
         "status": "not_found",
-        "match_score": 0.0,
+        "match_score": 0.3279,
         "matched_id": null,
-        "matched_service": null,
-        "resolved_at": "2026-11-14T10:09:58.097199"
+        "matched_service": "semanticscholar",
+        "resolved_at": "2026-11-14T11:06:11.239322"
       }
     },
     {
@@ -686,11 +686,11 @@
       "raw": "",
       "verified": "jats-verified",
       "resolution": {
-        "status": "ambiguous",
-        "match_score": 0.6667,
-        "matched_id": "10.1179/oeh.2010.16.1.5r",
+        "status": "not_found",
+        "match_score": 0.3846,
+        "matched_id": null,
         "matched_service": "crossref",
-        "resolved_at": "2026-11-14T10:09:57.978435"
+        "resolved_at": "2026-11-14T11:06:10.312265"
       }
     },
     {
@@ -705,10 +705,10 @@
       "verified": "jats-verified",
       "resolution": {
         "status": "not_found",
-        "match_score": 0.0,
+        "match_score": 0.5128,
         "matched_id": null,
-        "matched_service": null,
-        "resolved_at": "2026-11-14T10:09:58.129550"
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T11:06:11.065721"
       }
     },
     {
@@ -722,11 +722,11 @@
       "raw": "",
       "verified": "jats-verified",
       "resolution": {
-        "status": "not_found",
-        "match_score": 0.0,
-        "matched_id": null,
-        "matched_service": null,
-        "resolved_at": "2026-11-14T10:09:58.271644"
+        "status": "resolved",
+        "match_score": 1.0,
+        "matched_id": "10.1109/jiot.2022.3163391",
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:57:35.921946"
       }
     },
     {
@@ -744,7 +744,7 @@
         "match_score": 1.0,
         "matched_id": "10.1561/2200000056",
         "matched_service": "crossref",
-        "resolved_at": "2026-11-14T10:09:58.172571"
+        "resolved_at": "2026-11-14T10:57:36.186813"
       }
     },
     {
@@ -758,11 +758,11 @@
       "raw": "",
       "verified": "jats-verified",
       "resolution": {
-        "status": "not_found",
-        "match_score": 0.0,
-        "matched_id": null,
-        "matched_service": null,
-        "resolved_at": "2026-11-14T10:09:58.530783"
+        "status": "resolved",
+        "match_score": 1.0,
+        "matched_id": "10.1109/jiot.2022.3228820",
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:57:36.331177"
       }
     },
     {
@@ -777,10 +777,10 @@
       "verified": "jats-verified",
       "resolution": {
         "status": "not_found",
-        "match_score": 0.0,
+        "match_score": 0.5882,
         "matched_id": null,
-        "matched_service": null,
-        "resolved_at": "2026-11-14T10:09:58.593889"
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T11:06:11.575677"
       }
     },
     {
@@ -798,7 +798,7 @@
         "match_score": 1.0,
         "matched_id": "10.3390/app11083329",
         "matched_service": "crossref",
-        "resolved_at": "2026-11-14T10:09:58.433901"
+        "resolved_at": "2026-11-14T10:57:36.576210"
       }
     },
     {
@@ -812,11 +812,11 @@
       "raw": "",
       "verified": "jats-verified",
       "resolution": {
-        "status": "not_found",
-        "match_score": 0.0,
-        "matched_id": null,
-        "matched_service": null,
-        "resolved_at": "2026-11-14T10:09:58.691828"
+        "status": "resolved",
+        "match_score": 0.8571,
+        "matched_id": "10.4324/9781315739854-11",
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:57:36.955155"
       }
     },
     {
@@ -830,11 +830,11 @@
       "raw": "",
       "verified": "jats-verified",
       "resolution": {
-        "status": "not_found",
-        "match_score": 0.0,
-        "matched_id": null,
-        "matched_service": null,
-        "resolved_at": "2026-11-14T10:09:58.821799"
+        "status": "resolved",
+        "match_score": 0.93,
+        "matched_id": "10.1145/3386252",
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:57:37.436100"
       }
     },
     {
@@ -852,7 +852,7 @@
         "match_score": 1.0,
         "matched_id": "10.3390/ijgi5060092",
         "matched_service": "crossref",
-        "resolved_at": "2026-11-14T10:09:58.795323"
+        "resolved_at": "2026-11-14T11:06:11.863667"
       }
     },
     {
@@ -866,11 +866,11 @@
       "raw": "",
       "verified": "jats-verified",
       "resolution": {
-        "status": "not_found",
-        "match_score": 0.0,
-        "matched_id": null,
-        "matched_service": null,
-        "resolved_at": "2026-11-14T10:09:58.900085"
+        "status": "resolved",
+        "match_score": 1.0,
+        "matched_id": "10.1109/access.2018.2814575",
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:57:37.668275"
       }
     },
     {
@@ -884,11 +884,11 @@
       "raw": "",
       "verified": "jats-verified",
       "resolution": {
-        "status": "not_found",
-        "match_score": 0.0,
-        "matched_id": null,
-        "matched_service": null,
-        "resolved_at": "2026-11-14T10:09:59.037504"
+        "status": "ambiguous",
+        "match_score": 0.6607,
+        "matched_id": "10.15368/theses.2017.39",
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T11:06:12.308806"
       }
     },
     {
@@ -903,10 +903,10 @@
       "verified": "jats-verified",
       "resolution": {
         "status": "not_found",
-        "match_score": 0.0,
+        "match_score": 0.4255,
         "matched_id": null,
-        "matched_service": null,
-        "resolved_at": "2026-11-14T10:09:59.157169"
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T11:06:12.328266"
       }
     },
     {
@@ -921,10 +921,10 @@
       "verified": "jats-verified",
       "resolution": {
         "status": "not_found",
-        "match_score": 0.4211,
+        "match_score": 0.5882,
         "matched_id": null,
         "matched_service": "crossref",
-        "resolved_at": "2026-11-14T10:09:59.052917"
+        "resolved_at": "2026-11-14T11:06:13.442381"
       }
     },
     {
@@ -939,10 +939,10 @@
       "verified": "jats-verified",
       "resolution": {
         "status": "not_found",
-        "match_score": 0.0,
+        "match_score": 0.4,
         "matched_id": null,
-        "matched_service": null,
-        "resolved_at": "2026-11-14T10:09:59.275223"
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T11:06:13.679865"
       }
     },
     {
@@ -957,10 +957,10 @@
       "verified": "jats-verified",
       "resolution": {
         "status": "not_found",
-        "match_score": 0.0,
+        "match_score": 0.2,
         "matched_id": null,
-        "matched_service": null,
-        "resolved_at": "2026-11-14T10:09:59.368026"
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T11:06:14.432819"
       }
     },
     {
@@ -975,10 +975,10 @@
       "verified": "jats-verified",
       "resolution": {
         "status": "not_found",
-        "match_score": 0.0,
+        "match_score": 0.4255,
         "matched_id": null,
-        "matched_service": null,
-        "resolved_at": "2026-11-14T10:09:59.464406"
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T11:06:14.433818"
       }
     },
     {
@@ -993,10 +993,10 @@
       "verified": "jats-verified",
       "resolution": {
         "status": "not_found",
-        "match_score": 0.0,
+        "match_score": 0.2857,
         "matched_id": null,
-        "matched_service": null,
-        "resolved_at": "2026-11-14T10:09:59.585676"
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T11:06:15.294878"
       }
     },
     {
@@ -1011,10 +1011,10 @@
       "verified": "jats-verified",
       "resolution": {
         "status": "not_found",
-        "match_score": 0.0,
+        "match_score": 0.2,
         "matched_id": null,
-        "matched_service": null,
-        "resolved_at": "2026-11-14T10:09:59.706376"
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T11:06:15.275596"
       }
     },
     {
@@ -1032,7 +1032,7 @@
         "match_score": 0.5634,
         "matched_id": null,
         "matched_service": "crossref",
-        "resolved_at": "2026-11-14T10:09:59.871205"
+        "resolved_at": "2026-11-14T11:06:16.477671"
       }
     },
     {
@@ -1046,11 +1046,11 @@
       "raw": "",
       "verified": "jats-verified",
       "resolution": {
-        "status": "not_found",
-        "match_score": 0.0,
-        "matched_id": null,
-        "matched_service": null,
-        "resolved_at": "2026-11-14T10:09:59.876703"
+        "status": "resolved",
+        "match_score": 1.0,
+        "matched_id": "10.1016/j.knosys.2023.110789",
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:57:41.674206"
       }
     },
     {
@@ -1064,11 +1064,11 @@
       "raw": "",
       "verified": "jats-verified",
       "resolution": {
-        "status": "not_found",
-        "match_score": 0.0,
-        "matched_id": null,
-        "matched_service": null,
-        "resolved_at": "2026-11-14T10:09:59.903043"
+        "status": "resolved",
+        "match_score": 1.0,
+        "matched_id": "10.1109/tnnls.2020.2988928",
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:57:41.961685"
       }
     },
     {
@@ -1086,7 +1086,7 @@
         "match_score": 1.0,
         "matched_id": "10.1109/tii.2022.3141783",
         "matched_service": "crossref",
-        "resolved_at": "2026-11-14T10:09:59.888829"
+        "resolved_at": "2026-11-14T10:57:42.444434"
       }
     },
     {
@@ -1100,11 +1100,11 @@
       "raw": "",
       "verified": "jats-verified",
       "resolution": {
-        "status": "not_found",
-        "match_score": 0.0,
-        "matched_id": null,
-        "matched_service": null,
-        "resolved_at": "2026-11-14T10:10:00.140178"
+        "status": "resolved",
+        "match_score": 0.8571,
+        "matched_id": "10.1007/978-94-017-2868-3_3",
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:57:42.538931"
       }
     },
     {
@@ -1118,11 +1118,11 @@
       "raw": "",
       "verified": "jats-verified",
       "resolution": {
-        "status": "not_found",
-        "match_score": 0.0,
-        "matched_id": null,
-        "matched_service": null,
-        "resolved_at": "2026-11-14T10:10:00.306650"
+        "status": "resolved",
+        "match_score": 1.0,
+        "matched_id": "10.3390/s19153329",
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:57:42.823943"
       }
     },
     {
@@ -1136,11 +1136,11 @@
       "raw": "",
       "verified": "jats-verified",
       "resolution": {
-        "status": "not_found",
-        "match_score": 0.0,
-        "matched_id": null,
-        "matched_service": null,
-        "resolved_at": "2026-11-14T10:10:00.318568"
+        "status": "ambiguous",
+        "match_score": 0.88,
+        "matched_id": "10.52202/068431-1321",
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T11:06:16.132597"
       }
     },
     {
@@ -1154,11 +1154,11 @@
       "raw": "",
       "verified": "jats-verified",
       "resolution": {
-        "status": "not_found",
-        "match_score": 0.0,
-        "matched_id": null,
-        "matched_service": null,
-        "resolved_at": "2026-11-14T10:10:00.339612"
+        "status": "resolved",
+        "match_score": 1.0,
+        "matched_id": "10.3390/s21217225",
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:57:43.339766"
       }
     },
     {
@@ -1173,10 +1173,10 @@
       "verified": "jats-verified",
       "resolution": {
         "status": "not_found",
-        "match_score": 0.0,
+        "match_score": 0.1818,
         "matched_id": null,
-        "matched_service": null,
-        "resolved_at": "2026-11-14T10:10:00.566168"
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T11:06:16.919873"
       }
     },
     {
@@ -1194,7 +1194,7 @@
         "match_score": 1.0,
         "matched_id": "10.1016/j.pmcj.2021.101477",
         "matched_service": "crossref",
-        "resolved_at": "2026-11-14T10:10:00.668500"
+        "resolved_at": "2026-11-14T10:57:43.831216"
       }
     }
   ],
@@ -1207,5 +1207,5 @@
   },
   "as_of": null,
   "sha256": "86130705c8191065df0db800eea930725995ccef8a101f5bf25d29992aae78a5",
-  "created_at": "2026-11-14T10:09:08.666063"
+  "created_at": "2026-11-14T11:05:18.005601"
 }
