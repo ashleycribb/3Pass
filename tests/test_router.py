@@ -205,8 +205,8 @@ def test_unified_record_schema_across_all_paths(arxiv_html, latex_tex, jats_xml,
     records = [router.route(inp) for inp in inputs]
     expected_keys = {
         "source_id", "paper_id", "title", "authors", "year", "doi", "arxiv_id",
-        "urls", "completeness", "provenance", "abstract", "sections",
-        "figures", "tables", "equations", "references", "human_notes",
+        "urls", "completeness", "provenance", "provenances", "abstract", "sections",
+        "figures", "tables", "equations", "references", "human_notes", "as_of",
         "sha256", "created_at"
     }
 
@@ -218,6 +218,8 @@ def test_unified_record_schema_across_all_paths(arxiv_html, latex_tex, jats_xml,
         assert "methodology_evaluation" in rec.human_notes
         assert "findings_credibility" in rec.human_notes
         assert "dissertation_gaps" in rec.human_notes
+        assert "citation_role" in rec.human_notes
+        assert rec.human_notes["citation_role"] == ""
 
 def test_wiki_draft_page_facts_and_empty_researcher_notes(arxiv_html, tmp_path):
     """Wiki draft page contains facts and structure only, with empty researcher notes sections."""

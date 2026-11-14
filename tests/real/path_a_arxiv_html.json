@@ -1155,7 +1155,7 @@
     "tool": "latexml-html",
     "tool_version": "LaTeXML 0.8.8",
     "source_uri": "https://arxiv.org/html/2403.05530",
-    "extracted_at": "2026-11-14T09:28:22.473736",
+    "extracted_at": "2026-11-14T10:09:07.578615",
     "per_part": {
       "metadata": {
         "tool": "latexml-html",
@@ -1183,6 +1183,41 @@
       }
     }
   },
+  "provenances": [
+    {
+      "path_used": "arxiv_html",
+      "tool": "latexml-html",
+      "tool_version": "LaTeXML 0.8.8",
+      "source_uri": "https://arxiv.org/html/2403.05530",
+      "extracted_at": "2026-11-14T10:09:07.578615",
+      "per_part": {
+        "metadata": {
+          "tool": "latexml-html",
+          "status": "extracted"
+        },
+        "sections": {
+          "tool": "latexml-html",
+          "status": "extracted"
+        },
+        "figures": {
+          "tool": "latexml-html",
+          "status": "extracted"
+        },
+        "tables": {
+          "tool": "latexml-html",
+          "status": "extracted"
+        },
+        "equations": {
+          "tool": "latexml-html",
+          "status": "extracted"
+        },
+        "references": {
+          "tool": "latexml-html",
+          "status": "extracted"
+        }
+      }
+    }
+  ],
   "abstract": "In this report, we introduce the Gemini 1.5 family of models, representing the next generation of highly compute-efficient multimodal models capable of recalling and reasoning over fine-grained information from millions of tokens of context, including multiple long documents and hours of video and audio. The family includes two new models: (1) an updated Gemini 1.5 Pro, which exceeds the February version on the great majority of capabilities and benchmarks; (2) Gemini 1.5 Flash, a more lightweight variant designed for efficiency with minimal regression in quality. Gemini 1.5 models achieve near-perfect recall on long-context retrieval tasks across modalities, improve the state-of-the-art in long-document QA, long-video QA and long-context ASR, and match or surpass Gemini 1.0 Ultra’s state-of-the-art performance across a broad set of benchmarks.\nStudying the limits of Gemini 1.5’s long-context ability, we find continued improvement in next-token prediction and near-perfect retrieval (>99%) up to at least 10M tokens, a generational leap over existing models such as Claude 3.0 (200k) and GPT-4 Turbo (128k).\nFinally, we highlight real-world use cases, such as Gemini 1.5 collaborating with professionals on completing their tasks achieving 26 to 75% time savings across 10 different job categories, as well as surprising new capabilities of large language models at the frontier;\nwhen given a grammar manual for Kalamang, a language with fewer than 200 speakers worldwide, the model learns to translate English to Kalamang at a similar level to a person who learned from the same content.",
   "sections": [
     {
@@ -2394,7 +2429,14 @@
       "doi": null,
       "arxiv_id": "2404.11018",
       "raw": "Agarwal et al. (2024a) Rishabh Agarwal, Avi Singh, Lei M. Zhang, Bernd Bohnet, Stephanie Chan, Ankesh\nAnand, Zaheer Abbas, Azade Nova, John D. Co-Reyes, Eric Chu, Feryal\nBehbahani, Aleksandra Faust, and Hugo Larochelle. Many-shot in-context learning. CoRR , abs/2404.11018, 2024a.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.1898,
+        "matched_id": null,
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:09:29.090863"
+      }
     },
     {
       "id": "bib.bib2",
@@ -2405,7 +2447,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Agarwal et al. (2024b) Rishabh Agarwal, Nino Vieillard, Yongchao Zhou, Piotr Stanczyk, Sabela Ramos\nGarea, Matthieu Geist, and Olivier Bachem. On-policy distillation of language models: Learning from\nself-generated mistakes. In The Twelfth International Conference on Learning\nRepresentations , 2024b.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.1871,
+        "matched_id": null,
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:09:28.917614"
+      }
     },
     {
       "id": "bib.bib3",
@@ -2416,7 +2465,14 @@
       "doi": null,
       "arxiv_id": "2303.09752",
       "raw": "Ainslie et al. (2023) Joshua Ainslie, Tao Lei, Michiel de Jong, Santiago Ontañón, Siddhartha\nBrahma, Yury Zemlyanskiy, David Uthus, Mandy Guo, James Lee-Thorp, Yi Tay,\net al. Colt5: Faster long-range transformers with conditional computation. arXiv preprint arXiv:2303.09752 , 2023.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0113,
+        "matched_id": null,
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:09:29.089852"
+      }
     },
     {
       "id": "bib.bib4",
@@ -2427,7 +2483,14 @@
       "doi": null,
       "arxiv_id": "2404.02151",
       "raw": "Andriushchenko et al. (2024) Maksym Andriushchenko, Francesco Croce, and Nicolas Flammarion. Jailbreaking leading safety-aligned llms with simple adaptive\nattacks. arXiv preprint arXiv:2404.02151 , 2024.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.2286,
+        "matched_id": null,
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:09:29.068117"
+      }
     },
     {
       "id": "bib.bib5",
@@ -2438,7 +2501,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Anil et al. (2018) Rohan Anil, Gabriel Pereyra, Alexandre Passos, Robert Ormandi, George E. Dahl,\nand Geoffrey E. Hinton. Large scale distributed neural network training through online\ndistillation, 2018.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0981,
+        "matched_id": null,
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:09:28.963186"
+      }
     },
     {
       "id": "bib.bib6",
@@ -2449,7 +2519,14 @@
       "doi": null,
       "arxiv_id": "2305.10403",
       "raw": "Anil et al. (2023a) Rohan Anil, Andrew M Dai, Orhan Firat, Melvin Johnson, Dmitry Lepikhin,\nAlexandre Passos, Siamak Shakeri, Emanuel Taropa, Paige Bailey, Zhifeng Chen,\net al. Palm 2 technical report. arXiv preprint arXiv:2305.10403 , 2023a.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.2703,
+        "matched_id": null,
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:09:30.914254"
+      }
     },
     {
       "id": "bib.bib7",
@@ -2460,7 +2537,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Anil et al. (2023b) Rohan Anil, Andrew M. Dai, Orhan Firat, Melvin Johnson, Dmitry Lepikhin,\nAlexandre Passos, Siamak Shakeri, Emanuel Taropa, Paige Bailey, Zhifeng Chen,\net al. PaLM 2 Technical Report, 2023b.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.2636,
+        "matched_id": null,
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:09:30.798601"
+      }
     },
     {
       "id": "bib.bib8",
@@ -2471,7 +2555,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Anthropic (2023a) Anthropic. Model Card and Evaluations for Claude Models, 2023a.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.2364,
+        "matched_id": null,
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:09:30.845364"
+      }
     },
     {
       "id": "bib.bib9",
@@ -2482,7 +2573,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Anthropic (2023b) Anthropic. Long context prompting for Claude 2.1, 2023b.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.2524,
+        "matched_id": null,
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:09:31.020066"
+      }
     },
     {
       "id": "bib.bib10",
@@ -2493,7 +2591,14 @@
       "doi": null,
       "arxiv_id": "1912.06670",
       "raw": "Ardila et al. (2019) Rosana Ardila, Megan Branson, Kelly Davis, Michael Henretty, Michael Kohler,\nJosh Meyer, Reuben Morais, Lindsay Saunders, Francis M Tyers, and Gregor\nWeber. Common voice: A massively-multilingual speech corpus. arXiv preprint arXiv:1912.06670 , 2019.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "resolved",
+        "match_score": 0.95,
+        "matched_id": "10.1515/9780820342368-003",
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:09:31.240086"
+      }
     },
     {
       "id": "bib.bib11",
@@ -2504,7 +2609,14 @@
       "doi": null,
       "arxiv_id": "2212.08073",
       "raw": "Bai et al. (2022) Yuntao Bai, Saurav Kadavath, Sandipan Kundu, Amanda Askell, Jackson Kernion,\nAndy Jones, Anna Chen, Anna Goldie, Azalia Mirhoseini, Cameron McKinnon,\nCarol Chen, Catherine Olsson, Christopher Olah, Danny Hernandez, Dawn Drain,\nDeep Ganguli, Dustin Li, Eli Tran-Johnson, Ethan Perez, Jamie Kerr, Jared\nMueller, Jeffrey Ladish, Joshua Landau, Kamal Ndousse, Kamile Lukosuite,\nLiane Lovitt, Michael Sellitto, Nelson Elhage, Nicholas Schiefer, Noemi\nMercado, Nova DasSarma, Robert Lasenby, Robin Larson, Sam Ringer, Scott\nJohnston, Shauna Kravec, Sheer El Showk, Stanislav Fort, Tamera Lanham,\nTimothy Telleen-Lawton, Tom Conerly, Tom Henighan, Tristan Hume, Samuel R.\nBowman, Zac Hatfield-Dodds, Ben Mann, Dario Amodei, Nicholas Joseph, Sam\nMcCandlish, Tom Brown, and Jared Kaplan. Constitutional AI: Harmlessness from AI feedback. arXiv preprint arXiv:2212.08073 , 2022.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.2239,
+        "matched_id": null,
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:09:31.464118"
+      }
     },
     {
       "id": "bib.bib12",
@@ -2515,7 +2627,14 @@
       "doi": null,
       "arxiv_id": "2402.05861",
       "raw": "Balažević et al. (2024) Ivana Balažević, Yuge Shi, Pinelopi Papalampidi, Rahma Chaabouni,\nSkanda Koppula, and Olivier J Hénaff. Memory consolidation enables long-context video understanding. arXiv preprint arXiv:2402.05861 , 2024.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.1905,
+        "matched_id": null,
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:09:31.520986"
+      }
     },
     {
       "id": "bib.bib13",
@@ -2526,7 +2645,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Becker and LeCun (1989) Suzanna Becker and Yann LeCun. Improving the convergence of back-propagation learning with\nsecond-order methods. 1989. URL https://api.semanticscholar.org/CorpusID:59695337 .",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "resolved",
+        "match_score": 0.95,
+        "matched_id": "10.1007/978-1-4302-6599-3_3",
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:09:31.484620"
+      }
     },
     {
       "id": "bib.bib14",
@@ -2537,7 +2663,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Bengio et al. (2013) Yoshua Bengio, Nicholas Léonard, and Aaron Courville. Estimating or propagating gradients through stochastic neurons for\nconditional computation, 2013.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.4773,
+        "matched_id": null,
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:09:31.505406"
+      }
     },
     {
       "id": "bib.bib15",
@@ -2548,7 +2681,14 @@
       "doi": null,
       "arxiv_id": "2305.01625",
       "raw": "Bertsch et al. (2023) Amanda Bertsch, Uri Alon, Graham Neubig, and Matthew R Gormley. Unlimiformer: Long-range transformers with unlimited length input. arXiv preprint arXiv:2305.01625 , 2023.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:32.057476"
+      }
     },
     {
       "id": "bib.bib16",
@@ -2559,7 +2699,14 @@
       "doi": null,
       "arxiv_id": "2405.00200",
       "raw": "Bertsch et al. (2024) Amanda Bertsch, Maor Ivgi, Uri Alon, Jonathan Berant, Matthew R Gormley, and\nGraham Neubig. In-context learning with long-context models: An in-depth\nexploration. arXiv preprint arXiv:2405.00200 , 2024.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.1156,
+        "matched_id": null,
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:09:32.006302"
+      }
     },
     {
       "id": "bib.bib17",
@@ -2570,7 +2717,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Beyer et al. (2021) Lucas Beyer, Xiaohua Zhai, Amélie Royer, Larisa Markeeva, Rohan Anil, and\nAlexander Kolesnikov. Knowledge distillation: A good teacher is patient and consistent,\n2021.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.1705,
+        "matched_id": null,
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:09:32.251441"
+      }
     },
     {
       "id": "bib.bib18",
@@ -2581,7 +2735,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Biderman et al. (2024) Stella Biderman, USVSN PRASHANTH, Lintang Sutawika, Hailey Schoelkopf, Quentin\nAnthony, Shivanshu Purohit, and Edward Raff. Emergent and predictable memorization in large language models. Advances in Neural Information Processing Systems , 36, 2024.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:32.507899"
+      }
     },
     {
       "id": "bib.bib19",
@@ -2592,7 +2753,14 @@
       "doi": "10.18653/v1/2020.coling-main.313",
       "arxiv_id": null,
       "raw": "Bird (2020) Steven Bird. Decolonising speech and language technology. In Donia Scott, Nuria Bel, and Chengqing Zong, editors, Proceedings of the 28th International Conference on Computational\nLinguistics , pages 3504–3519, Barcelona, Spain (Online), December 2020.\nInternational Committee on Computational Linguistics. 10.18653/v1/2020.coling-main.313 . URL https://aclanthology.org/2020.coling-main.313 .",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "resolved",
+        "match_score": 0.95,
+        "matched_id": "10.18653/v1/2020.coling-main.313",
+        "matched_service": "doi",
+        "resolved_at": "2026-11-14T10:09:32.169976"
+      }
     },
     {
       "id": "bib.bib20",
@@ -2603,7 +2771,14 @@
       "doi": "10.1109/ICCV.2019.00439",
       "arxiv_id": "2019.00439",
       "raw": "Biten et al. (2019) Ali Furkan Biten, Rubèn Tito, Andrés Mafla, Lluis Gomez, Marçal Rusiñol,\nC.V. Jawahar, Ernest Valveny, and Dimosthenis Karatzas. Scene text visual question answering. In 2019 IEEE/CVF International Conference on Computer Vision\n(ICCV) , pages 4290–4300, 2019. 10.1109/ICCV.2019.00439 .",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "resolved",
+        "match_score": 0.95,
+        "matched_id": "10.1109/iccv.2019.00439",
+        "matched_service": "doi",
+        "resolved_at": "2026-11-14T10:09:32.158737"
+      }
     },
     {
       "id": "bib.bib21",
@@ -2614,7 +2789,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Bohnet et al. (2024) Bernd Bohnet, Kevin Swersky, Rosanne Liu, Pranjal Awasthi, Azade Nova, Javier\nSnaider, Hanie Sedghi, Aaron T Parisi, Michael Collins, Angeliki Lazaridou,\nOrhan Firat, and Noah Fiedel. Long-span question-answering: Automatic question generation and\nqa-system ranking via side-by-side evaluation, 2024.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:32.506901"
+      }
     },
     {
       "id": "bib.bib22",
@@ -2625,7 +2807,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Bradbury et al. (2018) James Bradbury, Roy Frostig, Peter Hawkins, Matthew James Johnson, Chris Leary,\nDougal Maclaurin, George Necula, Adam Paszke, Jake VanderPlas, Skye\nWanderman-Milne, and Qiao Zhang. JAX: composable transformations of Python+NumPy programs,\n2018. URL http://github.com/google/jax .",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.192,
+        "matched_id": null,
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:09:32.362963"
+      }
     },
     {
       "id": "bib.bib23",
@@ -2636,7 +2825,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Bradley and Terry (1952) Ralph A. Bradley and Milton E. Terry. The rank analysis of incomplete block designs — I. The method of\npaired comparisons. Biometrika , 39:324–345, 1952.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.2884,
+        "matched_id": null,
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:09:32.629884"
+      }
     },
     {
       "id": "bib.bib24",
@@ -2647,7 +2843,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Brants et al. (2007) Thorsten Brants, Ashok Popat, Peng Xu, Franz Och, and Jeffrey Dean. Large language models in machine translation. pages 858–867, 01 2007.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.1259,
+        "matched_id": null,
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:09:32.923027"
+      }
     },
     {
       "id": "bib.bib25",
@@ -2658,7 +2861,14 @@
       "doi": "10.1145/792550.792552",
       "arxiv_id": null,
       "raw": "Broder (2002) Andrei Broder. A taxonomy of web search. SIGIR Forum , 36(2):3–10, sep 2002. ISSN 0163-5840. 10.1145/792550.792552 . URL https://doi.org/10.1145/792550.792552 .",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "resolved",
+        "match_score": 0.95,
+        "matched_id": "10.1145/792550.792552",
+        "matched_service": "doi",
+        "resolved_at": "2026-11-14T10:09:32.672430"
+      }
     },
     {
       "id": "bib.bib26",
@@ -2669,7 +2879,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Brown et al. (2020) Tom Brown, Benjamin Mann, Nick Ryder, Melanie Subbiah, Jared D Kaplan, Prafulla\nDhariwal, Arvind Neelakantan, Pranav Shyam, Girish Sastry, Amanda Askell,\nSandhini Agarwal, Ariel Herbert-Voss, Gretchen Krueger, Tom Henighan, Rewon\nChild, Aditya Ramesh, Daniel Ziegler, Jeffrey Wu, Clemens Winter, Chris\nHesse, Mark Chen, Eric Sigler, Mateusz Litwin, Scott Gray, Benjamin Chess,\nJack Clark, Christopher Berner, Sam McCandlish, Alec Radford, Ilya Sutskever,\nand Dario Amodei. Language models are few-shot learners. In H. Larochelle, M. Ranzato, R. Hadsell, M.F. Balcan, and H. Lin,\neditors, Advances in Neural Information Processing Systems , volume 33,\npages 1877–1901. Curran Associates, Inc., 2020. URL https://proceedings.neurips.cc/paper_files/paper/2020/file/1457c0d6bfcb4967418bfb8ac142f64a-Paper.pdf .",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:09:32.968867"
+      }
     },
     {
       "id": "bib.bib27",
@@ -2680,7 +2897,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Bucila et al. (2006) Cristian Bucila, Rich Caruana, and Alexandru Niculescu-Mizil. Model compression. In Knowledge Discovery and Data Mining , 2006. URL https://api.semanticscholar.org/CorpusID:11253972 .",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:33.126557"
+      }
     },
     {
       "id": "bib.bib28",
@@ -2691,7 +2915,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Bulatov et al. (2022) Aydar Bulatov, Yury Kuratov, and Mikhail Burtsev. Recurrent memory transformer. In S. Koyejo, S. Mohamed, A. Agarwal, D. Belgrave, K. Cho, and A. Oh,\neditors, Advances in Neural Information Processing Systems , volume 35,\npages 11079–11091. Curran Associates, Inc., 2022. URL https://proceedings.neurips.cc/paper_files/paper/2022/file/47e288629a6996a17ce50b90a056a0e1-Paper-Conference.pdf .",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:33.172094"
+      }
     },
     {
       "id": "bib.bib29",
@@ -2702,7 +2933,14 @@
       "doi": null,
       "arxiv_id": "2304.11062",
       "raw": "Bulatov et al. (2023) Aydar Bulatov, Yuri Kuratov, and Mikhail S Burtsev. Scaling transformer to 1m tokens and beyond with rmt. arXiv preprint arXiv:2304.11062 , 2023.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.087,
+        "matched_id": null,
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:09:33.481971"
+      }
     },
     {
       "id": "bib.bib30",
@@ -2713,7 +2951,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Buolamwini and Gebru (2018) Joy Buolamwini and Timnit Gebru. Gender shades: Intersectional accuracy disparities in commercial\ngender classification. In Conference on fairness, accountability and transparency ,\npages 77–91. PMLR, 2018.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:33.546536"
+      }
     },
     {
       "id": "bib.bib31",
@@ -2724,7 +2969,14 @@
       "doi": null,
       "arxiv_id": "2202.07646",
       "raw": "Carlini et al. (2022) Nicholas Carlini, Daphne Ippolito, Matthew Jagielski, Katherine Lee, Florian\nTramer, and Chiyuan Zhang. Quantifying memorization across neural language models. arXiv preprint arXiv:2202.07646 , 2022. URL https://arxiv.org/abs/2202.07646 .",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.1757,
+        "matched_id": null,
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:09:33.489473"
+      }
     },
     {
       "id": "bib.bib32",
@@ -2735,7 +2987,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Carlini et al. (2024) Nicholas Carlini, Milad Nasr, Christopher A. Choquette-Choo, Matthew Jagielski,\nIrena Gao, Anas Awadalla, Pang Wei Koh, Daphne Ippolito, Katherine Lee,\nFlorian Tramer, and Ludwig Schmidt. Are aligned neural networks adversarially aligned?, 2024.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:33.753769"
+      }
     },
     {
       "id": "bib.bib33",
@@ -2746,7 +3005,14 @@
       "doi": "10.1145/2911451.2914675",
       "arxiv_id": null,
       "raw": "Carterette et al. (2016) Ben Carterette, Paul Clough, Mark Hall, Evangelos Kanoulas, and Mark Sanderson. Evaluating retrieval over sessions: The TREC session track\n2011-2014. In Proceedings of the 39th International ACM SIGIR Conference\non Research and Development in Information Retrieval , SIGIR ’16, page\n685–688, New York, NY, USA, 2016. Association for Computing Machinery. ISBN 9781450340694. 10.1145/2911451.2914675 . URL https://doi.org/10.1145/2911451.2914675 .",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "resolved",
+        "match_score": 0.95,
+        "matched_id": "10.1145/2911451.2914675",
+        "matched_service": "doi",
+        "resolved_at": "2026-11-14T10:09:33.522909"
+      }
     },
     {
       "id": "bib.bib34",
@@ -2757,7 +3023,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Chao et al. (2024) Patrick Chao, Edoardo Debenedetti, Alexander Robey, Maksym Andriushchenko,\nFrancesco Croce, Vikash Sehwag, Edgar Dobriban, Nicolas Flammarion, George J.\nPappas, Florian Tramèr, Hamed Hassani, and Eric Wong. Jailbreakbench: An open robustness benchmark for jailbreaking large\nlanguage models, 2024.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:33.956039"
+      }
     },
     {
       "id": "bib.bib35",
@@ -2768,7 +3041,14 @@
       "doi": null,
       "arxiv_id": "2107.03374",
       "raw": "Chen et al. (2021) Mark Chen, Jerry Tworek, Heewoo Jun, Qiming Yuan, Henrique Ponde\nde Oliveira Pinto, Jared Kaplan, Harri Edwards, Yuri Burda, Nicholas Joseph,\nGreg Brockman, Alex Ray, Raul Puri, Gretchen Krueger, Michael Petrov, Heidy\nKhlaaf, Girish Sastry, Pamela Mishkin, Brooke Chan, Scott Gray, Nick Ryder,\nMikhail Pavlov, Alethea Power, Lukasz Kaiser, Mohammad Bavarian, Clemens\nWinter, Philippe Tillet, Felipe Petroski Such, Dave Cummings, Matthias\nPlappert, Fotios Chantzis, Elizabeth Barnes, Ariel Herbert-Voss,\nWilliam Hebgen Guss, Alex Nichol, Alex Paino, Nikolas Tezak, Jie Tang, Igor\nBabuschkin, Suchir Balaji, Shantanu Jain, William Saunders, Christopher\nHesse, Andrew N. Carr, Jan Leike, Josh Achiam, Vedant Misra, Evan Morikawa,\nAlec Radford, Matthew Knight, Miles Brundage, Mira Murati, Katie Mayer, Peter\nWelinder, Bob McGrew, Dario Amodei, Sam McCandlish, Ilya Sutskever, and\nWojciech Zaremba. Evaluating large language models trained on code. arXiv preprint arXiv:2107.03374 , 2021. URL https://arxiv.org/abs/2107.03374 .",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:34.095765"
+      }
     },
     {
       "id": "bib.bib36",
@@ -2779,7 +3059,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Chen and Goodman (1999) Stanley F Chen and Joshua Goodman. An empirical study of smoothing techniques for language modeling. Computer Speech & Language , 13(4):359–394, 1999.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.2555,
+        "matched_id": null,
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:09:34.095259"
+      }
     },
     {
       "id": "bib.bib37",
@@ -2790,7 +3077,14 @@
       "doi": null,
       "arxiv_id": "2304.00409",
       "raw": "Chen et al. (2023a) Yizheng Chen, Zhoujie Ding, Lamya Alowain, Xinyun Chen, and David Wagner. DiverseVul: A new vulnerable source code dataset for deep learning\nbased vulnerability detection. In International Symposium on Research in Attacks, Intrusions\nand Defenses , pages 654–668, April 2023a. URL https://arxiv.org/abs/2304.00409 .",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:34.319380"
+      }
     },
     {
       "id": "bib.bib38",
@@ -2801,7 +3095,14 @@
       "doi": null,
       "arxiv_id": "2309.12307",
       "raw": "Chen et al. (2023b) Yukang Chen, Shengju Qian, Haotian Tang, Xin Lai, Zhijian Liu, Song Han, and\nJiaya Jia. Longlora: Efficient fine-tuning of long-context large language\nmodels. arXiv preprint arXiv:2309.12307 , 2023b. URL https://arxiv.org/abs/2309.12307 .",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:34.431609"
+      }
     },
     {
       "id": "bib.bib39",
@@ -2812,7 +3113,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Chowdhery et al. (2023a) Aakanksha Chowdhery, Sharan Narang, Jacob Devlin, Maarten Bosma, Gaurav Mishra,\nAdam Roberts, Paul Barham, Hyung Won Chung, Charles Sutton, Sebastian\nGehrmann, et al. Palm: Scaling language modeling with pathways. Journal of Machine Learning Research , 24(240):1–113, 2023a.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:34.436848"
+      }
     },
     {
       "id": "bib.bib40",
@@ -2823,7 +3131,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Chowdhery et al. (2023b) Aakanksha Chowdhery, Sharan Narang, Jacob Devlin, Maarten Bosma, Gaurav Mishra,\nAdam Roberts, Paul Barham, Hyung Won Chung, Charles Sutton, Sebastian\nGehrmann, et al. PaLM: Scaling Language Modeling with Pathways. Journal of Machine Learning Research , 24(240):1–113, 2023b. URL http://jmlr.org/papers/v24/22-1144.html .",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:34.536022"
+      }
     },
     {
       "id": "bib.bib41",
@@ -2834,7 +3149,14 @@
       "doi": null,
       "arxiv_id": "2202.01169",
       "raw": "Clark et al. (2022) Aidan Clark, Diego de las Casas, Aurelia Guy, Arthur Mensch, Michela Paganini,\nJordan Hoffmann, Bogdan Damoc, Blake Hechtman, Trevor Cai, Sebastian\nBorgeaud, George van den Driessche, Eliza Rutherford, Tom Hennigan, Matthew\nJohnson, Katie Millican, Albin Cassirer, Chris Jones, Elena Buchatskaya,\nDavid Budden, Laurent Sifre, Simon Osindero, Oriol Vinyals, Jack Rae, Erich\nElsen, Koray Kavukcuoglu, and Karen Simonyan. Unified scaling laws for routed language models, 2022. URL https://arxiv.org/abs/2202.01169 .",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:34.887506"
+      }
     },
     {
       "id": "bib.bib42",
@@ -2845,7 +3167,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Clark et al. (2020) Peter Clark, Oyvind Tafjord, and Kyle Richardson. Transformers as soft reasoners over language. IJCAI , 2020. URL https://www.ijcai.org/proceedings/2020/0537.pdf .",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:34.754487"
+      }
     },
     {
       "id": "bib.bib43",
@@ -2856,7 +3185,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Clarke et al. (2020) Charles LA Clarke, Saira Rizvi, Mark D Smucker, Maria Maistro, and Guido\nZuccon. Overview of the TREC 2020 health misinformation track. In Proceedings of the Twenty-Ninth Text REtrieval Conference\n(TREC 2020) , 2020. URL https://trec.nist.gov/pubs/trec29/papers/OVERVIEW.HM.pdf .",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:34.888518"
+      }
     },
     {
       "id": "bib.bib44",
@@ -2867,7 +3203,14 @@
       "doi": null,
       "arxiv_id": "2110.14168",
       "raw": "Cobbe et al. (2021) Karl Cobbe, Vineet Kosaraju, Mohammad Bavarian, Jacob Hilton, Reiichiro Nakano,\nChristopher Hesse, and John Schulman. Training verifiers to solve math word problems. arXiv preprint arXiv:2110.14168 , 2021. URL https://arxiv.org/abs/2110.14168 .",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:34.923087"
+      }
     },
     {
       "id": "bib.bib45",
@@ -2878,7 +3221,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Collins-Thompson et al. (2014) Kevyn Collins-Thompson, Craig Macdonald, Paul N. Bennett, Fernando Diaz, and\nEllen M. Voorhees. TREC 2014 web track overview. In Proceedings of the Twenty-Third Text REtrieval Conference\n(TREC 2014) , 2014. URL https://trec.nist.gov/pubs/trec23/papers/overview-web.pdf .",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.3415,
+        "matched_id": null,
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:09:34.793755"
+      }
     },
     {
       "id": "bib.bib46",
@@ -2889,7 +3239,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Conneau et al. (2023) Alexis Conneau, Min Ma, Simran Khanuja, Yu Zhang, Vera Axelrod, Siddharth\nDalmia, Jason Riesa, Clara Rivera, and Ankur Bapna. Fleurs: Few-shot learning evaluation of universal representations of\nspeech. In 2022 IEEE Spoken Language Technology Workshop (SLT) , pages\n798–805. IEEE, 2023.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:35.379206"
+      }
     },
     {
       "id": "bib.bib47",
@@ -2900,7 +3257,14 @@
       "doi": "10.18653/v1/2021.naacl-main.365",
       "arxiv_id": null,
       "raw": "Dasigi et al. (2021) Pradeep Dasigi, Kyle Lo, Iz Beltagy, Arman Cohan, Noah A. Smith, and Matt\nGardner. A dataset of information-seeking questions and answers anchored in\nresearch papers. In Kristina Toutanova, Anna Rumshisky, Luke Zettlemoyer, Dilek\nHakkani-Tur, Iz Beltagy, Steven Bethard, Ryan Cotterell, Tanmoy Chakraborty,\nand Yichao Zhou, editors, Proceedings of the 2021 Conference of the\nNorth American Chapter of the Association for Computational Linguistics:\nHuman Language Technologies , pages 4599–4610, Online, June 2021.\nAssociation for Computational Linguistics. 10.18653/v1/2021.naacl-main.365 . URL https://aclanthology.org/2021.naacl-main.365 .",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "resolved",
+        "match_score": 0.95,
+        "matched_id": "10.18653/v1/2021.naacl-main.365",
+        "matched_service": "doi",
+        "resolved_at": "2026-11-14T10:09:35.243089"
+      }
     },
     {
       "id": "bib.bib48",
@@ -2911,7 +3275,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Davis and Arel (2014) Andrew Davis and Itamar Arel. Low-rank approximations for conditional feedforward computation in\ndeep neural networks, 2014.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:35.538164"
+      }
     },
     {
       "id": "bib.bib49",
@@ -2922,7 +3293,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Dean (2021) Jeff Dean. Introducing Pathways: A next-generation AI architecture,\n2021. URL {https://blog.google/technology/ai/introducing-pathways-next-generation-ai-architecture/} .",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:35.624309"
+      }
     },
     {
       "id": "bib.bib50",
@@ -2933,7 +3311,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Dhinakaran (2024) Aparna Dhinakaran, 2024. URL https://twitter.com/aparnadhinak/status/1744771295940669689 .",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:35.747518"
+      }
     },
     {
       "id": "bib.bib51",
@@ -2944,7 +3329,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Ding et al. (2023) Yan Ding, Xiaohan Zhang, Chris Paxton, and Shiqi Zhang. Task and motion planning with large language models for object\nrearrangement. In 2023 IEEE/RSJ International Conference on Intelligent Robots\nand Systems (IROS) , pages 2086–2092. IEEE, 2023.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:35.816355"
+      }
     },
     {
       "id": "bib.bib52",
@@ -2955,7 +3347,14 @@
       "doi": null,
       "arxiv_id": "2403.18624",
       "raw": "Ding et al. (2024) Yangruibo Ding, Yanjun Fu, Omniyyah Ibrahim, Chawin Sitawarin, Xinyun Chen,\nBasel Alomair, David Wagner, Baishakhi Ray, and Yizheng Chen. Vulnerability detection with code language models: How far are we? arXiv preprint:2403.18624 , 2024.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:35.950250"
+      }
     },
     {
       "id": "bib.bib53",
@@ -2966,7 +3365,14 @@
       "doi": null,
       "arxiv_id": "2112.06905",
       "raw": "Du et al. (2022) Nan Du, Yanping Huang, Andrew M. Dai, Simon Tong, Dmitry Lepikhin,\nYuanzhong Xu, Maxim Krikun, Yanqi Zhou, Adams Wei Yu, Orhan Firat,\nBarret Zoph, Liam Fedus, Maarten Bosma, Zongwei Zhou, Tao Wang,\nYu Emma Wang, Kellie Webster, Marie Pellat, Kevin Robinson, Kathleen\nMeier-Hellstern, Toju Duke, Lucas Dixon, Kun Zhang, Quoc V Le,\nYonghui Wu, Zhifeng Chen, and Claire Cui. GLaM: Efficient Scaling of Language Models with Mixture-of-Experts. ICML , 2022. URL https://arxiv.org/abs/2112.06905 .",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.227,
+        "matched_id": null,
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:09:35.929300"
+      }
     },
     {
       "id": "bib.bib54",
@@ -2977,7 +3383,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Dua et al. (2019) Dheeru Dua, Yizhong Wang, Pradeep Dasigi, Gabriel Stanovsky, Sameer Singh, and\nMatt Gardner. DROP: A reading comprehension benchmark requiring discrete\nreasoning over paragraphs. In Proceedings of the 2019 Conference of the North American\nChapter of the Association for Computational Linguistics: Human Language\nTechnologies, Volume 1 (Long and Short Papers) , pages 2368–2378, 2019. URL https://aclanthology.org/N19-1246 .",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.1557,
+        "matched_id": null,
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:09:35.931300"
+      }
     },
     {
       "id": "bib.bib55",
@@ -2988,7 +3401,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Duchi et al. (2011) John Duchi, Elad Hazan, and Yoram Singer. Adaptive subgradient methods for online learning and stochastic\noptimization. Journal of Machine Learning Research , 12(61):2121–2159, 2011. URL http://jmlr.org/papers/v12/duchi11a.html .",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0586,
+        "matched_id": null,
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:09:36.149030"
+      }
     },
     {
       "id": "bib.bib56",
@@ -2999,7 +3419,14 @@
       "doi": null,
       "arxiv_id": "2303.10130",
       "raw": "Eloundou et al. (2023) Tyna Eloundou, Sam Manning, Pamela Mishkin, and Daniel Rock. Gpts are gpts: An early look at the labor market impact potential of\nlarge language models. arXiv preprint arXiv:2303.10130 , 2023.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:36.434033"
+      }
     },
     {
       "id": "bib.bib57",
@@ -3010,7 +3437,14 @@
       "doi": null,
       "arxiv_id": "2406.18321",
       "raw": "Fang et al. (2024) Meng Fang, Xiangpeng Wan, Fei Lu, Fei Xing, and Kai Zou. Mathodyssey: Benchmarking mathematical problem-solving skills in\nlarge language models using odyssey math data. arXiv preprint arXiv:2406.18321 , 2024.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:36.421417"
+      }
     },
     {
       "id": "bib.bib58",
@@ -3021,7 +3455,14 @@
       "doi": null,
       "arxiv_id": "2101.03961",
       "raw": "Fedus et al. (2021) William Fedus, Barret Zoph, and Noam Shazeer. Switch transformers: Scaling to trillion parameter models with simple\nand efficient sparsity. arXiv preprint arXiv:2101.03961 , 2021. URL https://arxiv.org/abs/2101.03961 .",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:36.802725"
+      }
     },
     {
       "id": "bib.bib59",
@@ -3032,7 +3473,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Felten et al. (2018) Edward W Felten, Manav Raj, and Robert Seamans. A method to link advances in artificial intelligence to occupational\nabilities. In AEA Papers and Proceedings , volume 108, pages 54–57.\nAmerican Economic Association 2014 Broadway, Suite 305, Nashville, TN 37203,\n2018.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:36.801727"
+      }
     },
     {
       "id": "bib.bib60",
@@ -3043,7 +3491,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Fernando et al. (2023) Chrisantha Fernando, Dylan Banarse, Henryk Michalewski, Simon Osindero, and Tim\nRocktäschel. Promptbreeder: Self-referential self-improvement via prompt\nevolution, 2023.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:36.786733"
+      }
     },
     {
       "id": "bib.bib61",
@@ -3054,7 +3509,14 @@
       "doi": null,
       "arxiv_id": "2404.12390",
       "raw": "Fu et al. (2024) Xingyu Fu, Yushi Hu, Bangzheng Li, Yu Feng, Haoyu Wang, Xudong Lin, Dan Roth,\nNoah A Smith, Wei-Chiu Ma, and Ranjay Krishna. Blink: Multimodal large language models can see but not perceive. arXiv preprint arXiv:2404.12390 , 2024.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:36.982099"
+      }
     },
     {
       "id": "bib.bib62",
@@ -3065,7 +3527,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Garcia et al. (2023) Xavier Garcia, Yamini Bansal, Colin Cherry, George Foster, Maxim Krikun,\nFangxiaoyu Feng, Melvin Johnson, and Orhan Firat. The unreasonable effectiveness of few-shot learning for machine\ntranslation, 2023.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:36.936140"
+      }
     },
     {
       "id": "bib.bib63",
@@ -3076,7 +3545,14 @@
       "doi": "10.18653/v1/2020.findings-emnlp.301",
       "arxiv_id": null,
       "raw": "Gehman et al. (2020) Samuel Gehman, Suchin Gururangan, Maarten Sap, Yejin Choi, and Noah A. Smith. RealToxicityPrompts: Evaluating neural toxic degeneration in\nlanguage models. In Findings of the Association for Computational Linguistics:\nEMNLP 2020 , pages 3356–3369, Online, November 2020. Association for\nComputational Linguistics. 10.18653/v1/2020.findings-emnlp.301 . URL https://aclanthology.org/2020.findings-emnlp.301 .",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "resolved",
+        "match_score": 0.95,
+        "matched_id": "10.18653/v1/2020.findings-emnlp.301",
+        "matched_service": "doi",
+        "resolved_at": "2026-11-14T10:09:36.907356"
+      }
     },
     {
       "id": "bib.bib64",
@@ -3087,7 +3563,14 @@
       "doi": null,
       "arxiv_id": "2312.11805",
       "raw": "Gemini-Team et al. (2023) Gemini-Team, Rohan Anil, Sebastian Borgeaud, Yonghui Wu, Jean-Baptiste Alayrac,\nJiahui Yu, Radu Soricut, Johan Schalkwyk, Andrew M Dai, Anja Hauth, et al. Gemini: a family of highly capable multimodal models. arXiv preprint arXiv:2312.11805 , 2023. URL https://storage.googleapis.com/deepmind-media/gemini/gemini_1_report.pdf .",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:37.462273"
+      }
     },
     {
       "id": "bib.bib65",
@@ -3098,7 +3581,14 @@
       "doi": null,
       "arxiv_id": "2403.08295",
       "raw": "Gemma-Team et al. (2024) Gemma-Team, Thomas Mesnard, Cassidy Hardin, Robert Dadashi, Surya Bhupatiraju,\nShreya Pathak, Laurent Sifre, Morgane Rivière, Mihir Sanjay Kale,\nJuliette Love, et al. Gemma: Open models based on gemini research and technology. arXiv preprint arXiv:2403.08295 , 2024.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:37.389456"
+      }
     },
     {
       "id": "bib.bib66",
@@ -3109,7 +3599,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Google (2023) Google. Google’s AI Principles. 2023. URL https://ai.google/responsibility/principles/ .",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.4375,
+        "matched_id": null,
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:09:37.084238"
+      }
     },
     {
       "id": "bib.bib67",
@@ -3120,7 +3617,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Goyal et al. (2017) Yash Goyal, Tejas Khot, Douglas Summers-Stay, Dhruv Batra, and Devi Parikh. Making the V in VQA matter: Elevating the role of image\nunderstanding in visual question answering. In Proceedings of the IEEE conference on computer vision and\npattern recognition , pages 6904–6913, 2017.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.1739,
+        "matched_id": null,
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:09:37.166501"
+      }
     },
     {
       "id": "bib.bib68",
@@ -3131,7 +3635,14 @@
       "doi": null,
       "arxiv_id": "2312.00752",
       "raw": "Gu and Dao (2023) Albert Gu and Tri Dao. Mamba: Linear-time sequence modeling with selective state spaces. arXiv preprint arXiv:2312.00752 , 2023. URL https://arxiv.org/abs/2312.00752 .",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:37.638077"
+      }
     },
     {
       "id": "bib.bib69",
@@ -3142,7 +3653,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Guan et al. (2024) Lin Guan, Karthik Valmeekam, Sarath Sreedharan, and Subbarao Kambhampati. Leveraging pre-trained large language models to construct and utilize\nworld models for model-based task planning. Advances in Neural Information Processing Systems , 36, 2024.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:37.820392"
+      }
     },
     {
       "id": "bib.bib70",
@@ -3153,7 +3671,14 @@
       "doi": null,
       "arxiv_id": "2112.07916",
       "raw": "Guo et al. (2021) Mandy Guo, Joshua Ainslie, David Uthus, Santiago Ontanon, Jianmo Ni, Yun-Hsuan\nSung, and Yinfei Yang. Longt5: Efficient text-to-text transformer for long sequences. arXiv preprint arXiv:2112.07916 , 2021. URL https://arxiv.org/abs/2112.07916 .",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:38.038147"
+      }
     },
     {
       "id": "bib.bib71",
@@ -3164,7 +3689,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Guu et al. (2020) Kelvin Guu, Kenton Lee, Zora Tung, Panupong Pasupat, and Mingwei Chang. Retrieval augmented language model pre-training. In Hal Daumé III and Aarti Singh, editors, Proceedings of the\n37th International Conference on Machine Learning , volume 119 of Proceedings of Machine Learning Research , pages 3929–3938. PMLR,\n13–18 Jul 2020. URL https://proceedings.mlr.press/v119/guu20a.html .",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:37.925157"
+      }
     },
     {
       "id": "bib.bib72",
@@ -3175,7 +3707,14 @@
       "doi": null,
       "arxiv_id": "2305.14992",
       "raw": "Hao et al. (2023) Shibo Hao, Yi Gu, Haodi Ma, Joshua Jiahua Hong, Zhen Wang, Daisy Zhe Wang, and\nZhiting Hu. Reasoning with language model is planning with world model. arXiv preprint arXiv:2305.14992 , 2023.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:38.082483"
+      }
     },
     {
       "id": "bib.bib73",
@@ -3186,7 +3725,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Heek et al. (2023) Jonathan Heek, Anselm Levskaya, Avital Oliver, Marvin Ritter, Bertrand\nRondepierre, Andreas Steiner, and Marc van Zee. Flax: A neural network library and ecosystem for JAX, 2023. URL http://github.com/google/flax .",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:38.003828"
+      }
     },
     {
       "id": "bib.bib74",
@@ -3197,7 +3743,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Hendrycks et al. (2021a) Dan Hendrycks, Collin Burns, Steven Basart, Andy Zou, Mantas Mazeika, Dawn\nSong, and Jacob Steinhardt. Measuring massive multitask language understanding. Proceedings of the International Conference on Learning\nRepresentations (ICLR) , 2021a.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:38.347595"
+      }
     },
     {
       "id": "bib.bib75",
@@ -3208,7 +3761,14 @@
       "doi": null,
       "arxiv_id": "2103.03874",
       "raw": "Hendrycks et al. (2021b) Dan Hendrycks, Collin Burns, Saurav Kadavath, Akul Arora, Steven Basart, Eric\nTang, Dawn Song, and Jacob Steinhardt. Measuring mathematical problem solving with the MATH dataset. arXiv preprint arXiv:2103.03874 , 2021b. URL https://arxiv.org/abs/2103.03874 .",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:38.608306"
+      }
     },
     {
       "id": "bib.bib76",
@@ -3219,7 +3779,14 @@
       "doi": "10.1162/089976600300015637",
       "arxiv_id": null,
       "raw": "Heskes (2000) Tom Heskes. On “Natural” Learning and Pruning in Multilayered Perceptrons. Neural Computation , 12(4):881–901, 04\n2000. ISSN 0899-7667. 10.1162/089976600300015637 . URL https://doi.org/10.1162/089976600300015637 .",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "resolved",
+        "match_score": 0.95,
+        "matched_id": "10.1162/089976600300015637",
+        "matched_service": "doi",
+        "resolved_at": "2026-11-14T10:09:38.142742"
+      }
     },
     {
       "id": "bib.bib77",
@@ -3230,7 +3797,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Hinton et al. (2015) Geoffrey Hinton, Oriol Vinyals, and Jeff Dean. Distilling the knowledge in a neural network, 2015.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:38.608306"
+      }
     },
     {
       "id": "bib.bib78",
@@ -3241,7 +3815,14 @@
       "doi": null,
       "arxiv_id": "2203.15556",
       "raw": "Hoffmann et al. (2022) Jordan Hoffmann, Sebastian Borgeaud, Arthur Mensch, Elena Buchatskaya, Trevor\nCai, Eliza Rutherford, Diego de Las Casas, Lisa Anne Hendricks, Johannes\nWelbl, Aidan Clark, Tom Hennigan, Eric Noland, Katie Millican, George van den\nDriessche, Bogdan Damoc, Aurelia Guy, Simon Osindero, Karen Simonyan, Erich\nElsen, Jack W. Rae, Oriol Vinyals, and Laurent Sifre. Training compute-optimal large language models. arXiv preprint arXiv:2203.15556 , 2022. URL https://arxiv.org/abs/2203.15556 .",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:38.681108"
+      }
     },
     {
       "id": "bib.bib79",
@@ -3252,7 +3833,14 @@
       "doi": null,
       "arxiv_id": "2207.05608",
       "raw": "Huang et al. (2022) Wenlong Huang, Fei Xia, Ted Xiao, Harris Chan, Jacky Liang, Pete Florence, Andy\nZeng, Jonathan Tompson, Igor Mordatch, Yevgen Chebotar, et al. Inner monologue: Embodied reasoning through planning with language\nmodels. arXiv preprint arXiv:2207.05608 , 2022.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:38.720205"
+      }
     },
     {
       "id": "bib.bib80",
@@ -3263,7 +3851,14 @@
       "doi": null,
       "arxiv_id": "2210.17546",
       "raw": "Ippolito et al. (2022) Daphne Ippolito, Florian Tramèr, Milad Nasr, Chiyuan Zhang, Matthew\nJagielski, Katherine Lee, Christopher A Choquette-Choo, and Nicholas Carlini. Preventing verbatim memorization in language models gives a false\nsense of privacy. arXiv preprint arXiv:2210.17546 , 2022. URL https://arxiv.org/abs/210.17546 .",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:38.967892"
+      }
     },
     {
       "id": "bib.bib81",
@@ -3274,7 +3869,14 @@
       "doi": null,
       "arxiv_id": "2208.03299",
       "raw": "Izacard et al. (2022) Gautier Izacard, Patrick Lewis, Maria Lomeli, Lucas Hosseini, Fabio Petroni,\nTimo Schick, Jane Dwivedi-Yu, Armand Joulin, Sebastian Riedel, and Edouard\nGrave. Few-shot learning with retrieval augmented language models. arXiv preprint arXiv:2208.03299 , 2022. URL https://arxiv.org/abs/2208.03299 .",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:39.190517"
+      }
     },
     {
       "id": "bib.bib82",
@@ -3285,7 +3887,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Jacobs et al. (1991) Robert A Jacobs, Michael I Jordan, Steven J Nowlan, and Geoffrey E Hinton. Adaptive mixtures of local experts. Neural computation , 3(1):79–87, 1991.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.1458,
+        "matched_id": null,
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:09:38.814358"
+      }
     },
     {
       "id": "bib.bib83",
@@ -3296,7 +3905,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Jelinek (1998) Frederick Jelinek. Statistical methods for speech recognition . MIT press, 1998.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:39.176935"
+      }
     },
     {
       "id": "bib.bib84",
@@ -3307,7 +3923,14 @@
       "doi": null,
       "arxiv_id": "2401.04088",
       "raw": "Jiang et al. (2024) Albert Q Jiang, Alexandre Sablayrolles, Antoine Roux, Arthur Mensch, Blanche\nSavary, Chris Bamford, Devendra Singh Chaplot, Diego de las Casas, Emma Bou\nHanna, Florian Bressand, et al. Mixtral of experts. arXiv preprint arXiv:2401.04088 , 2024.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:39.545600"
+      }
     },
     {
       "id": "bib.bib85",
@@ -3318,7 +3941,14 @@
       "doi": "10.18653/v1/2022.emnlp-main.149",
       "arxiv_id": null,
       "raw": "Jiang et al. (2022) Zhengbao Jiang, Luyu Gao, Zhiruo Wang, Jun Araki, Haibo Ding, Jamie Callan, and\nGraham Neubig. Retrieval as attention: End-to-end learning of retrieval and reading\nwithin a single transformer. In Yoav Goldberg, Zornitsa Kozareva, and Yue Zhang, editors, Proceedings of the 2022 Conference on Empirical Methods in Natural\nLanguage Processing , pages 2336–2349, Abu Dhabi, United Arab Emirates,\nDecember 2022. Association for Computational Linguistics. 10.18653/v1/2022.emnlp-main.149 . URL https://aclanthology.org/2022.emnlp-main.149 .",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "resolved",
+        "match_score": 0.95,
+        "matched_id": "10.18653/v1/2022.emnlp-main.149",
+        "matched_service": "doi",
+        "resolved_at": "2026-11-14T10:09:39.133936"
+      }
     },
     {
       "id": "bib.bib86",
@@ -3329,7 +3959,14 @@
       "doi": null,
       "arxiv_id": "2303.15265",
       "raw": "Jones et al. (2023) Alex Jones, Isaac Caswell, Ishank Saxena, and Orhan Firat. Bilex rx: Lexical data augmentation for massively multilingual\nmachine translation. arXiv preprint arXiv:2303.15265 , 2023.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:09:39.630301"
+      }
     },
     {
       "id": "bib.bib87",
@@ -3340,7 +3977,14 @@
       "doi": null,
       "arxiv_id": "1602.02410",
       "raw": "Jozefowicz et al. (2016) Rafal Jozefowicz, Oriol Vinyals, Mike Schuster, Noam Shazeer, and Yonghui Wu. Exploring the limits of language modeling, 2016. URL https://arxiv.org/abs/1602.02410 .",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:40.042091"
+      }
     },
     {
       "id": "bib.bib88",
@@ -3351,7 +3995,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Kamradt (2023) Gregory Kamradt, 2023. URL https://github.com/gkamradt/LLMTest_NeedleInAHaystack/blob/main/README.md .",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:39.810325"
+      }
     },
     {
       "id": "bib.bib89",
@@ -3362,7 +4013,14 @@
       "doi": null,
       "arxiv_id": "2001.08361",
       "raw": "Kaplan et al. (2020) Jared Kaplan, Sam McCandlish, Tom Henighan, Tom B Brown, Benjamin Chess, Rewon\nChild, Scott Gray, Alec Radford, Jeffrey Wu, and Dario Amodei. Scaling laws for neural language models. arXiv preprint arXiv:2001.08361 , 2020. URL https://arxiv.org/abs/2001.08361 .",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.1313,
+        "matched_id": null,
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:09:39.627964"
+      }
     },
     {
       "id": "bib.bib90",
@@ -3373,7 +4031,14 @@
       "doi": "10.18653/v1/2020.emnlp-main.550",
       "arxiv_id": null,
       "raw": "Karpukhin et al. (2020) Vladimir Karpukhin, Barlas Oguz, Sewon Min, Patrick Lewis, Ledell Wu, Sergey\nEdunov, Danqi Chen, and Wen-tau Yih. Dense passage retrieval for open-domain question answering. In Bonnie Webber, Trevor Cohn, Yulan He, and Yang Liu, editors, Proceedings of the 2020 Conference on Empirical Methods in Natural\nLanguage Processing (EMNLP) , pages 6769–6781, Online, November 2020.\nAssociation for Computational Linguistics. 10.18653/v1/2020.emnlp-main.550 . URL https://aclanthology.org/2020.emnlp-main.550 .",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "resolved",
+        "match_score": 0.95,
+        "matched_id": "10.18653/v1/2020.emnlp-main.550",
+        "matched_service": "doi",
+        "resolved_at": "2026-11-14T10:09:39.673408"
+      }
     },
     {
       "id": "bib.bib91",
@@ -3384,7 +4049,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Kembhavi et al. (2016) Aniruddha Kembhavi, Mike Salvato, Eric Kolve, Minjoon Seo, Hannaneh Hajishirzi,\nand Ali Farhadi. A diagram is worth a dozen images. In ECCV , 2016.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:40.416625"
+      }
     },
     {
       "id": "bib.bib92",
@@ -3395,7 +4067,14 @@
       "doi": null,
       "arxiv_id": "2109.10465",
       "raw": "Kim et al. (2021) Young Jin Kim, Ammar Ahmad Awan, Alexandre Muzio, Andres Felipe Cruz Salinas,\nLiyang Lu, Amr Hendy, Samyam Rajbhandari, Yuxiong He, and Hany Hassan\nAwadalla. Scalable and efficient moe training for multitask multilingual\nmodels. arXiv preprint arXiv:2109.10465 , 2021.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.2853,
+        "matched_id": null,
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:09:40.209296"
+      }
     },
     {
       "id": "bib.bib93",
@@ -3406,7 +4085,14 @@
       "doi": null,
       "arxiv_id": "2312.11671",
       "raw": "Kinniment et al. (2023) Megan Kinniment, Lucas Jun Koba Sato, Haoxing Du, Brian Goodrich, Max Hasin,\nLawrence Chan, Luke Harold Miles, Tao R Lin, Hjalmar Wijk, Joel Burget,\net al. Evaluating language-model agents on realistic autonomous tasks. arXiv preprint arXiv:2312.11671 , 2023.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:40.664521"
+      }
     },
     {
       "id": "bib.bib94",
@@ -3417,7 +4103,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Kirillov et al. (2023) Alexander Kirillov, Eric Mintun, Nikhila Ravi, Hanzi Mao, Chloe Rolland, Laura\nGustafson, Tete Xiao, Spencer Whitehead, Alexander C Berg, Wan-Yen Lo, et al. Segment anything. In Proceedings of the IEEE/CVF International Conference on\nComputer Vision , pages 4015–4026, 2023.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.2047,
+        "matched_id": null,
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:09:40.334387"
+      }
     },
     {
       "id": "bib.bib95",
@@ -3428,7 +4121,14 @@
       "doi": "10.1109/ICASSP.1995.479394",
       "arxiv_id": null,
       "raw": "Kneser and Ney (1995) R. Kneser and H. Ney. Improved backing-off for m-gram language modeling. In 1995 International Conference on Acoustics, Speech, and\nSignal Processing , volume 1, pages 181–184 vol.1, 1995. 10.1109/ICASSP.1995.479394 .",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "resolved",
+        "match_score": 0.95,
+        "matched_id": "10.1109/icassp.1995.479394",
+        "matched_service": "doi",
+        "resolved_at": "2026-11-14T10:09:40.293298"
+      }
     },
     {
       "id": "bib.bib96",
@@ -3439,7 +4139,14 @@
       "doi": "10.18653/v1/2023.wmt-1.1",
       "arxiv_id": null,
       "raw": "Kocmi et al. (2023) Tom Kocmi, Eleftherios Avramidis, Rachel Bawden, Ondřej Bojar, Anton\nDvorkovich, Christian Federmann, Mark Fishel, Markus Freitag, Thamme Gowda,\nRoman Grundkiewicz, Barry Haddow, Philipp Koehn, Benjamin Marie, Christof\nMonz, Makoto Morishita, Kenton Murray, Makoto Nagata, Toshiaki Nakazawa,\nMartin Popel, Maja Popović, and Mariya Shmatova. Findings of the 2023 conference on machine translation (WMT23):\nLLMs are here but not quite there yet. In Philipp Koehn, Barry Haddow, Tom Kocmi, and Christof Monz,\neditors, Proceedings of the Eighth Conference on Machine Translation ,\npages 1–42, Singapore, December 2023. Association for Computational\nLinguistics. 10.18653/v1/2023.wmt-1.1 . URL https://aclanthology.org/2023.wmt-1.1 .",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "resolved",
+        "match_score": 0.95,
+        "matched_id": "10.18653/v1/2023.wmt-1.1",
+        "matched_service": "doi",
+        "resolved_at": "2026-11-14T10:09:40.483177"
+      }
     },
     {
       "id": "bib.bib97",
@@ -3450,7 +4157,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Kohs (2017) Greg Kohs. Alphago. Motion Picture, 2017. Produced by DeepMind Technologies and distributed by Netflix.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:40.762397"
+      }
     },
     {
       "id": "bib.bib98",
@@ -3461,7 +4175,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Kudugunta et al. (2023) Sneha Kudugunta, Isaac Caswell, Biao Zhang, Xavier Garcia, Christopher A.\nChoquette-Choo, Katherine Lee, Derrick Xin, Aditya Kusupati, Romi Stella,\nAnkur Bapna, and Orhan Firat. Madlad-400: A multilingual and document-level large audited dataset,\n2023.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:40.928011"
+      }
     },
     {
       "id": "bib.bib99",
@@ -3472,7 +4193,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Landeghem et al. (2023) J. Landeghem, R. Powalski, R. Tito, D. Jurkiewicz, M. Blaschko, L. Borchmann,\nM. Coustaty, S. Moens, M. Pietruszka, B. Ackaert, T. Stanislawek, P. Joziak,\nand E. Valveny. Document understanding dataset and evaluation (dude). In 2023 IEEE/CVF International Conference on Computer Vision\n(ICCV) , pages 19471–19483, 2023.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:41.124486"
+      }
     },
     {
       "id": "bib.bib100",
@@ -3483,7 +4211,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Lepikhin et al. (2020) Dmitry Lepikhin, HyoukJoong Lee, Yuanzhong Xu, Dehao Chen, Orhan Firat, Yanping\nHuang, Maxim Krikun, Noam Shazeer, and Zhifeng Chen. GShard: Scaling giant models with conditional computation and\nautomatic sharding. In International Conference on Learning Representations , 2020. URL https://openreview.net/forum?id=qrwe7XHTmYb .",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:41.143231"
+      }
     },
     {
       "id": "bib.bib101",
@@ -3494,7 +4229,14 @@
       "doi": null,
       "arxiv_id": "2206.14858",
       "raw": "Lewkowycz et al. (2022) Aitor Lewkowycz, Anders Andreassen, David Dohan, Ethan Dyer, Henryk\nMichalewski, Vinay Ramasesh, Ambrose Slone, Cem Anil, Imanol Schlag, Theo\nGutman-Solo, et al. Solving quantitative reasoning problems with language models. arXiv preprint arXiv:2206.14858 , 2022. URL https://arxiv.org/abs/2206.14858 .",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:41.350141"
+      }
     },
     {
       "id": "bib.bib102",
@@ -3505,7 +4247,14 @@
       "doi": "10.18653/v1/2023.acl-long.714",
       "arxiv_id": null,
       "raw": "Liu et al. (2023) Fangyu Liu, Francesco Piccinno, Syrine Krichene, Chenxi Pang, Kenton Lee,\nMandar Joshi, Yasemin Altun, Nigel Collier, and Julian Eisenschlos. MatCha: Enhancing visual language pretraining with math reasoning\nand chart derendering. In Anna Rogers, Jordan Boyd-Graber, and Naoaki Okazaki, editors, Proceedings of the 61st Annual Meeting of the Association for\nComputational Linguistics (Volume 1: Long Papers) , pages 12756–12770,\nToronto, Canada, July 2023. Association for Computational Linguistics. 10.18653/v1/2023.acl-long.714 . URL https://aclanthology.org/2023.acl-long.714 .",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "resolved",
+        "match_score": 0.95,
+        "matched_id": "10.18653/v1/2023.acl-long.714",
+        "matched_service": "doi",
+        "resolved_at": "2026-11-14T10:09:40.897293"
+      }
     },
     {
       "id": "bib.bib103",
@@ -3516,7 +4265,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Liu et al. (2024) Hao Liu, Wilson Yan, Matei Zaharia, and Pieter Abbeel. World model on million-length video and language with ringattention,\n2024.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:41.333078"
+      }
     },
     {
       "id": "bib.bib104",
@@ -3527,7 +4283,14 @@
       "doi": null,
       "arxiv_id": "2310.02255",
       "raw": "Lu et al. (2023) Pan Lu, Hritik Bansal, Tony Xia, Jiacheng Liu, Chunyuan Li, Hannaneh\nHajishirzi, Hao Cheng, Kai-Wei Chang, Michel Galley, and Jianfeng Gao. Mathvista: Evaluating mathematical reasoning of foundation models in\nvisual contexts. arXiv preprint arXiv:2310.02255 , 2023.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:41.627645"
+      }
     },
     {
       "id": "bib.bib105",
@@ -3538,7 +4301,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "MAA (2024) MAA. American invitational mathematics examination - aime. In American Invitational Mathematics Examination - AIME 2024 ,\nFebruary 2024. URL https://maa.org/math-competitions/american-invitational-mathematics-examination-aime .",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.3193,
+        "matched_id": null,
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:09:41.481817"
+      }
     },
     {
       "id": "bib.bib106",
@@ -3549,7 +4319,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "(106) Macknight, Aung, and Gomes. Personal Communication.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:41.692925"
+      }
     },
     {
       "id": "bib.bib107",
@@ -3560,7 +4337,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Majumdar et al. (2024) Arjun Majumdar, Anurag Ajay, Xiaohan Zhang, Pranav Putta, Sriram Yenamandra,\nMikael Henaff, Sneha Silwal, Paul Mcvay, Oleksandr Maksymets, Sergio Arnaud,\net al. Openeqa: Embodied question answering in the era of foundation models. In 2nd Workshop on Mobile Manipulation and Embodied\nIntelligence at ICRA 2024 , 2024.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:41.766471"
+      }
     },
     {
       "id": "bib.bib108",
@@ -3571,7 +4355,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Malaviya et al. (2024) Chaitanya Malaviya, Priyanka Agrawal, Kuzman Ganchev, Pranesh Srinivasan,\nFantine Huot, Jonathan Berant, Mark Yatskar, Dipanjan Das, Mirella Lapata,\nand Chris Alberti. Dolomites: Domain-specific long-form methodical tasks, 2024.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.1109,
+        "matched_id": null,
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:09:41.530524"
+      }
     },
     {
       "id": "bib.bib109",
@@ -3582,7 +4373,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Mangalam et al. (2023) Karttikeya Mangalam, Raiymbek Akshulakov, and Jitendra Malik. EgoSchema: A diagnostic benchmark for very long-form video language\nunderstanding. In Thirty-seventh Conference on Neural Information Processing\nSystems Datasets and Benchmarks Track , 2023.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:42.127345"
+      }
     },
     {
       "id": "bib.bib110",
@@ -3593,7 +4391,14 @@
       "doi": "10.18653/v1/2022.acl-long.375",
       "arxiv_id": null,
       "raw": "Martins et al. (2022) Pedro Henrique Martins, Zita Marinho, and Andre Martins. ∞ \\infty -former: Infinite memory transformer. In Smaranda Muresan, Preslav Nakov, and Aline Villavicencio, editors, Proceedings of the 60th Annual Meeting of the Association for\nComputational Linguistics (Volume 1: Long Papers) , pages 5468–5485, Dublin,\nIreland, May 2022. Association for Computational Linguistics. 10.18653/v1/2022.acl-long.375 . URL https://aclanthology.org/2022.acl-long.375 .",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "resolved",
+        "match_score": 0.95,
+        "matched_id": "10.18653/v1/2022.acl-long.375",
+        "matched_service": "doi",
+        "resolved_at": "2026-11-14T10:09:41.805018"
+      }
     },
     {
       "id": "bib.bib111",
@@ -3604,7 +4409,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Masry et al. (2022) Ahmed Masry, Do Long, Jia Qing Tan, Shafiq Joty, and Enamul Hoque. ChartQA: A benchmark for question answering about charts with\nvisual and logical reasoning. In Findings of ACL , 2022.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.2514,
+        "matched_id": null,
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:09:41.969222"
+      }
     },
     {
       "id": "bib.bib112",
@@ -3615,7 +4427,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "MATH-AI-2023-Panel (2023) MATH-AI-2023-Panel. Panel discussion. In MATH-AI Workshop at NeurIPS 2023 , New Orleans, Louisiana,\nUSA, December 2023. URL https://mathai2023.github.io/ .",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:42.501797"
+      }
     },
     {
       "id": "bib.bib113",
@@ -3626,7 +4445,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Mathew et al. (2021) Minesh Mathew, Dimosthenis Karatzas, and CV Jawahar. Docvqa: A dataset for vqa on document images. In Proceedings of the IEEE/CVF winter conference on\napplications of computer vision , pages 2200–2209, 2021.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:42.596683"
+      }
     },
     {
       "id": "bib.bib114",
@@ -3637,7 +4463,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Mathew et al. (2022) Minesh Mathew, Viraj Bagal, Rubèn Tito, Dimosthenis Karatzas, Ernest\nValveny, and CV Jawahar. Infographicvqa. In Proceedings of the IEEE/CVF Winter Conference on\nApplications of Computer Vision , pages 1697–1706, 2022.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:42.600078"
+      }
     },
     {
       "id": "bib.bib115",
@@ -3648,7 +4481,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Mazeika et al. (2023) Mantas Mazeika, Andy Zou, Norman Mu, Long Phan, Zifan Wang, Chunru Yu, Adam\nKhoja, Fengqing Jiang, Aidan O’Gara, Ellie Sakhaee, Zhen Xiang, Arezoo\nRajabi, Dan Hendrycks, Radha Poovendran, Bo Li, and David Forsyth. Tdc 2023 (llm edition): The trojan detection challenge. In NeurIPS Competition Track , 2023.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:42.592364"
+      }
     },
     {
       "id": "bib.bib116",
@@ -3659,7 +4499,14 @@
       "doi": null,
       "arxiv_id": "2402.04249",
       "raw": "Mazeika et al. (2024) Mantas Mazeika, Long Phan, Xuwang Yin, Andy Zou, Zifan Wang, Norman Mu, Elham\nSakhaee, Nathaniel Li, Steven Basart, Bo Li, David Forsyth, and Dan\nHendrycks. Harmbench: A standardized evaluation framework for automated red\nteaming and robust refusal. arXiv preprint arXiv:2402.04249 , 2024.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:43.050632"
+      }
     },
     {
       "id": "bib.bib117",
@@ -3670,7 +4517,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "McMurry (2012) J. McMurry. Organic Chemistry . International edition. Brooks/Cole Cengage Learning, 2012. ISBN 9780840054531. URL https://books.google.at/books?id=oVv4Az7VJRYC .",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:42.932738"
+      }
     },
     {
       "id": "bib.bib118",
@@ -3681,7 +4535,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Mikolov et al. (2010) Tomas Mikolov, Martin Karafiát, Lukas Burget, Jan Cernockỳ, and Sanjeev\nKhudanpur. Recurrent neural network based language model. In INTERSPEECH , 2010.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.2405,
+        "matched_id": null,
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:09:42.787584"
+      }
     },
     {
       "id": "bib.bib119",
@@ -3692,7 +4553,14 @@
       "doi": "10.18653/v1/2022.emnlp-main.759",
       "arxiv_id": null,
       "raw": "Min et al. (2022) Sewon Min, Xinxi Lyu, Ari Holtzman, Mikel Artetxe, Mike Lewis, Hannaneh\nHajishirzi, and Luke Zettlemoyer. Rethinking the role of demonstrations: What makes in-context learning\nwork? In Yoav Goldberg, Zornitsa Kozareva, and Yue Zhang, editors, Proceedings of the 2022 Conference on Empirical Methods in Natural\nLanguage Processing , pages 11048–11064, Abu Dhabi, United Arab Emirates,\nDecember 2022. Association for Computational Linguistics. 10.18653/v1/2022.emnlp-main.759 . URL https://aclanthology.org/2022.emnlp-main.759 .",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "resolved",
+        "match_score": 0.95,
+        "matched_id": "10.18653/v1/2022.emnlp-main.759",
+        "matched_service": "doi",
+        "resolved_at": "2026-11-14T10:09:42.702455"
+      }
     },
     {
       "id": "bib.bib120",
@@ -3703,7 +4571,14 @@
       "doi": "10.1145/3287560.3287596",
       "arxiv_id": null,
       "raw": "Mitchell et al. (2019a) Margaret Mitchell, Simone Wu, Andrew Zaldivar, Parker Barnes, Lucy Vasserman,\nBen Hutchinson, Elena Spitzer, Inioluwa Deborah Raji, and Timnit Gebru. Model cards for model reporting. In Proceedings of the Conference on Fairness, Accountability,\nand Transparency , FAT* ’19, page 220–229, New York, NY, USA,\n2019a. Association for Computing Machinery. ISBN 9781450361255. 10.1145/3287560.3287596 . URL https://doi.org/10.1145/3287560.3287596 .",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "resolved",
+        "match_score": 0.95,
+        "matched_id": "10.1145/3287560.3287596",
+        "matched_service": "doi",
+        "resolved_at": "2026-11-14T10:09:42.703461"
+      }
     },
     {
       "id": "bib.bib121",
@@ -3714,7 +4589,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Mitchell et al. (2019b) Margaret Mitchell, Simone Wu, Andrew Zaldivar, Parker Barnes, Lucy Vasserman,\nBen Hutchinson, Elena Spitzer, Inioluwa Deborah Raji, and Timnit Gebru. Model cards for model reporting. In Proceedings of the conference on Fairness, Accountability,\nand Transparency , pages 220–229, 2019b.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:43.136028"
+      }
     },
     {
       "id": "bib.bib122",
@@ -3725,7 +4607,14 @@
       "doi": null,
       "arxiv_id": "2304.08467",
       "raw": "Mu et al. (2023) Jesse Mu, Xiang Lisa Li, and Noah Goodman. Learning to compress prompts with gist tokens. arXiv preprint arXiv:2304.08467 , 2023.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:43.272221"
+      }
     },
     {
       "id": "bib.bib123",
@@ -3736,7 +4625,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Nasr et al. (2023) Milad Nasr, Nicholas Carlini, Jonathan Hayase, Matthew Jagielski, A. Feder\nCooper, Daphne Ippolito, Christopher A. Choquette-Choo, Eric Wallace, Florian\nTramèr, and Katherine Lee. Scalable extraction of training data from (production) language\nmodels, 2023.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.1197,
+        "matched_id": null,
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:09:43.096746"
+      }
     },
     {
       "id": "bib.bib124",
@@ -3747,7 +4643,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "OpenAI (2023a) OpenAI. GPT-4 Technical Report. 2023a.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:43.487384"
+      }
     },
     {
       "id": "bib.bib125",
@@ -3758,7 +4661,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "OpenAI (2023b) OpenAI. GPT-4V(ision) System Card, 2023b.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:43.574257"
+      }
     },
     {
       "id": "bib.bib126",
@@ -3769,7 +4679,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "OpenAI (2023) OpenAI. Whisper, 2023. URL https://github.com/openai/whisper .",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "ambiguous",
+        "match_score": 0.6182,
+        "matched_id": "10.5040/bci-0kgv",
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:09:43.306941"
+      }
     },
     {
       "id": "bib.bib127",
@@ -3780,7 +4697,14 @@
       "doi": null,
       "arxiv_id": "2303.06349",
       "raw": "Orvieto et al. (2023) Antonio Orvieto, Samuel L Smith, Albert Gu, Anushan Fernando, Caglar Gulcehre,\nRazvan Pascanu, and Soham De. Resurrecting recurrent neural networks for long sequences. arXiv preprint arXiv:2303.06349 , 2023.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0643,
+        "matched_id": null,
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:09:43.556294"
+      }
     },
     {
       "id": "bib.bib128",
@@ -3791,7 +4715,14 @@
       "doi": null,
       "arxiv_id": "2110.08193",
       "raw": "Parrish et al. (2021) Alicia Parrish, Angelica Chen, Nikita Nangia, Vishakh Padmakumar, Jason Phang,\nJana Thompson, Phu Mon Htut, and Samuel R. Bowman. BBQ: A hand-built bias benchmark for question answering. CoRR , abs/2110.08193, 2021. URL https://arxiv.org/abs/2110.08193 .",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:44.056427"
+      }
     },
     {
       "id": "bib.bib129",
@@ -3802,7 +4733,14 @@
       "doi": null,
       "arxiv_id": "2403.13793",
       "raw": "Phuong et al. (2024) Mary Phuong, Matthew Aitchison, Elliot Catt, Sarah Cogan, Alexandre Kaskasoli,\nVictoria Krakovna, David Lindner, Matthew Rahtz, Yannis Assael, Sarah\nHodkinson, Heidi Howard, Tom Lieberum, Ramana Kumar, Maria Abi Raad, Albert\nWebson, Lewis Ho, Sharon Lin, Sebastian Farquhar, Marcus Hutter, Gregoire\nDeletang, Anian Ruoss, Seliem El-Sayed, Sasha Brown, Anca Dragan, Rohin Shah,\nAllan Dafoe, and Toby Shevlane. Evaluating frontier models for dangerous capabilities. arXiv preprint:2403.13793 , 2024.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:44.118042"
+      }
     },
     {
       "id": "bib.bib130",
@@ -3813,7 +4751,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Pope et al. (2023) Reiner Pope, Sholto Douglas, Aakanksha Chowdhery, Jacob Devlin, James Bradbury,\nJonathan Heek, Kefan Xiao, Shivani Agrawal, and Jeff Dean. Efficiently scaling transformer inference. Proceedings of Machine Learning and Systems , 5, 2023.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:44.127028"
+      }
     },
     {
       "id": "bib.bib131",
@@ -3824,7 +4769,14 @@
       "doi": "10.18653/v1/W15-3049",
       "arxiv_id": null,
       "raw": "Popović (2015) Maja Popović. chrF: character n-gram F-score for automatic MT evaluation. In Ondřej Bojar, Rajan Chatterjee, Christian Federmann, Barry\nHaddow, Chris Hokamp, Matthias Huck, Varvara Logacheva, and Pavel Pecina,\neditors, Proceedings of the Tenth Workshop on Statistical Machine\nTranslation , pages 392–395, Lisbon, Portugal, September 2015. Association\nfor Computational Linguistics. 10.18653/v1/W15-3049 . URL https://aclanthology.org/W15-3049 .",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "resolved",
+        "match_score": 0.95,
+        "matched_id": "10.18653/v1/w15-3049",
+        "matched_service": "doi",
+        "resolved_at": "2026-11-14T10:09:43.884741"
+      }
     },
     {
       "id": "bib.bib132",
@@ -3835,7 +4787,14 @@
       "doi": null,
       "arxiv_id": "2012.03411",
       "raw": "Pratap et al. (2020) Vineel Pratap, Qiantong Xu, Anuroop Sriram, Gabriel Synnaeve, and Ronan\nCollobert. Mls: A large-scale multilingual dataset for speech research. arXiv preprint arXiv:2012.03411 , 2020.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:44.519742"
+      }
     },
     {
       "id": "bib.bib133",
@@ -3846,7 +4805,14 @@
       "doi": null,
       "arxiv_id": "2108.12409",
       "raw": "Press et al. (2021) Ofir Press, Noah A Smith, and Mike Lewis. Train short, test long: Attention with linear biases enables input\nlength extrapolation. arXiv preprint arXiv:2108.12409 , 2021.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:44.608786"
+      }
     },
     {
       "id": "bib.bib134",
@@ -3857,7 +4823,14 @@
       "doi": null,
       "arxiv_id": "2112.11446",
       "raw": "Rae et al. (2021) Jack W. Rae, Sebastian Borgeaud, Trevor Cai, Katie Millican, Jordan Hoffmann,\nH. Francis Song, John Aslanides, Sarah Henderson, Roman Ring, Susannah Young,\nEliza Rutherford, Tom Hennigan, Jacob Menick, Albin Cassirer, Richard Powell,\nGeorge van den Driessche, Lisa Anne Hendricks, Maribeth Rauh, Po-Sen Huang,\nAmelia Glaese, Johannes Welbl, Sumanth Dathathri, Saffron Huang, Jonathan\nUesato, John Mellor, Irina Higgins, Antonia Creswell, Nat McAleese, Amy Wu,\nErich Elsen, Siddhant M. Jayakumar, Elena Buchatskaya, David Budden, Esme\nSutherland, Karen Simonyan, Michela Paganini, Laurent Sifre, Lena Martens,\nXiang Lorraine Li, Adhiguna Kuncoro, Aida Nematzadeh, Elena Gribovskaya,\nDomenic Donato, Angeliki Lazaridou, Arthur Mensch, Jean-Baptiste Lespiau,\nMaria Tsimpoukelli, Nikolai Grigorev, Doug Fritz, Thibault Sottiaux, Mantas\nPajarskas, Toby Pohlen, Zhitao Gong, Daniel Toyama, Cyprien\nde Masson d’Autume, Yujia Li, Tayfun Terzi, Vladimir Mikulik, Igor\nBabuschkin, Aidan Clark, Diego de Las Casas, Aurelia Guy, Chris Jones, James\nBradbury, Matthew Johnson, Blake A. Hechtman, Laura Weidinger, Iason Gabriel,\nWilliam S. Isaac, Edward Lockhart, Simon Osindero, Laura Rimell, Chris Dyer,\nOriol Vinyals, Kareem Ayoub, Jeff Stanway, Lorrayne Bennett, Demis Hassabis,\nKoray Kavukcuoglu, and Geoffrey Irving. Scaling language models: Methods, analysis & insights from\ntraining Gopher. CoRR , abs/2112.11446, 2021.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:09:44.332213"
+      }
     },
     {
       "id": "bib.bib135",
@@ -3868,7 +4841,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Raffel et al. (2020) Colin Raffel, Noam Shazeer, Adam Roberts, Katherine Lee, Sharan Narang, Michael\nMatena, Yanqi Zhou, Wei Li, and Peter J. Liu. Exploring the limits of transfer learning with a unified text-to-text\ntransformer. Journal of Machine Learning Research , 21(140):1–67, 2020. URL http://jmlr.org/papers/v21/20-074.html .",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:44.518120"
+      }
     },
     {
       "id": "bib.bib136",
@@ -3879,7 +4859,14 @@
       "doi": null,
       "arxiv_id": "2311.12022",
       "raw": "Rein et al. (2023) David Rein, Betty Li Hou, Asa Cooper Stickland, Jackson Petty, Richard Yuanzhe\nPang, Julien Dirani, Julian Michael, and Samuel R Bowman. Gpqa: A graduate-level google-proof q&a benchmark. arXiv preprint arXiv:2311.12022 , 2023.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0246,
+        "matched_id": null,
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:09:44.479674"
+      }
     },
     {
       "id": "bib.bib137",
@@ -3890,7 +4877,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Riquelme et al. (2021) Carlos Riquelme, Joan Puigcerver, Basil Mustafa, Maxim Neumann, Rodolphe\nJenatton, André Susano Pinto, Daniel Keysers, and Neil Houlsby. Scaling vision with sparse mixture of experts, 2021.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:45.037468"
+      }
     },
     {
       "id": "bib.bib138",
@@ -3901,7 +4895,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Rojas et al. (2022) William A Gaviria Rojas, Sudnya Diamos, Keertan Ranjan Kini, David Kanter,\nVijay Janapa Reddi, and Cody Coleman. The dollar street dataset: Images representing the geographic and\nsocioeconomic diversity of the world. In Thirty-sixth Conference on Neural Information Processing\nSystems Datasets and Benchmarks Track , 2022.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:45.038469"
+      }
     },
     {
       "id": "bib.bib139",
@@ -3912,7 +4913,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Roller et al. (2021) Stephen Roller, Sainbayar Sukhbaatar, Jason Weston, et al. Hash layers for large sparse models. Advances in Neural Information Processing Systems ,\n34:17555–17566, 2021.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:45.112526"
+      }
     },
     {
       "id": "bib.bib140",
@@ -3923,7 +4931,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Russell and Norvig (2016) Stuart J Russell and Peter Norvig. Artificial intelligence: a modern approach . Pearson, 2016.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "resolved",
+        "match_score": 0.95,
+        "matched_id": "10.1016/s0262-4079(06)61118-4",
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:09:44.845482"
+      }
     },
     {
       "id": "bib.bib141",
@@ -3934,7 +4949,14 @@
       "doi": null,
       "arxiv_id": "2404.18416",
       "raw": "Saab et al. (2024) Khaled Saab, Tao Tu, Wei-Hung Weng, Ryutaro Tanno, David Stutz, Ellery Wulczyn,\nFan Zhang, Tim Strother, Chunjong Park, Elahe Vedadi, et al. Capabilities of Gemini models in medicine. arXiv preprint arXiv:2404.18416 , 2024.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:45.386992"
+      }
     },
     {
       "id": "bib.bib142",
@@ -3945,7 +4967,14 @@
       "doi": null,
       "arxiv_id": "2112.01488",
       "raw": "Santhanam et al. (2021) Keshav Santhanam, Omar Khattab, Jon Saad-Falcon, Christopher Potts, and Matei\nZaharia. Colbertv2: Effective and efficient retrieval via lightweight late\ninteraction. arXiv preprint arXiv:2112.01488 , 2021.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0635,
+        "matched_id": null,
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:09:45.242612"
+      }
     },
     {
       "id": "bib.bib143",
@@ -3956,7 +4985,14 @@
       "doi": "10.18653/v1/2020.acl-main.704",
       "arxiv_id": null,
       "raw": "Sellam et al. (2020) Thibault Sellam, Dipanjan Das, and Ankur Parikh. BLEURT: Learning robust metrics for text generation. In Proceedings of the 58th Annual Meeting of the Association\nfor Computational Linguistics , pages 7881–7892, Online, July 2020.\nAssociation for Computational Linguistics. 10.18653/v1/2020.acl-main.704 . URL https://aclanthology.org/2020.acl-main.704 .",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "resolved",
+        "match_score": 0.95,
+        "matched_id": "10.18653/v1/2020.acl-main.704",
+        "matched_service": "doi",
+        "resolved_at": "2026-11-14T10:09:45.151431"
+      }
     },
     {
       "id": "bib.bib144",
@@ -3967,7 +5003,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Shannon (1948) Claude Elwood Shannon. A mathematical theory of communication. The Bell System Technical Journal , 27:379–423,\n1948. URL http://plan9.bell-labs.com/cm/ms/what/shannonday/shannon1948.pdf .",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:45.523003"
+      }
     },
     {
       "id": "bib.bib145",
@@ -3978,7 +5021,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Shazeer et al. (2017) Noam Shazeer, Azalia Mirhoseini, Krzysztof Maziarz, Andy Davis, Quoc Le,\nGeoffrey Hinton, and Jeff Dean. Outrageously large neural networks: The sparsely-gated\nmixture-of-experts layer. In ICLR (Poster) . OpenReview.net, 2017. URL http://dblp.uni-trier.de/db/conf/iclr/iclr2017.html#ShazeerMMDLHD17 .",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.1322,
+        "matched_id": null,
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:09:45.270560"
+      }
     },
     {
       "id": "bib.bib146",
@@ -3989,7 +5039,14 @@
       "doi": null,
       "arxiv_id": "2305.15324",
       "raw": "Shevlane et al. (2023) Toby Shevlane, Sebastian Farquhar, Ben Garfinkel, Mary Phuong, Jess\nWhittlestone, Jade Leung, Daniel Kokotajlo, Nahema Marchal, Markus\nAnderljung, Noam Kolt, Lewis Ho, Divya Siddarth, Shahar Avin, Will Hawkins,\nBeen Kim, Iason Gabriel, Vijay Bolina, Jack Clark, Yoshua Bengio, Paul\nChristiano, and Allan Dafoe. Model evaluation for extreme risks. arXiv preprint arXiv:2305.15324 , 2023.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:45.670908"
+      }
     },
     {
       "id": "bib.bib147",
@@ -4000,7 +5057,14 @@
       "doi": null,
       "arxiv_id": "2210.03057",
       "raw": "Shi et al. (2023a) Freda Shi, Mirac Suzgun, Markus Freitag, Xuezhi Wang, Suraj Srivats, Soroush\nVosoughi, Hyung Won Chung, Yi Tay, Sebastian Ruder, Denny Zhou, Dipanjan Das,\nand Jason Wei. Language Models are Multilingual Chain-of-Thought Reasoners. In Proceedings of ICLR 2023 , 2023a. URL http://arxiv.org/abs/2210.03057 .",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:45.990482"
+      }
     },
     {
       "id": "bib.bib148",
@@ -4011,7 +5075,14 @@
       "doi": null,
       "arxiv_id": "2310.10638",
       "raw": "Shi et al. (2023b) Weijia Shi, Sewon Min, Maria Lomeli, Chunting Zhou, Margaret Li, Victoria Lin,\nNoah A Smith, Luke Zettlemoyer, Scott Yih, and Mike Lewis. In-context pretraining: Language modeling beyond document boundaries. arXiv preprint arXiv:2310.10638 , 2023b.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:46.059223"
+      }
     },
     {
       "id": "bib.bib149",
@@ -4022,7 +5093,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Singh et al. (2019) Amanpreet Singh, Vivek Natarajan, Meet Shah, Yu Jiang, Xinlei Chen, Dhruv\nBatra, Devi Parikh, and Marcus Rohrbach. Towards VQA models that can read. In Proceedings of the IEEE/CVF conference on computer vision\nand pattern recognition , pages 8317–8326, 2019.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:45.864699"
+      }
     },
     {
       "id": "bib.bib150",
@@ -4033,7 +5111,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Singh et al. (2023) Ishika Singh, Valts Blukis, Arsalan Mousavian, Ankit Goyal, Danfei Xu, Jonathan\nTremblay, Dieter Fox, Jesse Thomason, and Animesh Garg. Progprompt: Generating situated robot task plans using large language\nmodels. In 2023 IEEE International Conference on Robotics and\nAutomation (ICRA) , pages 11523–11530. IEEE, 2023.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:46.013260"
+      }
     },
     {
       "id": "bib.bib151",
@@ -4044,7 +5129,14 @@
       "doi": null,
       "arxiv_id": "2206.04615",
       "raw": "Srivastava et al. (2022) Aarohi Srivastava, Abhinav Rastogi, Abhishek Rao, Abu Awal Md Shoeb, Abubakar\nAbid, Adam Fisch, Adam R. Brown, et al. Beyond the imitation game: Quantifying and extrapolating the\ncapabilities of language models. arXiv preprint arXiv:2206.04615 , 2022. URL https://arxiv.org/abs/2206.04615 .",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.3017,
+        "matched_id": null,
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:09:45.924499"
+      }
     },
     {
       "id": "bib.bib152",
@@ -4055,7 +5147,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Srivastava et al. (2024) Saurabh Srivastava, Annarose M B, Anto P V au2, Shashank Menon, Ajay Sukumar,\nAdwaith Samod T, Alan Philipose, Stevin Prince, and Sooraj Thomas. Functional benchmarks for robust evaluation of reasoning performance,\nand the reasoning gap, 2024.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:46.499098"
+      }
     },
     {
       "id": "bib.bib153",
@@ -4066,7 +5165,14 @@
       "doi": null,
       "arxiv_id": "2312.17296",
       "raw": "Staniszewski et al. (2023) Konrad Staniszewski, Szymon Tworkowski, Sebastian Jaszczur, Henryk Michalewski,\nŁukasz Kuciński, and Piotr Miłoś. Structured packing in llm training improves long context utilization. arXiv preprint arXiv:2312.17296 , 2023.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:46.642014"
+      }
     },
     {
       "id": "bib.bib154",
@@ -4077,7 +5183,14 @@
       "doi": null,
       "arxiv_id": "2210.09261",
       "raw": "Suzgun et al. (2022) Mirac Suzgun, Nathan Scales, Nathanael Schärli, Sebastian Gehrmann, Yi Tay,\nHyung Won Chung, Aakanksha Chowdhery, Quoc V Le, Ed H Chi, Denny Zhou, et al. Challenging big-bench tasks and whether chain-of-thought can solve\nthem. arXiv preprint arXiv:2210.09261 , 2022.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:46.734935"
+      }
     },
     {
       "id": "bib.bib155",
@@ -4088,7 +5201,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Tanzer et al. (2023) Garrett Tanzer, Mirac Suzgun, Eline Visser, Dan Jurafsky, and Luke\nMelas-Kyriazi. A benchmark for learning to translate a new language from one grammar\nbook. In Arxiv , 2023.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:46.498013"
+      }
     },
     {
       "id": "bib.bib156",
@@ -4099,7 +5219,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Team et al. (2022) NLLB Team, Marta R. Costa-jussà, James Cross, Onur Çelebi, Maha Elbayad,\nKenneth Heafield, Kevin Heffernan, Elahe Kalbassi, Janice Lam, Daniel Licht,\nJean Maillard, Anna Sun, Skyler Wang, Guillaume Wenzek, Al Youngblood, Bapi\nAkula, Loic Barrault, Gabriel Mejia Gonzalez, Prangthip Hansanti, John\nHoffman, Semarley Jarrett, Kaushik Ram Sadagopan, Dirk Rowe, Shannon Spruit,\nChau Tran, Pierre Andrews, Necip Fazil Ayan, Shruti Bhosale, Sergey Edunov,\nAngela Fan, Cynthia Gao, Vedanuj Goswami, Francisco Guzmán, Philipp Koehn,\nAlexandre Mourachko, Christophe Ropers, Safiyyah Saleem, Holger Schwenk, and\nJeff Wang. No language left behind: Scaling human-centered machine translation. 2022.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:46.874911"
+      }
     },
     {
       "id": "bib.bib157",
@@ -4110,7 +5237,14 @@
       "doi": null,
       "arxiv_id": "2201.08239",
       "raw": "Thoppilan et al. (2022) Romal Thoppilan, Daniel De Freitas, Jamie Hall, Noam Shazeer, Apoorv\nKulshreshtha, Heng-Tze Cheng, Alicia Jin, Taylor Bos, Leslie Baker, Yu Du,\net al. LaMDA: Language models for dialog applications. arXiv preprint arXiv:2201.08239 , 2022. URL https://arxiv.org/abs/2201.08239 .",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:47.092433"
+      }
     },
     {
       "id": "bib.bib158",
@@ -4121,7 +5255,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Tom et al. (2023) Kocmi Tom, Eleftherios Avramidis, Rachel Bawden, Ondřej Bojar, Anton\nDvorkovich, Christian Federmann, Mark Fishel, Markus Freitag, Thamme Gowda,\nRoman Grundkiewicz, et al. Findings of the 2023 conference on machine translation (wmt23): Llms\nare here but not quite there yet. In WMT23-Eighth Conference on Machine Translation , pages\n198–216, 2023.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:46.979346"
+      }
     },
     {
       "id": "bib.bib159",
@@ -4132,7 +5273,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Toshniwal et al. (2024) Shubham Toshniwal, Ivan Moshkov, Sean Narenthiran, Daria Gitman, Fei Jia, and\nIgor Gitman. Openmathinstruct-1: A 1.8 million math instruction tuning dataset,\n2024.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.1667,
+        "matched_id": null,
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:09:46.940583"
+      }
     },
     {
       "id": "bib.bib160",
@@ -4143,7 +5291,14 @@
       "doi": null,
       "arxiv_id": "2302.13971",
       "raw": "Touvron et al. (2023a) Hugo Touvron, Thibaut Lavril, Gautier Izacard, Xavier Martinet, Marie-Anne\nLachaux, Timothée Lacroix, Baptiste Rozière, Naman Goyal, Eric\nHambro, Faisal Azhar, Aurelien Rodriguez, Armand Joulin, Edouard Grave, and\nGuillaume Lample. Llama: Open and efficient foundation language models. arXiv preprint arXiv:2302.13971 , 2023a.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:47.272082"
+      }
     },
     {
       "id": "bib.bib161",
@@ -4154,7 +5309,14 @@
       "doi": null,
       "arxiv_id": "2307.09288",
       "raw": "Touvron et al. (2023b) Hugo Touvron, Louis Martin, Kevin Stone, Peter Albert, Amjad Almahairi, Yasmine\nBabaei, Nikolay Bashlykov, Soumya Batra, Prajjwal Bhargava, Shruti Bhosale,\nDan Bikel, Lukas Blecher, Cristian Canton Ferrer, Moya Chen, Guillem\nCucurull, David Esiobu, Jude Fernandes, Jeremy Fu, Wenyin Fu, Brian Fuller,\nCynthia Gao, Vedanuj Goswami, Naman Goyal, Anthony Hartshorn, Saghar\nHosseini, Rui Hou, Hakan Inan, Marcin Kardas, Viktor Kerkez, Madian Khabsa,\nIsabel Kloumann, Artem Korenev, Punit Singh Koura, Marie-Anne Lachaux,\nThibaut Lavril, Jenya Lee, Diana Liskovich, Yinghai Lu, Yuning Mao, Xavier\nMartinet, Todor Mihaylov, Pushkar Mishra, Igor Molybog, Yixin Nie, Andrew\nPoulton, Jeremy Reizenstein, Rashi Rungta, Kalyan Saladi, Alan Schelten, Ruan\nSilva, Eric Michael Smith, Ranjan Subramanian, Xiaoqing Ellen Tan, Binh Tang,\nRoss Taylor, Adina Williams, Jian Xiang Kuan, Puxin Xu, Zheng Yan, Iliyan\nZarov, Yuchen Zhang, Angela Fan, Melanie Kambadur, Sharan Narang, Aurelien\nRodriguez, Robert Stojnic, Sergey Edunov, and Thomas Scialom. Llama 2: Open foundation and fine-tuned chat models. arXiv preprint arXiv:2307.09288 , 2023b.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:47.508169"
+      }
     },
     {
       "id": "bib.bib162",
@@ -4165,7 +5327,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Valmeekam et al. (2024) Karthik Valmeekam, Matthew Marquez, Sarath Sreedharan, and Subbarao\nKambhampati. On the planning abilities of large language models-a critical\ninvestigation. Advances in Neural Information Processing Systems , 36, 2024.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:47.433480"
+      }
     },
     {
       "id": "bib.bib163",
@@ -4176,7 +5345,14 @@
       "doi": null,
       "arxiv_id": "1706.03762",
       "raw": "Vaswani et al. (2017) Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones,\nAidan N. Gomez, Lukasz Kaiser, and Illia Polosukhin. Attention is all you need. CoRR , abs/1706.03762, 2017. URL http://arxiv.org/abs/1706.03762 .",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:47.670227"
+      }
     },
     {
       "id": "bib.bib164",
@@ -4187,7 +5363,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Vedantam et al. (2015) Ramakrishna Vedantam, C Lawrence Zitnick, and Devi Parikh. Cider: Consensus-based image description evaluation. In Proceedings of the IEEE conference on computer vision and\npattern recognition , pages 4566–4575, 2015.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:47.751259"
+      }
     },
     {
       "id": "bib.bib165",
@@ -4198,7 +5381,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Visser (2020a) Eline Visser. Kalamang dictionary. Dictionaria , (13):1–2737,\n2020a. URL https://dictionaria.clld.org/contributions/kalamang .",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:47.751259"
+      }
     },
     {
       "id": "bib.bib166",
@@ -4209,7 +5399,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Visser (2020b) Eline Visser. A grammar of kalamang: The papuan language of the karas islands. 2020b.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:47.860756"
+      }
     },
     {
       "id": "bib.bib167",
@@ -4220,7 +5417,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Visser (2020c) Eline Visser. The Kalamang collection: an archive of linguistic and cultural\nmaterial from Karas. Lund: Humlab, Lund University Humanities Lab, 2020c. URL http://hdl.handle.net/10050/00-0000-0000-0003-C3E8-1 .",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.3182,
+        "matched_id": null,
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:09:47.725722"
+      }
     },
     {
       "id": "bib.bib168",
@@ -4231,7 +5435,14 @@
       "doi": null,
       "arxiv_id": "2007.10310",
       "raw": "Wang et al. (2020) Changhan Wang, Anne Wu, and Juan Pino. Covost 2 and massively multilingual speech-to-text translation. arXiv preprint arXiv:2007.10310 , 2020.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:48.232847"
+      }
     },
     {
       "id": "bib.bib169",
@@ -4242,7 +5453,14 @@
       "doi": null,
       "arxiv_id": "2101.00390",
       "raw": "Wang et al. (2021) Changhan Wang, Morgane Riviere, Ann Lee, Anne Wu, Chaitanya Talnikar, Daniel\nHaziza, Mary Williamson, Juan Pino, and Emmanuel Dupoux. Voxpopuli: A large-scale multilingual speech corpus for\nrepresentation learning, semi-supervised learning and interpretation. arXiv preprint arXiv:2101.00390 , 2021.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:48.371529"
+      }
     },
     {
       "id": "bib.bib170",
@@ -4253,7 +5471,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Wang et al. (2019a) Xin Wang, Jiawei Wu, Junkun Chen, Lei Li, Yuan-Fang Wang, and William Yang\nWang. VATEX: A large-scale, high-quality multilingual dataset for\nvideo-and-language research. In ICCV , 2019a.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:48.307238"
+      }
     },
     {
       "id": "bib.bib171",
@@ -4264,7 +5489,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Wang et al. (2019b) Xinda Wang, Kun Sun, Archer Batcheller, and Sushil Jajodia. Detecting \"0-day\" vulnerability: An empirical study of secret\nsecurity patch in OSS. In IEEE/IFIP International Conference on Dependable Systems and\nNetworks , pages 485–492. IEEE, 2019b. URL https://csis.gmu.edu/ksun/publications/secretpatch-dsn19.pdf .",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:48.336494"
+      }
     },
     {
       "id": "bib.bib172",
@@ -4275,7 +5507,14 @@
       "doi": null,
       "arxiv_id": "2112.04359",
       "raw": "Weidinger et al. (2021) Laura Weidinger, John Mellor, Maribeth Rauh, Conor Griffin, Jonathan Uesato,\nPo-Sen Huang, Myra Cheng, Mia Glaese, Borja Balle, Atoosa Kasirzadeh, et al. Ethical and social risks of harm from language models. arXiv preprint arXiv:2112.04359 , 2021.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:48.682230"
+      }
     },
     {
       "id": "bib.bib173",
@@ -4286,7 +5525,14 @@
       "doi": null,
       "arxiv_id": "2404.14068",
       "raw": "Weidinger et al. (2024) Laura Weidinger, Joslyn Barnhart, Jenny Brennan, Christina Butterfield, Susie\nYoung, Will Hawkins, Lisa Anne Hendricks, Ramona Comanescu, Oscar Chang,\nMikel Rodriguez, et al. Holistic safety and responsibility evaluations of advanced ai models. arXiv preprint arXiv:2404.14068 , 2024.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:48.810318"
+      }
     },
     {
       "id": "bib.bib174",
@@ -4297,7 +5543,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Wikipedia contributors (2024) Wikipedia contributors. Skeletal formula — Wikipedia, the free encyclopedia, 2024. URL https://en.wikipedia.org/w/index.php?title=Skeletal_formula&oldid=1221781655 . [Online; accessed 7-May-2024].",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:48.743479"
+      }
     },
     {
       "id": "bib.bib175",
@@ -4308,7 +5561,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "World Economic Forum (2023) World Economic Forum. Jobs of Tomorrow: Large Language Models and Jobs. 2023. URL https://www3.weforum.org/docs/WEF_Jobs_of_Tomorrow_Generative_AI_2023.pdf .",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:48.777270"
+      }
     },
     {
       "id": "bib.bib176",
@@ -4319,7 +5579,14 @@
       "doi": null,
       "arxiv_id": "2312.14135",
       "raw": "Wu and Xie (2023) Penghao Wu and Saining Xie. V*: Guided visual search as a core mechanism in multimodal llms. arXiv preprint arXiv:2312.14135 , 2023.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0752,
+        "matched_id": null,
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:09:48.775260"
+      }
     },
     {
       "id": "bib.bib177",
@@ -4330,7 +5597,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Wu et al. (2022a) Qingyang Wu, Zhenzhong Lan, Kun Qian, Jing Gu, Alborz Geramifard, and Zhou Yu. Memformer: A memory-augmented transformer for sequence modeling. In Yulan He, Heng Ji, Sujian Li, Yang Liu, and Chua-Hui Chang,\neditors, Findings of the Association for Computational Linguistics:\nAACL-IJCNLP 2022 , pages 308–318, Online only, November 2022a.\nAssociation for Computational Linguistics. URL https://aclanthology.org/2022.findings-aacl.29 .",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:49.238677"
+      }
     },
     {
       "id": "bib.bib178",
@@ -4341,7 +5615,14 @@
       "doi": null,
       "arxiv_id": "2203.08913",
       "raw": "Wu et al. (2022b) Yuhuai Wu, Markus N Rabe, DeLesley Hutchins, and Christian Szegedy. Memorizing transformers. arXiv preprint arXiv:2203.08913 , 2022b.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:49.379494"
+      }
     },
     {
       "id": "bib.bib179",
@@ -4352,7 +5633,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "wunderwuzzi (2023) wunderwuzzi. Hacking Google Bard - From Prompt Injection to Data Exfiltration. https://embracethered.com/blog/posts/2023/google-bard-data-exfiltration/,\n2023.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:49.327317"
+      }
     },
     {
       "id": "bib.bib180",
@@ -4363,7 +5651,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "(180) x.ai. Grok-1.5 vision preview. URL https://x.ai/blog/grok-1.5v .",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.4643,
+        "matched_id": null,
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:09:49.132545"
+      }
     },
     {
       "id": "bib.bib181",
@@ -4374,7 +5669,14 @@
       "doi": null,
       "arxiv_id": "2309.16039",
       "raw": "Xiong et al. (2023) Wenhan Xiong, Jingyu Liu, Igor Molybog, Hejia Zhang, Prajjwal Bhargava, Rui\nHou, Louis Martin, Rashi Rungta, Karthik Abinav Sankararaman, Barlas Oguz,\net al. Effective long-context scaling of foundation models. arXiv preprint arXiv:2309.16039 , 2023.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.3056,
+        "matched_id": null,
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:09:49.501047"
+      }
     },
     {
       "id": "bib.bib182",
@@ -4385,7 +5687,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "XLA (2019) XLA. XLA: Optimizing compiler for TensorFlow. https://www.tensorflow.org/xla , 2019. [Online; accessed December-2023].",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.1111,
+        "matched_id": null,
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:09:49.397573"
+      }
     },
     {
       "id": "bib.bib183",
@@ -4396,7 +5705,14 @@
       "doi": null,
       "arxiv_id": "2105.04663",
       "raw": "Xu et al. (2021) Yuanzhong Xu, HyoukJoong Lee, Dehao Chen, Blake Hechtman, Yanping Huang, Rahul\nJoshi, Maxim Krikun, Dmitry Lepikhin, Andy Ly, Marcello Maggioni, et al. Gspmd: general and scalable parallelization for ml computation\ngraphs. arXiv preprint arXiv:2105.04663 , 2021.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:49.865474"
+      }
     },
     {
       "id": "bib.bib184",
@@ -4407,7 +5723,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Yan et al. (2024) Fanjia Yan, Huanzhi Mao, Charlie Cheng-Jie Ji, Tianjun Zhang, Shishir G. Patil,\nIon Stoica, and Joseph E. Gonzalez. Berkeley function calling leaderboard. 2024.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:49.838431"
+      }
     },
     {
       "id": "bib.bib185",
@@ -4418,7 +5741,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Yang et al. (2023a) Chengrun Yang, Xuezhi Wang, Yifeng Lu, Hanxiao Liu, Quoc V. Le, Denny Zhou, and\nXinyun Chen. Large language models as optimizers, 2023a.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:49.969115"
+      }
     },
     {
       "id": "bib.bib186",
@@ -4429,7 +5759,14 @@
       "doi": null,
       "arxiv_id": "2306.14898",
       "raw": "Yang et al. (2023b) John Yang, Akshara Prabhakar, Karthik Narasimhan, and Shunyu Yao. InterCode: Standardizing and benchmarking interactive coding with\nexecution feedback. ArXiv , June 2023b. URL https://arxiv.org/abs/2306.14898 .",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:50.279321"
+      }
     },
     {
       "id": "bib.bib187",
@@ -4440,7 +5777,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Yeung (2024) Kenneth Yeung. New google gemini vulnerability enabling profound misuse. 2024. URL https://hiddenlayer.com/research/new-google-gemini-content-manipulation-vulns-found/#Indirect-Injections-are-back!",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:50.282323"
+      }
     },
     {
       "id": "bib.bib188",
@@ -4451,7 +5795,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Yilmaz et al. (2015) Emine Yilmaz, Manisha Verma, Rishabh Mehrotra, Evangelos Kanoulas, Ben\nCarterette, and Nick Craswell. Overview of the TREC 2015 tasks track. In Proceedings of the Twenty-Fourth Text REtrieval Conference\n(TREC 2015) , 2015. URL https://trec.nist.gov/pubs/trec24/papers/Overview-T.pdf .",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:50.282323"
+      }
     },
     {
       "id": "bib.bib189",
@@ -4462,7 +5813,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Yu et al. (2019) Zhou Yu, Dejing Xu, Jun Yu, Ting Yu, Zhou Zhao, Yueting Zhuang, and Dacheng\nTao. ActivityNet-QA: A dataset for understanding complex web videos via\nquestion answering. In AAAI , 2019.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:50.315557"
+      }
     },
     {
       "id": "bib.bib190",
@@ -4473,7 +5831,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Yue et al. (2023) Xiang Yue, Yuansheng Ni, Kai Zhang, Tianyu Zheng, Ruoqi Liu, Ge Zhang, Samuel\nStevens, Dongfu Jiang, Weiming Ren, Yuxuan Sun, Cong Wei, Botao Yu, Ruibin\nYuan, Renliang Sun, Ming Yin, Boyuan Zheng, Zhenzhu Yang, Yibo Liu, Wenhao\nHuang, Huan Sun, Yu Su, and Wenhu Chen. Mmmu: A massive multi-discipline multimodal understanding and\nreasoning benchmark for expert agi, 2023.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:50.410488"
+      }
     },
     {
       "id": "bib.bib191",
@@ -4484,7 +5849,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Zaheer et al. (2020) Manzil Zaheer, Guru Guruganesh, Kumar Avinava Dubey, Joshua Ainslie, Chris\nAlberti, Santiago Ontanon, Philip Pham, Anirudh Ravula, Qifan Wang, Li Yang,\net al. Big bird: Transformers for longer sequences. Advances in Neural Information Processing Systems ,\n33:17283–17297, 2020.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:50.716645"
+      }
     },
     {
       "id": "bib.bib192",
@@ -4495,7 +5867,14 @@
       "doi": null,
       "arxiv_id": "1905.07830",
       "raw": "Zellers et al. (2019) Rowan Zellers, Ari Holtzman, Yonatan Bisk, Ali Farhadi, and Yejin Choi. Hellaswag: Can a machine really finish your sentence? arXiv preprint arXiv:1905.07830 , 2019.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:50.855684"
+      }
     },
     {
       "id": "bib.bib193",
@@ -4506,7 +5885,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Zhang et al. (2023a) Biao Zhang, Barry Haddow, and Alexandra Birch. Prompting large language model for machine translation: a case study. In Proceedings of the 40th International Conference on Machine\nLearning , ICML’23. JMLR.org, 2023a.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:50.704995"
+      }
     },
     {
       "id": "bib.bib194",
@@ -4517,7 +5903,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Zhang and Ré (2022) Michael Zhang and Christopher Ré. Contrastive adapters for foundation model group robustness. Advances in Neural Information Processing Systems ,\n35:21682–21697, 2022.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:50.735267"
+      }
     },
     {
       "id": "bib.bib195",
@@ -4528,7 +5921,14 @@
       "doi": null,
       "arxiv_id": "2303.01037",
       "raw": "Zhang et al. (2023b) Yu Zhang, Wei Han, James Qin, Yongqiang Wang, Ankur Bapna, Zhehuai Chen, Nanxin\nChen, Bo Li, Vera Axelrod, Gary Wang, Zhong Meng, Ke Hu, Andrew Rosenberg,\nRohit Prabhavalkar, Daniel S. Park, Parisa Haghani, Jason Riesa, Ginger\nPerng, Hagen Soltau, Trevor Strohman, Bhuvana Ramabhadran, Tara Sainath,\nPedro Moreno, Chung-Cheng Chiu, Johan Schalkwyk, Françoise Beaufays, and\nYonghui Wu. Google usm: Scaling automatic speech recognition beyond 100\nlanguages. arXiv preprint arXiv:2303.01037 , 2023b.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:50.848538"
+      }
     },
     {
       "id": "bib.bib196",
@@ -4539,7 +5939,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Zhao et al. (2021) Dora Zhao, Angelina Wang, and Olga Russakovsky. Understanding and evaluating racial biases in image captioning. In Proceedings of the IEEE/CVF International Conference on\nComputer Vision , pages 14830–14840, 2021.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:51.137844"
+      }
     },
     {
       "id": "bib.bib197",
@@ -4550,7 +5957,14 @@
       "doi": "10.18653/v1/2022.emnlp-main.382",
       "arxiv_id": null,
       "raw": "Zhong et al. (2022) Zexuan Zhong, Tao Lei, and Danqi Chen. Training language models with memory augmentation. In Yoav Goldberg, Zornitsa Kozareva, and Yue Zhang, editors, Proceedings of the 2022 Conference on Empirical Methods in Natural\nLanguage Processing , pages 5657–5673, Abu Dhabi, United Arab Emirates,\nDecember 2022. Association for Computational Linguistics. 10.18653/v1/2022.emnlp-main.382 . URL https://aclanthology.org/2022.emnlp-main.382 .",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "resolved",
+        "match_score": 0.95,
+        "matched_id": "10.18653/v1/2022.emnlp-main.382",
+        "matched_service": "doi",
+        "resolved_at": "2026-11-14T10:09:50.816411"
+      }
     },
     {
       "id": "bib.bib198",
@@ -4561,7 +5975,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Zhou et al. (2018) Luowei Zhou, Chenliang Xu, and Jason J Corso. Towards automatic learning of procedures from web instructional\nvideos. In AAAI Conference on Artificial Intelligence , pages\n7590–7598, 2018.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:51.209264"
+      }
     },
     {
       "id": "bib.bib199",
@@ -4572,7 +5993,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Zhou et al. (2021) Yaqin Zhou, Jing Kai Siow, Chenyu Wang, Shangqing Liu, and Yang Liu. SPI: Automated identification of security patches via commits. ACM Transactions on Software Engineering and Methodology ,\n31(1):1–27, 2021.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:51.292609"
+      }
     },
     {
       "id": "bib.bib200",
@@ -4583,7 +6011,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Zhu et al. (2022) Fengbin Zhu, Wenqiang Lei, Fuli Feng, Chao Wang, Haozhou Zhang, and Tat-Seng\nChua. Towards complex document understanding by discrete reasoning. In Proceedings of the 30th ACM International Conference on\nMultimedia , page 4857–4866, 2022.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:51.195098"
+      }
     },
     {
       "id": "bib.bib201",
@@ -4594,7 +6029,14 @@
       "doi": null,
       "arxiv_id": "2202.08906",
       "raw": "Zoph et al. (2022) Barret Zoph, Irwan Bello, Sameer Kumar, Nan Du, Yanping Huang, Jeff Dean, Noam\nShazeer, and William Fedus. Designing effective sparse expert models. arXiv preprint arXiv:2202.08906 , 2022. URL https://arxiv.org/abs/2202.08906 .",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:51.459315"
+      }
     },
     {
       "id": "bib.bib202",
@@ -4605,15 +6047,24 @@
       "doi": null,
       "arxiv_id": "2307.15043",
       "raw": "Zou et al. (2023) Andy Zou, Zifan Wang, J Zico Kolter, and Matt Fredrikson. Universal and transferable adversarial attacks on aligned language\nmodels. arXiv preprint arXiv:2307.15043 , 2023.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:51.934959"
+      }
     }
   ],
   "human_notes": {
     "problem_formulation": "",
     "methodology_evaluation": "",
     "findings_credibility": "",
-    "dissertation_gaps": ""
+    "dissertation_gaps": "",
+    "citation_role": ""
   },
+  "as_of": null,
   "sha256": "8ba86867c1b8f943c3a8367840647111361f254c85a187e8eb3c7e7ff9fcf665",
-  "created_at": "2026-11-14T09:28:22.473736"
+  "created_at": "2026-11-14T10:09:07.583878"
 }

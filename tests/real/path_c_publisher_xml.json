@@ -22,7 +22,7 @@
     "tool": "jats-xml",
     "tool_version": "JATS XML (Publisher)",
     "source_uri": "https://doi.org/10.1371/journal.pone.0298888",
-    "extracted_at": "2026-11-14T09:28:23.403930",
+    "extracted_at": "2026-11-14T10:09:08.666063",
     "per_part": {
       "metadata": {
         "tool": "jats-xml",
@@ -50,6 +50,41 @@
       }
     }
   },
+  "provenances": [
+    {
+      "path_used": "publisher_xml",
+      "tool": "jats-xml",
+      "tool_version": "JATS XML (Publisher)",
+      "source_uri": "https://doi.org/10.1371/journal.pone.0298888",
+      "extracted_at": "2026-11-14T10:09:08.666063",
+      "per_part": {
+        "metadata": {
+          "tool": "jats-xml",
+          "status": "extracted"
+        },
+        "sections": {
+          "tool": "jats-xml",
+          "status": "extracted"
+        },
+        "figures": {
+          "tool": "jats-xml",
+          "status": "extracted"
+        },
+        "tables": {
+          "tool": "jats-xml",
+          "status": "extracted"
+        },
+        "equations": {
+          "tool": "jats-xml",
+          "status": "extracted"
+        },
+        "references": {
+          "tool": "jats-xml",
+          "status": "extracted"
+        }
+      }
+    }
+  ],
   "abstract": "In recent years, researchers have successfully recognised human activities using commercially available WiFi (Wireless Fidelity) devices. The channel state information (CSI) can be gathered at the access point with the help of a network interface controller (NIC card). These CSI streams are sensitive to human body motions and produce abrupt changes (fluctuations) in their magnitude and phase values when a moving object interacts with a transmitter and receiver pair. This sensing methodology is gaining popularity compared to traditional approaches involving wearable technology, as it is a contactless sensing strategy with no cumbersome sensing equipments fitted on the target with preserved privacy since no personal information of the subject is collected. In previous investigations, internal validation statistics have been promising. However, external validation results have been poor, due to model application to varying subjects with remarkably different environments. To address this problem, we propose an adversarial Artificial Intelligence AI model that learns and utilises domain-invariant features. We analyse model results in terms of suitability for inter-domain and intra-domain alignment techniques, to identify which is better at robustly matching the source to target domain, and hence improve recognition accuracy in cross-user conditions for HAR using wireless signals. We evaluate our model performance on different target training data percentages to assess model reliability on data scarcity. After extensive evaluation, our architecture shows improved predictive performance across target training data proportions when compared to a non-adversarial model for nine cross-user conditions with comparatively less simulation time. We conclude that inter-domain alignment is preferable for HAR applications using wireless signals, and confirm that the dataset used is suitable for investigations of this type. Our architecture can form the basis of future studies using other datasets and/or investigating combined cross-environmental and cross-user features.",
   "sections": [
     {
@@ -361,7 +396,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "",
-      "verified": "jats-verified"
+      "verified": "jats-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.4,
+        "matched_id": null,
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:09:56.709293"
+      }
     },
     {
       "id": "pone.0298888.ref002",
@@ -372,7 +414,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "",
-      "verified": "jats-verified"
+      "verified": "jats-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.4,
+        "matched_id": null,
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:09:56.783968"
+      }
     },
     {
       "id": "pone.0298888.ref003",
@@ -383,7 +432,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "",
-      "verified": "jats-verified"
+      "verified": "jats-verified",
+      "resolution": {
+        "status": "resolved",
+        "match_score": 1.0,
+        "matched_id": "10.1109/mcom.2017.1700082",
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:09:56.709293"
+      }
     },
     {
       "id": "pone.0298888.ref004",
@@ -394,7 +450,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "",
-      "verified": "jats-verified"
+      "verified": "jats-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:56.818533"
+      }
     },
     {
       "id": "pone.0298888.ref005",
@@ -405,7 +468,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "",
-      "verified": "jats-verified"
+      "verified": "jats-verified",
+      "resolution": {
+        "status": "resolved",
+        "match_score": 1.0,
+        "matched_id": "10.1145/3563948",
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:09:56.668076"
+      }
     },
     {
       "id": "pone.0298888.ref006",
@@ -416,7 +486,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "",
-      "verified": "jats-verified"
+      "verified": "jats-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.4,
+        "matched_id": null,
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:09:56.978961"
+      }
     },
     {
       "id": "pone.0298888.ref007",
@@ -427,7 +504,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "",
-      "verified": "jats-verified"
+      "verified": "jats-verified",
+      "resolution": {
+        "status": "resolved",
+        "match_score": 1.0,
+        "matched_id": "10.1186/s40537-016-0043-6",
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:09:57.079230"
+      }
     },
     {
       "id": "pone.0298888.ref008",
@@ -438,7 +522,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "",
-      "verified": "jats-verified"
+      "verified": "jats-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:57.469192"
+      }
     },
     {
       "id": "pone.0298888.ref009",
@@ -449,7 +540,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "",
-      "verified": "jats-verified"
+      "verified": "jats-verified",
+      "resolution": {
+        "status": "resolved",
+        "match_score": 1.0,
+        "matched_id": "10.1016/0010-4485(79)90071-x",
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:09:57.270735"
+      }
     },
     {
       "id": "pone.0298888.ref010",
@@ -460,7 +558,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "",
-      "verified": "jats-verified"
+      "verified": "jats-verified",
+      "resolution": {
+        "status": "resolved",
+        "match_score": 1.0,
+        "matched_id": "10.1145/3264944",
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:09:57.454646"
+      }
     },
     {
       "id": "pone.0298888.ref011",
@@ -471,7 +576,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "",
-      "verified": "jats-verified"
+      "verified": "jats-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:57.710683"
+      }
     },
     {
       "id": "pone.0298888.ref012",
@@ -482,7 +594,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "",
-      "verified": "jats-verified"
+      "verified": "jats-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:57.627214"
+      }
     },
     {
       "id": "pone.0298888.ref013",
@@ -493,7 +612,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "",
-      "verified": "jats-verified"
+      "verified": "jats-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:57.684077"
+      }
     },
     {
       "id": "pone.0298888.ref014",
@@ -504,7 +630,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "",
-      "verified": "jats-verified"
+      "verified": "jats-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:57.885260"
+      }
     },
     {
       "id": "pone.0298888.ref015",
@@ -515,7 +648,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "",
-      "verified": "jats-verified"
+      "verified": "jats-verified",
+      "resolution": {
+        "status": "resolved",
+        "match_score": 1.0,
+        "matched_id": "10.1145/3570325",
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:09:57.806916"
+      }
     },
     {
       "id": "pone.0298888.ref016",
@@ -526,7 +666,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "",
-      "verified": "jats-verified"
+      "verified": "jats-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:58.097199"
+      }
     },
     {
       "id": "pone.0298888.ref017",
@@ -537,7 +684,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "",
-      "verified": "jats-verified"
+      "verified": "jats-verified",
+      "resolution": {
+        "status": "ambiguous",
+        "match_score": 0.6667,
+        "matched_id": "10.1179/oeh.2010.16.1.5r",
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:09:57.978435"
+      }
     },
     {
       "id": "pone.0298888.ref018",
@@ -548,7 +702,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "",
-      "verified": "jats-verified"
+      "verified": "jats-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:58.129550"
+      }
     },
     {
       "id": "pone.0298888.ref019",
@@ -559,7 +720,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "",
-      "verified": "jats-verified"
+      "verified": "jats-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:58.271644"
+      }
     },
     {
       "id": "pone.0298888.ref020",
@@ -570,7 +738,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "",
-      "verified": "jats-verified"
+      "verified": "jats-verified",
+      "resolution": {
+        "status": "resolved",
+        "match_score": 1.0,
+        "matched_id": "10.1561/2200000056",
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:09:58.172571"
+      }
     },
     {
       "id": "pone.0298888.ref021",
@@ -581,7 +756,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "",
-      "verified": "jats-verified"
+      "verified": "jats-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:58.530783"
+      }
     },
     {
       "id": "pone.0298888.ref022",
@@ -592,7 +774,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "",
-      "verified": "jats-verified"
+      "verified": "jats-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:58.593889"
+      }
     },
     {
       "id": "pone.0298888.ref023",
@@ -603,7 +792,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "",
-      "verified": "jats-verified"
+      "verified": "jats-verified",
+      "resolution": {
+        "status": "resolved",
+        "match_score": 1.0,
+        "matched_id": "10.3390/app11083329",
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:09:58.433901"
+      }
     },
     {
       "id": "pone.0298888.ref024",
@@ -614,7 +810,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "",
-      "verified": "jats-verified"
+      "verified": "jats-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:58.691828"
+      }
     },
     {
       "id": "pone.0298888.ref025",
@@ -625,7 +828,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "",
-      "verified": "jats-verified"
+      "verified": "jats-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:58.821799"
+      }
     },
     {
       "id": "pone.0298888.ref026",
@@ -636,7 +846,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "",
-      "verified": "jats-verified"
+      "verified": "jats-verified",
+      "resolution": {
+        "status": "resolved",
+        "match_score": 1.0,
+        "matched_id": "10.3390/ijgi5060092",
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:09:58.795323"
+      }
     },
     {
       "id": "pone.0298888.ref027",
@@ -647,7 +864,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "",
-      "verified": "jats-verified"
+      "verified": "jats-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:58.900085"
+      }
     },
     {
       "id": "pone.0298888.ref028",
@@ -658,7 +882,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "",
-      "verified": "jats-verified"
+      "verified": "jats-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:59.037504"
+      }
     },
     {
       "id": "pone.0298888.ref029",
@@ -669,7 +900,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "",
-      "verified": "jats-verified"
+      "verified": "jats-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:59.157169"
+      }
     },
     {
       "id": "pone.0298888.ref030",
@@ -680,7 +918,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "",
-      "verified": "jats-verified"
+      "verified": "jats-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.4211,
+        "matched_id": null,
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:09:59.052917"
+      }
     },
     {
       "id": "pone.0298888.ref031",
@@ -691,7 +936,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "",
-      "verified": "jats-verified"
+      "verified": "jats-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:59.275223"
+      }
     },
     {
       "id": "pone.0298888.ref032",
@@ -702,7 +954,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "",
-      "verified": "jats-verified"
+      "verified": "jats-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:59.368026"
+      }
     },
     {
       "id": "pone.0298888.ref033",
@@ -713,7 +972,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "",
-      "verified": "jats-verified"
+      "verified": "jats-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:59.464406"
+      }
     },
     {
       "id": "pone.0298888.ref034",
@@ -724,7 +990,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "",
-      "verified": "jats-verified"
+      "verified": "jats-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:59.585676"
+      }
     },
     {
       "id": "pone.0298888.ref035",
@@ -735,7 +1008,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "",
-      "verified": "jats-verified"
+      "verified": "jats-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:59.706376"
+      }
     },
     {
       "id": "pone.0298888.ref036",
@@ -746,7 +1026,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "",
-      "verified": "jats-verified"
+      "verified": "jats-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.5634,
+        "matched_id": null,
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:09:59.871205"
+      }
     },
     {
       "id": "pone.0298888.ref037",
@@ -757,7 +1044,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "",
-      "verified": "jats-verified"
+      "verified": "jats-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:59.876703"
+      }
     },
     {
       "id": "pone.0298888.ref038",
@@ -768,7 +1062,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "",
-      "verified": "jats-verified"
+      "verified": "jats-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:59.903043"
+      }
     },
     {
       "id": "pone.0298888.ref039",
@@ -779,7 +1080,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "",
-      "verified": "jats-verified"
+      "verified": "jats-verified",
+      "resolution": {
+        "status": "resolved",
+        "match_score": 1.0,
+        "matched_id": "10.1109/tii.2022.3141783",
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:09:59.888829"
+      }
     },
     {
       "id": "pone.0298888.ref040",
@@ -790,7 +1098,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "",
-      "verified": "jats-verified"
+      "verified": "jats-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:10:00.140178"
+      }
     },
     {
       "id": "pone.0298888.ref041",
@@ -801,7 +1116,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "",
-      "verified": "jats-verified"
+      "verified": "jats-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:10:00.306650"
+      }
     },
     {
       "id": "pone.0298888.ref042",
@@ -812,7 +1134,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "",
-      "verified": "jats-verified"
+      "verified": "jats-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:10:00.318568"
+      }
     },
     {
       "id": "pone.0298888.ref043",
@@ -823,7 +1152,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "",
-      "verified": "jats-verified"
+      "verified": "jats-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:10:00.339612"
+      }
     },
     {
       "id": "pone.0298888.ref044",
@@ -834,7 +1170,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "",
-      "verified": "jats-verified"
+      "verified": "jats-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:10:00.566168"
+      }
     },
     {
       "id": "pone.0298888.ref045",
@@ -845,15 +1188,24 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "",
-      "verified": "jats-verified"
+      "verified": "jats-verified",
+      "resolution": {
+        "status": "resolved",
+        "match_score": 1.0,
+        "matched_id": "10.1016/j.pmcj.2021.101477",
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:10:00.668500"
+      }
     }
   ],
   "human_notes": {
     "problem_formulation": "",
     "methodology_evaluation": "",
     "findings_credibility": "",
-    "dissertation_gaps": ""
+    "dissertation_gaps": "",
+    "citation_role": ""
   },
+  "as_of": null,
   "sha256": "86130705c8191065df0db800eea930725995ccef8a101f5bf25d29992aae78a5",
-  "created_at": "2026-11-14T09:28:23.404455"
+  "created_at": "2026-11-14T10:09:08.666063"
 }

@@ -24,7 +24,7 @@
     "tool": "latexml-local",
     "tool_version": "LaTeXML-local",
     "source_uri": "https://arxiv.org/e-print/1706.03762",
-    "extracted_at": "2026-11-14T09:28:23.373731",
+    "extracted_at": "2026-11-14T10:09:08.648530",
     "per_part": {
       "metadata": {
         "tool": "latexml-local",
@@ -52,6 +52,41 @@
       }
     }
   },
+  "provenances": [
+    {
+      "path_used": "latex_source",
+      "tool": "latexml-local",
+      "tool_version": "LaTeXML-local",
+      "source_uri": "https://arxiv.org/e-print/1706.03762",
+      "extracted_at": "2026-11-14T10:09:08.648530",
+      "per_part": {
+        "metadata": {
+          "tool": "latexml-local",
+          "status": "extracted"
+        },
+        "sections": {
+          "tool": "latexml-local",
+          "status": "extracted"
+        },
+        "figures": {
+          "tool": "latexml-local",
+          "status": "extracted"
+        },
+        "tables": {
+          "tool": "latexml-local",
+          "status": "extracted"
+        },
+        "equations": {
+          "tool": "latexml-local",
+          "status": "extracted"
+        },
+        "references": {
+          "tool": "latexml-local",
+          "status": "extracted"
+        }
+      }
+    }
+  ],
   "abstract": "The dominant sequence transduction models are based on complex recurrent or convolutional neural networks that include an encoder and a decoder. The best performing models also connect the encoder and decoder through an attention mechanism. We propose a new simple network architecture, the Transformer, based solely on attention mechanisms, dispensing with recurrence and convolutions entirely. Experiments on two machine translation tasks show these models to be superior in quality while being more parallelizable and requiring significantly less time to train. Our model achieves 28.4 BLEU on the WMT 2014 English-to-German translation task, improving over the existing best results, including ensembles, by over 2 BLEU. On the WMT 2014 English-to-French translation task, our model establishes a new single-model state-of-the-art BLEU score of 41.8 after training for 3.5 days on eight GPUs, a small fraction of the training costs of the best models from the literature. We show that the Transformer generalizes well to other tasks by applying it successfully to English constituency parsing both with large and limited training data. % \\blfootnote{Code available at \\url{https://github.com/tensorflow/tensor2tensor}} %TODO(noam): update results for new models. %llion@: FAIR's paper seems to concentrate solely on the convolutional aspect of their model and have the attention as an after thought almost, this gives us a good opportunity to differentiate ourselves from their paper. %We are simpler in a number of ways and should have the simplicity as a big selling point: %\\begin{itemize} %\\item No convolutions %\\item No need for such careful initializations and %normalization. %\\item Simpler non-lineararities, they use the gated linear %units. %\\item Less layers? %\\end{itemize} %One thing we do more is that we have self attention. %Another selling point is the increased interpretability as %shown with the visualizations. Which comes from the %simplicity and use of only attentions.",
   "sections": [
     {
@@ -372,7 +407,14 @@
       "doi": null,
       "arxiv_id": "1607.06450",
       "raw": "Jimmy~Lei Ba, Jamie~Ryan Kiros, and Geoffrey~E Hinton. \\newblock Layer normalization. \\newblock {\\em arXiv preprint arXiv:1607.06450}, 2016.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:52.527356"
+      }
     },
     {
       "id": "bahdanau2014neural",
@@ -383,7 +425,14 @@
       "doi": null,
       "arxiv_id": "1409.0473",
       "raw": "Dzmitry Bahdanau, Kyunghyun Cho, and Yoshua Bengio. \\newblock Neural machine translation by jointly learning to align and translate. \\newblock {\\em CoRR}, abs/1409.0473, 2014.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:52.380735"
+      }
     },
     {
       "id": "DBLP:journals/corr/BritzGLL17",
@@ -394,7 +443,14 @@
       "doi": null,
       "arxiv_id": "1703.03906",
       "raw": "Denny Britz, Anna Goldie, Minh{-}Thang Luong, and Quoc~V. Le. \\newblock Massive exploration of neural machine translation architectures. \\newblock {\\em CoRR}, abs/1703.03906, 2017.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:52.527356"
+      }
     },
     {
       "id": "cheng2016long",
@@ -405,7 +461,14 @@
       "doi": null,
       "arxiv_id": "1601.06733",
       "raw": "Jianpeng Cheng, Li~Dong, and Mirella Lapata. \\newblock Long short-term memory-networks for machine reading. \\newblock {\\em arXiv preprint arXiv:1601.06733}, 2016.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "resolved",
+        "match_score": 0.95,
+        "matched_id": "10.18653/v1/d16-1053",
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:09:52.251598"
+      }
     },
     {
       "id": "cho2014learning",
@@ -416,7 +479,14 @@
       "doi": null,
       "arxiv_id": "1406.1078",
       "raw": "Kyunghyun Cho, Bart van Merrienboer, Caglar Gulcehre, Fethi Bougares, Holger Schwenk, and Yoshua Bengio. \\newblock Learning phrase representations using rnn encoder-decoder for statistical machine translation. \\newblock {\\em CoRR}, abs/1406.1078, 2014.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:52.528356"
+      }
     },
     {
       "id": "xception2016",
@@ -427,7 +497,14 @@
       "doi": null,
       "arxiv_id": "1610.02357",
       "raw": "Francois Chollet. \\newblock Xception: Deep learning with depthwise separable convolutions. \\newblock {\\em arXiv preprint arXiv:1610.02357}, 2016.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:52.721514"
+      }
     },
     {
       "id": "gruEval14",
@@ -438,7 +515,14 @@
       "doi": null,
       "arxiv_id": "1412.3555",
       "raw": "Junyoung Chung, {\\c{C}}aglar G{\\\"{u}}l{\\c{c}}ehre, Kyunghyun Cho, and Yoshua Bengio. \\newblock Empirical evaluation of gated recurrent neural networks on sequence modeling. \\newblock {\\em CoRR}, abs/1412.3555, 2014.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:53.009666"
+      }
     },
     {
       "id": "dyer-rnng:16",
@@ -449,7 +533,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Chris Dyer, Adhiguna Kuncoro, Miguel Ballesteros, and Noah~A. Smith. \\newblock Recurrent neural network grammars. \\newblock In {\\em Proc. of NAACL}, 2016.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:52.867457"
+      }
     },
     {
       "id": "JonasFaceNet2017",
@@ -460,7 +551,14 @@
       "doi": null,
       "arxiv_id": "1705.03122v2",
       "raw": "Jonas Gehring, Michael Auli, David Grangier, Denis Yarats, and Yann~N. Dauphin. \\newblock Convolutional sequence to sequence learning. \\newblock {\\em arXiv preprint arXiv:1705.03122v2}, 2017.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:53.104406"
+      }
     },
     {
       "id": "graves2013generating",
@@ -471,7 +569,14 @@
       "doi": null,
       "arxiv_id": "1308.0850",
       "raw": "Alex Graves. \\newblock Generating sequences with recurrent neural networks. \\newblock {\\em arXiv preprint arXiv:1308.0850}, 2013.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:53.109187"
+      }
     },
     {
       "id": "he2016deep",
@@ -482,7 +587,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Kaiming He, Xiangyu Zhang, Shaoqing Ren, and Jian Sun. \\newblock Deep residual learning for image recognition. \\newblock In {\\em Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition}, pages 770--778, 2016.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:53.175684"
+      }
     },
     {
       "id": "hochreiter2001gradient",
@@ -493,7 +605,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Sepp Hochreiter, Yoshua Bengio, Paolo Frasconi, and J{\\\"u}rgen Schmidhuber. \\newblock Gradient flow in recurrent nets: the difficulty of learning long-term dependencies, 2001.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:53.339255"
+      }
     },
     {
       "id": "hochreiter1997",
@@ -504,7 +623,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Sepp Hochreiter and J{\\\"u}rgen Schmidhuber. \\newblock Long short-term memory. \\newblock {\\em Neural computation}, 9(8):1735--1780, 1997.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:53.479857"
+      }
     },
     {
       "id": "huang-harper:2009:EMNLP",
@@ -515,7 +641,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Zhongqiang Huang and Mary Harper. \\newblock Self-training {PCFG} grammars with latent annotations across languages. \\newblock In {\\em Proceedings of the 2009 Conference on Empirical Methods in Natural Language Processing}, pages 832--841. ACL, August 2009.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:53.484207"
+      }
     },
     {
       "id": "jozefowicz2016exploring",
@@ -526,7 +659,14 @@
       "doi": null,
       "arxiv_id": "1602.02410",
       "raw": "Rafal Jozefowicz, Oriol Vinyals, Mike Schuster, Noam Shazeer, and Yonghui Wu. \\newblock Exploring the limits of language modeling. \\newblock {\\em arXiv preprint arXiv:1602.02410}, 2016.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:53.713004"
+      }
     },
     {
       "id": "extendedngpu",
@@ -537,7 +677,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "{\\L}ukasz Kaiser and Samy Bengio. \\newblock Can active memory replace attention? \\newblock In {\\em Advances in Neural Information Processing Systems, ({NIPS})}, 2016.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:53.570983"
+      }
     },
     {
       "id": "neural_gpu",
@@ -548,7 +695,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "\\L{}ukasz Kaiser and Ilya Sutskever. \\newblock Neural {GPU}s learn algorithms. \\newblock In {\\em International Conference on Learning Representations ({ICLR})}, 2016.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:53.793471"
+      }
     },
     {
       "id": "NalBytenet2017",
@@ -559,7 +713,14 @@
       "doi": null,
       "arxiv_id": "1610.10099v2",
       "raw": "Nal Kalchbrenner, Lasse Espeholt, Karen Simonyan, Aaron van~den Oord, Alex Graves, and Koray Kavukcuoglu. \\newblock Neural machine translation in linear time. \\newblock {\\em arXiv preprint arXiv:1610.10099v2}, 2017.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:54.054379"
+      }
     },
     {
       "id": "structuredAttentionNetworks",
@@ -570,7 +731,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Yoon Kim, Carl Denton, Luong Hoang, and Alexander~M. Rush. \\newblock Structured attention networks. \\newblock In {\\em International Conference on Learning Representations}, 2017.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:53.925227"
+      }
     },
     {
       "id": "kingma2014adam",
@@ -581,7 +749,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Diederik Kingma and Jimmy Ba. \\newblock Adam: A method for stochastic optimization. \\newblock In {\\em ICLR}, 2015.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:54.045640"
+      }
     },
     {
       "id": "Kuchaiev2017Factorization",
@@ -592,7 +767,14 @@
       "doi": null,
       "arxiv_id": "1703.10722",
       "raw": "Oleksii Kuchaiev and Boris Ginsburg. \\newblock Factorization tricks for {LSTM} networks. \\newblock {\\em arXiv preprint arXiv:1703.10722}, 2017.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.2239,
+        "matched_id": null,
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:09:54.011919"
+      }
     },
     {
       "id": "lin2017structured",
@@ -603,7 +785,14 @@
       "doi": null,
       "arxiv_id": "1703.03130",
       "raw": "Zhouhan Lin, Minwei Feng, Cicero Nogueira~dos Santos, Mo~Yu, Bing Xiang, Bowen Zhou, and Yoshua Bengio. \\newblock A structured self-attentive sentence embedding. \\newblock {\\em arXiv preprint arXiv:1703.03130}, 2017.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:54.417888"
+      }
     },
     {
       "id": "multiseq2seq",
@@ -614,7 +803,14 @@
       "doi": null,
       "arxiv_id": "1511.06114",
       "raw": "Minh-Thang Luong, Quoc~V. Le, Ilya Sutskever, Oriol Vinyals, and Lukasz Kaiser. \\newblock Multi-task sequence to sequence learning. \\newblock {\\em arXiv preprint arXiv:1511.06114}, 2015.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:54.612776"
+      }
     },
     {
       "id": "luong2015effective",
@@ -625,7 +821,14 @@
       "doi": null,
       "arxiv_id": "1508.04025",
       "raw": "Minh-Thang Luong, Hieu Pham, and Christopher~D Manning. \\newblock Effective approaches to attention-based neural machine translation. \\newblock {\\em arXiv preprint arXiv:1508.04025}, 2015.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:54.583207"
+      }
     },
     {
       "id": "marcus1993building",
@@ -636,7 +839,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Mitchell~P Marcus, Mary~Ann Marcinkiewicz, and Beatrice Santorini. \\newblock Building a large annotated corpus of english: The penn treebank. \\newblock {\\em Computational linguistics}, 19(2):313--330, 1993.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.4762,
+        "matched_id": null,
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:09:54.253218"
+      }
     },
     {
       "id": "mcclosky-etAl:2006:NAACL",
@@ -647,7 +857,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "David McClosky, Eugene Charniak, and Mark Johnson. \\newblock Effective self-training for parsing. \\newblock In {\\em Proceedings of the Human Language Technology Conference of the NAACL, Main Conference}, pages 152--159. ACL, June 2006.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:54.791251"
+      }
     },
     {
       "id": "decomposableAttnModel",
@@ -658,7 +875,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Ankur Parikh, Oscar Täckström, Dipanjan Das, and Jakob Uszkoreit. \\newblock A decomposable attention model. \\newblock In {\\em Empirical Methods in Natural Language Processing}, 2016.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:54.812477"
+      }
     },
     {
       "id": "paulus2017deep",
@@ -669,7 +893,14 @@
       "doi": null,
       "arxiv_id": "1705.04304",
       "raw": "Romain Paulus, Caiming Xiong, and Richard Socher. \\newblock A deep reinforced model for abstractive summarization. \\newblock {\\em arXiv preprint arXiv:1705.04304}, 2017.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:55.026328"
+      }
     },
     {
       "id": "petrov-EtAl:2006:ACL",
@@ -680,7 +911,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Slav Petrov, Leon Barrett, Romain Thibaux, and Dan Klein. \\newblock Learning accurate, compact, and interpretable tree annotation. \\newblock In {\\em Proceedings of the 21st International Conference on Computational Linguistics and 44th Annual Meeting of the ACL}, pages 433--440. ACL, July 2006.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:55.081773"
+      }
     },
     {
       "id": "press2016using",
@@ -691,7 +929,14 @@
       "doi": null,
       "arxiv_id": "1608.05859",
       "raw": "Ofir Press and Lior Wolf. \\newblock Using the output embedding to improve language models. \\newblock {\\em arXiv preprint arXiv:1608.05859}, 2016.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:55.187817"
+      }
     },
     {
       "id": "sennrich2015neural",
@@ -702,7 +947,14 @@
       "doi": null,
       "arxiv_id": "1508.07909",
       "raw": "Rico Sennrich, Barry Haddow, and Alexandra Birch. \\newblock Neural machine translation of rare words with subword units. \\newblock {\\em arXiv preprint arXiv:1508.07909}, 2015.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:55.361217"
+      }
     },
     {
       "id": "shazeer2017outrageously",
@@ -713,7 +965,14 @@
       "doi": null,
       "arxiv_id": "1701.06538",
       "raw": "Noam Shazeer, Azalia Mirhoseini, Krzysztof Maziarz, Andy Davis, Quoc Le, Geoffrey Hinton, and Jeff Dean. \\newblock Outrageously large neural networks: The sparsely-gated mixture-of-experts layer. \\newblock {\\em arXiv preprint arXiv:1701.06538}, 2017.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:55.370969"
+      }
     },
     {
       "id": "srivastava2014dropout",
@@ -724,7 +983,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Nitish Srivastava, Geoffrey~E Hinton, Alex Krizhevsky, Ilya Sutskever, and Ruslan Salakhutdinov. \\newblock Dropout: a simple way to prevent neural networks from overfitting. \\newblock {\\em Journal of Machine Learning Research}, 15(1):1929--1958, 2014.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:55.505600"
+      }
     },
     {
       "id": "sukhbaatar2015",
@@ -735,7 +1001,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Sainbayar Sukhbaatar, Arthur Szlam, Jason Weston, and Rob Fergus. \\newblock End-to-end memory networks. \\newblock In C.~Cortes, N.~D. Lawrence, D.~D. Lee, M.~Sugiyama, and R.~Garnett, editors, {\\em Advances in Neural Information Processing Systems 28}, pages 2440--2448. Curran Associates, Inc., 2015.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:55.461321"
+      }
     },
     {
       "id": "sutskever14",
@@ -746,7 +1019,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Ilya Sutskever, Oriol Vinyals, and Quoc~VV Le. \\newblock Sequence to sequence learning with neural networks. \\newblock In {\\em Advances in Neural Information Processing Systems}, pages 3104--3112, 2014.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:55.663303"
+      }
     },
     {
       "id": "DBLP:journals/corr/SzegedyVISW15",
@@ -757,7 +1037,14 @@
       "doi": null,
       "arxiv_id": "1512.00567",
       "raw": "Christian Szegedy, Vincent Vanhoucke, Sergey Ioffe, Jonathon Shlens, and Zbigniew Wojna. \\newblock Rethinking the inception architecture for computer vision. \\newblock {\\em CoRR}, abs/1512.00567, 2015.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:56.025387"
+      }
     },
     {
       "id": "KVparse15",
@@ -768,7 +1055,14 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "{Vinyals {\\&} Kaiser}, Koo, Petrov, Sutskever, and Hinton. \\newblock Grammar as a foreign language. \\newblock In {\\em Advances in Neural Information Processing Systems}, 2015.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.3817,
+        "matched_id": null,
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:09:55.665303"
+      }
     },
     {
       "id": "wu2016google",
@@ -779,7 +1073,14 @@
       "doi": null,
       "arxiv_id": "1609.08144",
       "raw": "Yonghui Wu, Mike Schuster, Zhifeng Chen, Quoc~V Le, Mohammad Norouzi, Wolfgang Macherey, Maxim Krikun, Yuan Cao, Qin Gao, Klaus Macherey, et~al. \\newblock Google's neural machine translation system: Bridging the gap between human and machine translation. \\newblock {\\em arXiv preprint arXiv:1609.08144}, 2016.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:56.041163"
+      }
     },
     {
       "id": "DBLP:journals/corr/ZhouCWLX16",
@@ -790,7 +1091,14 @@
       "doi": null,
       "arxiv_id": "1606.04199",
       "raw": "Jie Zhou, Ying Cao, Xuguang Wang, Peng Li, and Wei Xu. \\newblock Deep recurrent models with fast-forward connections for neural machine translation. \\newblock {\\em CoRR}, abs/1606.04199, 2016.",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.0,
+        "matched_id": null,
+        "matched_service": null,
+        "resolved_at": "2026-11-14T10:09:56.080891"
+      }
     },
     {
       "id": "zhu-EtAl:2013:ACL",
@@ -801,15 +1109,24 @@
       "doi": null,
       "arxiv_id": null,
       "raw": "Muhua Zhu, Yue Zhang, Wenliang Chen, Min Zhang, and Jingbo Zhu. \\newblock Fast and accurate shift-reduce constituent parsing. \\newblock In {\\em Proceedings of the 51st Annual Meeting of the ACL (Volume 1: Long Papers)}, pages 434--443. ACL, August 2013. \\end{thebibliography} %\\newpage \\pagebreak \\section*{Attention Visualizations}\\label{sec:viz-att} \\begin{figure*}[h] {\\includegraphics[width=\\textwidth, trim=0 0 0 36, clip]{./vis/making_more_difficult5_new.pdf}} \\caption{An example of the attention mechanism following long-distance dependencies in the encoder self-attention in layer 5 of 6. Many of the attention heads attend to a distant dependency of the verb `making', completing the phrase `making...more difficult'. Attentions here shown only for the word `making'. Different colors represent different heads. Best viewed in color.} \\end{figure*} \\begin{figure*} {\\includegraphics[width=\\textwidth, trim=0 0 0 45, clip]{./vis/anaphora_resolution_new.pdf}} {\\includegraphics[width=\\textwidth, trim=0 0 0 37, clip]{./vis/anaphora_resolution2_new.pdf}} \\caption{Two attention heads, also in layer 5 of 6, apparently involved in anaphora resolution. Top: Full attentions for head 5. Bottom: Isolated attentions from just the word `its' for attention heads 5 and 6. Note that the attentions are very sharp for this word.} \\end{figure*} \\begin{figure*} {\\includegraphics[width=\\textwidth, trim=0 0 0 36, clip]{./vis/attending_to_head_new.pdf}} {\\includegraphics[width=\\textwidth, trim=0 0 0 36, clip]{./vis/attending_to_head2_new.pdf}} \\caption{Many of the attention heads exhibit behaviour that seems related to the structure of the sentence. We give two such examples above, from two different heads from the encoder self-attention at layer 5 of 6. The heads clearly learned to perform different tasks.} \\end{figure*} %\\appendix %\\newpage %\\pagebreak \\section*{Two Feed-Forward Layers = Attention over Parameters}\\label{sec:parameter_attention} In addition to attention layers, our model contains position-wise feed-forward networks (Section \\ref{sec:ffn}), which consist of two linear transformations with a ReLU activation in between. In fact, these networks too can be seen as a form of attention. Compare the formula for such a network with the formula for a simple dot-product attention layer (biases and scaling factors omitted): \\begin{align*} FFN(x, W_1, W_2) = ReLU(xW_1)W_2 \\\\ A(q, K, V) = Softmax(qK^T)V \\end{align*} Based on the similarity of these formulae, the two-layer feed-forward network can be seen as a kind of attention, where the keys and values are the rows of the trainable parameter matrices $W_1$ and $W_2$, and where we use ReLU instead of Softmax in the compatibility function. %the compatablity function is $compat(q, k_i) = ReLU(q \\cdot k_i)$ instead of $Softmax(qK_T)_i$. Given this similarity, we experimented with replacing the position-wise feed-forward networks with attention layers similar to the ones we use everywhere else our model. The multi-head-attention-over-parameters sublayer is identical to the multi-head attention described in \\ref{sec:multihead}, except that the \"keys\" and \"values\" inputs to each attention head are trainable model parameters, as opposed to being linear projections of a previous layer. These parameters are scaled up by a factor of $\\sqrt{d_{model}}$ in order to be more similar to activations. In our first experiment, we replaced each position-wise feed-forward network with a multi-head-attention-over-parameters sublayer with $h_p=8$ heads, key-dimensionality $d_{pk}=64$, and value-dimensionality $d_{pv}=64$, using $n_p=1536$ key-value pairs for each attention head. The sublayer has a total of $2097152$ parameters, including the parameters in the query projection and the output projection. This matches the number of parameters in the position-wise feed-forward network that we replaced. While the theoretical amount of computation is also the same, in practice, the attention version caused the step times to be about 30\\% longer. In our second experiment, we used $h_p=8$ heads, and $n_p=512$ key-value pairs for each attention head, again matching the total number of parameters in the base model. Results for the first experiment were slightly worse than for the base model, and results for the second experiment were slightly better, see Table~\\ref{tab:parameter_attention}. \\begin{table}[h] \\caption{Replacing the position-wise feed-forward networks with multihead-attention-over-parameters produces similar results to the base model. All metrics are on the English-to-German translation development set, newstest2013.} \\label{tab:parameter_attention} \\begin{center} \\vspace{-2mm} %\\scalebox{1.0}{ \\begin{tabular}{c|cccccc|cccc} \\hline\\rule{0pt}{2.0ex} & \\multirow{2}{*}{$\\dmodel$} & \\multirow{2}{*}{$\\dff$} & \\multirow{2}{*}{$h_p$} & \\multirow{2}{*}{$d_{pk}$} & \\multirow{2}{*}{$d_{pv}$} & \\multirow{2}{*}{$n_p$} & PPL & BLEU & params & training\\\\ & & & & & & & (dev) & (dev) & $\\times10^6$ & time \\\\ \\hline\\rule{0pt}{2.0ex} base & 512 & 2048 & & & & & 4.92 & 25.8 & 65 & 12 hours\\\\ \\hline\\rule{0pt}{2.0ex} AOP$_1$ & 512 & & 8 & 64 & 64 & 1536 & 4.92& 25.5 & 65 & 16 hours\\\\ AOP$_2$ & 512 & & 16 & 64 & 64 & 512 & \\textbf{4.86} & \\textbf{25.9} & 65 & 16 hours \\\\ \\hline \\end{tabular} %} \\end{center} \\end{table} %\\section*{Justfication of the Scaling Factor in Dot-product Attention} In Section~\\ref{sec:scaled-dot-prod}, we introduced Scaled dot-product attention, where we scale down the dot products by $\\sqrt{d_k}$. In this section, we will give a rough justification of this scaling factor. If we assume that $q$ and $k$ are $d_k$-dimensional vectors whose components are independent random variables with mean $0$ and variance $1$, then their dot product, $q \\cdot k = \\sum_{i=1}^{d_k} u_iv_i$, has mean $0$ and variance $d_k$. Since we would prefer these values to have variance $1$, we divide by $\\sqrt{d_k}$. %For any two $d_k$-dimension vectors $\\vec{u}$ and $\\vec{v}$, whose dimensions are independent, the mean and variance of the dot product will be the summation of the product of means and variances over the dimensions, that is, $E[<\\vec{u},\\vec{v}>] = \\sum_{i=1}^{d_k} E[u_i]E[v_i]$, and $E[(<\\vec{u},\\vec{v}>-E[<\\vec{u},\\vec{v}>])^2] = \\sum_{i=1}^{d_k} E[({u_i}-E[u_i])^2] E[({v_i}-E[v_i])^2]$. Layer norm encourages the mean and variance of each dimension to be $0$ and $1$ respectively, resultig in the dot product having mean $0$ and $d_k$ respectively. Therefore, scaling by $\\sqrt{d_k}$ encourages the logits to be normalized as well. \\iffalse In this section, we will give a rough justification of this scaling factor, that is, we will show that for any two vectors, $\\vec{u}$ and $\\vec{v}$, whose variance and mean are $1$ and $0$ respectively, the variance and the mean of the dot product are $d_k$ and $0$ respectively. Therefore, dividing by $\\sqrt{d_k}$ ensures that each component of the attention logits are normalized. The repeated layer norms at each transformer layer encourage $\\vec{u}$ and $\\vec{v}$ to be normalized. \\begin{align*} E[<\\vec{u},\\vec{v}>] & = \\sum_k E[u_i v_i] &\\text{By linearity of expectation} \\\\ & =\\sum_k E[u_i]E[v_i] & \\text{Assuming independence} \\\\ & = 0 \\end{align*} \\begin{align*} E[(<\\vec{u},\\vec{v}>-E[<\\vec{u},\\vec{v}>])^2] & = E[(<\\vec{u},\\vec{v}>)^2] - E[<\\vec{u},\\vec{v}>]^2 \\\\ & = E[(<\\vec{u},\\vec{v}>)^2] \\\\ & = \\sum_k E[{u_i}^2] E[{v_i}^2] &\\text{By linearity of expectation and indepedence} \\\\ & = d_k \\end{align*} \\fi \\end{document}",
-      "verified": "latexml-verified"
+      "verified": "latexml-verified",
+      "resolution": {
+        "status": "not_found",
+        "match_score": 0.3687,
+        "matched_id": null,
+        "matched_service": "crossref",
+        "resolved_at": "2026-11-14T10:09:56.028393"
+      }
     }
   ],
   "human_notes": {
     "problem_formulation": "",
     "methodology_evaluation": "",
     "findings_credibility": "",
-    "dissertation_gaps": ""
+    "dissertation_gaps": "",
+    "citation_role": ""
   },
+  "as_of": null,
   "sha256": "2e7a7d9ee2520d22eb23dae0cb148e167be02a30d6cb3f11b1c67723194339c6",
-  "created_at": "2026-11-14T09:28:23.373731"
+  "created_at": "2026-11-14T10:09:08.648530"
 }

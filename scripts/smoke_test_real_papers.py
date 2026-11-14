@@ -9,7 +9,7 @@ Executes extraction across:
   3. Path c: Real PDF-only journal paper (PLOS ONE 10.1371/journal.pone.0298888)
      - Tests GROBID unreachable failure (fails loudly without fallback).
      - Re-runs with authoritative TEI extraction, verifying complete authors and references.
-  4. Path d: Real DOI/metadata-only (ACM SIGCSE 10.1145/3491101.3503719)
+  4. Path e: Real DOI/metadata-only (CHI 2022 EA workshop 10.1145/3491101.3503719)
      - Crossref polite pool, metadata-only (no body).
 
 Saves output records in `tests/real/` (PDFs are gitignored; JSON records are tracked).
@@ -24,12 +24,13 @@ import re
 import hashlib
 import requests
 import xml.etree.ElementTree as ET
-from typing import Dict, Any, Optional, List
+from typing import Dict, Any, Optional, List, Tuple
 
 WORKSPACE_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if WORKSPACE_ROOT not in sys.path:
     sys.path.insert(0, WORKSPACE_ROOT)
 
+from scripts.models import PaperRecord
 from scripts.source_router import (
     ArxivHtmlPlugin,
     LatexSourcePlugin,
@@ -38,6 +39,10 @@ from scripts.source_router import (
     CrossrefOpenAlexPlugin,
     SourceRouter,
     TEI_CACHE_DIR,
+)
+from scripts.reference_resolver import (
+    ReferenceResolver,
+    resolve_paper_references,
 )
 from scripts.models import PaperRecord
 
@@ -261,7 +266,7 @@ def run_path_d_grobid_pdf() -> Optional[PaperRecord]:
 
 def run_path_e_doi_metadata() -> PaperRecord:
     print("\n" + "=" * 60)
-    print("Path e: Real DOI-Only Metadata (ACM SIGCSE - 10.1145/3491101.3503719)")
+    print("Path e: Real DOI-Only Metadata (CHI 2022 EA workshop - 10.1145/3491101.3503719)")
     print("=" * 60)
     plugin = CrossrefOpenAlexPlugin()
     paper_input = {
@@ -292,12 +297,97 @@ def run_path_e_doi_metadata() -> PaperRecord:
     return rec
 
 
+def resolve_and_report_smoke_papers(papers: List[Tuple[str, str, Optional[PaperRecord]]]) -> None:
+    print("\n" + "=" * 60)
+    print("Reference Resolver: Smoke Paper Resolution & Verification")
+    print("=" * 60)
+    resolver = ReferenceResolver()
+
+    file_map = {
+        "path_a": "path_a_arxiv_html.json",
+        "path_b": "path_b_latex_source.json",
+        "path_c": "path_c_publisher_xml.json",
+        "path_d": "path_c_grobid_pdf.json",
+        "path_e": "path_d_doi_metadata.json"
+    }
+
+    summary = []
+
+    for path_key, paper_title, rec in papers:
+        # If record is None locally (e.g. offline GROBID), try loading existing saved file
+        if rec is None:
+            fname = file_map.get(path_key)
+            if fname:
+                fp_path = os.path.join(REAL_DIR, fname)
+                if os.path.exists(fp_path):
+                    try:
+                        with open(fp_path, "r", encoding="utf-8") as fp:
+                            rec = PaperRecord.from_dict(json.load(fp))
+                    except Exception:
+                        pass
+
+        if not rec:
+            print(f"\nSkipping [{path_key}] (no record available locally).")
+            continue
+
+        print(f"\nResolving references for [{path_key}] {rec.title[:60]} ({len(rec.references)} refs)...")
+        resolve_paper_references(rec, resolver=resolver, max_workers=5)
+
+        total = len(rec.references)
+        resolved = sum(1 for r in rec.references if r.resolution and r.resolution.status == "resolved")
+        ambiguous = sum(1 for r in rec.references if r.resolution and r.resolution.status == "ambiguous")
+        not_found = sum(1 for r in rec.references if r.resolution and r.resolution.status == "not_found")
+        rate = (resolved / total * 100) if total > 0 else 0.0
+
+        summary.append({
+            "path": path_key,
+            "title": rec.title[:35] + ("..." if len(rec.title) > 35 else ""),
+            "total": total,
+            "resolved": resolved,
+            "ambiguous": ambiguous,
+            "not_found": not_found,
+            "rate": rate
+        })
+
+        print(f"  -> Total: {total}, Resolved: {resolved} ({rate:.1f}%), Ambiguous: {ambiguous}, Not Found: {not_found}")
+
+        # Update saved JSON record
+        fname = file_map.get(path_key)
+        if fname:
+            out_p = os.path.join(REAL_DIR, fname)
+            with open(out_p, "w", encoding="utf-8") as fp:
+                json.dump(rec.to_dict(), fp, indent=2, ensure_ascii=False)
+
+    print("\n" + "=" * 78)
+    print(f"{'Path':<8} | {'Paper Title':<38} | {'Refs':<5} | {'Resolved':<8} | {'Ambig':<5} | {'Rate':<7}")
+    print("-" * 78)
+    tot_refs = sum(s["total"] for s in summary)
+    tot_res = sum(s["resolved"] for s in summary)
+    tot_amb = sum(s["ambiguous"] for s in summary)
+    for s in summary:
+        print(f"{s['path']:<8} | {s['title']:<38} | {s['total']:<5} | {s['resolved']:<8} | {s['ambiguous']:<5} | {s['rate']:<6.1f}%")
+    print("-" * 78)
+    tot_rate = (tot_res / tot_refs * 100) if tot_refs > 0 else 0.0
+    print(f"{'TOTAL':<8} | {'Across all processed papers':<38} | {tot_refs:<5} | {tot_res:<8} | {tot_amb:<5} | {tot_rate:<6.1f}%")
+    print("=" * 78)
+
+
 if __name__ == "__main__":
     r_a = run_path_a_arxiv_html()
     r_b = run_path_b_latex_source()
     r_c = run_path_c_publisher_xml()
     r_d = run_path_d_grobid_pdf()
     r_e = run_path_e_doi_metadata()
+
+    papers_to_resolve = [
+        ("path_a", "Gemini 1.5", r_a),
+        ("path_b", "Attention Is All You Need", r_b),
+        ("path_c", "PLOS ONE Adversarial AI", r_c),
+        ("path_d", "SimCLR PMLR", r_d),
+        ("path_e", "CHI 2022 EA GenAICHI", r_e)
+    ]
+    resolve_and_report_smoke_papers(papers_to_resolve)
+
     print("\n" + "=" * 60)
-    print("Real-paper smoke tests completed successfully!")
+    print("Real-paper smoke tests and reference resolution completed successfully!")
     print("=" * 60)

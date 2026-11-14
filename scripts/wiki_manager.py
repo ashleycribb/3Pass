@@ -261,6 +261,10 @@ updated_at: "{datetime.now().isoformat()}"
 ### Gaps & Questions for Dissertation
 {rec.human_notes.get('dissertation_gaps') or '*(Researcher notes go here)*'}
 
+### Citation Role (Human Only)
+<!-- Allowed roles: baseline | dataset | method | metric | background -->
+{rec.human_notes.get('citation_role') or '*(Human-only tag: baseline | dataset | method | metric | background)*'}
+
 ---
 *Return to [[index|Corpus Navigation Portal]] | View [[gaps|Literature Gap Register]] | View [[theories|Theoretical Frameworks]]*
 """

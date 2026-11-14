@@ -44,16 +44,25 @@ class EquationRecord:
     verified: str = "verified"
 
 @dataclass
+class ReferenceResolution:
+    status: str = "not_found"  # "resolved" | "ambiguous" | "not_found"
+    match_score: float = 0.0
+    matched_id: Optional[str] = None
+    matched_service: Optional[str] = None  # "doi" | "crossref" | "openalex" | "semanticscholar"
+    resolved_at: Optional[str] = None
+
+@dataclass
 class ReferenceRecord:
     id: str
     title: str
-    authors: List[str] = field(default_factory=list)
+    authors: Any = field(default_factory=list)
     venue: str = ""
     year: Optional[int] = None
     doi: Optional[str] = None
     arxiv_id: Optional[str] = None
     raw: str = ""
     verified: str = "verified"
+    resolution: Optional[ReferenceResolution] = None
 
 @dataclass
 class PartProvenance:
@@ -82,20 +91,29 @@ class PaperRecord:
     urls: Dict[str, str] = field(default_factory=dict)
     completeness: str = "full"  # "full" | "pdf-extracted" | "metadata-only"
     provenance: Optional[RecordProvenance] = None
+    provenances: List[RecordProvenance] = field(default_factory=list)
     abstract: str = ""
     sections: List[SectionRecord] = field(default_factory=list)
     figures: List[FigureRecord] = field(default_factory=list)
     tables: List[TableRecord] = field(default_factory=list)
     equations: List[EquationRecord] = field(default_factory=list)
     references: List[ReferenceRecord] = field(default_factory=list)
-    human_notes: Dict[str, str] = field(default_factory=lambda: {
+    human_notes: Dict[str, Any] = field(default_factory=lambda: {
         "problem_formulation": "",
         "methodology_evaluation": "",
         "findings_credibility": "",
-        "dissertation_gaps": ""
+        "dissertation_gaps": "",
+        "citation_role": ""  # human-only: baseline | dataset | method | metric | background
     })
+    as_of: Optional[str] = None  # Session snapshot date for Explorer searches
     sha256: Optional[str] = None
     created_at: str = field(default_factory=lambda: datetime.now().isoformat())
+
+    def __post_init__(self):
+        if self.provenance and not self.provenances:
+            self.provenances = [self.provenance]
+        if "citation_role" not in self.human_notes:
+            self.human_notes["citation_role"] = ""
 
     def to_dict(self) -> Dict[str, Any]:
         return asdict(self)
@@ -105,11 +123,43 @@ class PaperRecord:
         prov_data = data.get("provenance")
         prov = RecordProvenance(**prov_data) if prov_data and isinstance(prov_data, dict) else None
 
-        sections = [SectionRecord(**s) for s in data.get("sections", [])]
-        figures = [FigureRecord(**f) for f in data.get("figures", [])]
-        tables = [TableRecord(**t) for t in data.get("tables", [])]
-        equations = [EquationRecord(**e) for e in data.get("equations", [])]
-        references = [ReferenceRecord(**r) for r in data.get("references", [])]
+        provenances_data = data.get("provenances", [])
+        provenances = []
+        for p in provenances_data:
+            if isinstance(p, dict):
+                provenances.append(RecordProvenance(**p))
+            elif isinstance(p, RecordProvenance):
+                provenances.append(p)
+        if prov and prov not in provenances:
+            provenances.append(prov)
+
+        sections = [SectionRecord(**s) if isinstance(s, dict) else s for s in data.get("sections", [])]
+        figures = [FigureRecord(**f) if isinstance(f, dict) else f for f in data.get("figures", [])]
+        tables = [TableRecord(**t) if isinstance(t, dict) else t for t in data.get("tables", [])]
+        equations = [EquationRecord(**e) if isinstance(e, dict) else e for e in data.get("equations", [])]
+
+        references = []
+        for r in data.get("references", []):
+            if isinstance(r, dict):
+                r_dict = dict(r)
+                res_data = r_dict.get("resolution")
+                if res_data and isinstance(res_data, dict):
+                    r_dict["resolution"] = ReferenceResolution(**res_data)
+                elif isinstance(res_data, ReferenceResolution):
+                    r_dict["resolution"] = res_data
+                references.append(ReferenceRecord(**r_dict))
+            elif isinstance(r, ReferenceRecord):
+                references.append(r)
+
+        hn = {
+            "problem_formulation": "",
+            "methodology_evaluation": "",
+            "findings_credibility": "",
+            "dissertation_gaps": "",
+            "citation_role": ""
+        }
+        if data.get("human_notes") and isinstance(data["human_notes"], dict):
+            hn.update(data["human_notes"])
 
         return cls(
             source_id=data["source_id"],
@@ -122,18 +172,15 @@ class PaperRecord:
             urls=data.get("urls", {}),
             completeness=data.get("completeness", "full"),
             provenance=prov,
+            provenances=provenances,
             abstract=data.get("abstract", ""),
             sections=sections,
             figures=figures,
             tables=tables,
             equations=equations,
             references=references,
-            human_notes=data.get("human_notes", {
-                "problem_formulation": "",
-                "methodology_evaluation": "",
-                "findings_credibility": "",
-                "dissertation_gaps": ""
-            }),
+            human_notes=hn,
+            as_of=data.get("as_of"),
             sha256=data.get("sha256"),
             created_at=data.get("created_at", datetime.now().isoformat())
         )
