@@ -1,0 +1,42 @@
+\documentclass{article}
+\title{Formal Proof Verification in Undergraduate Mathematics}
+\author{Carol Professor \and Dave Mentor}
+\date{2024}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Formal proof assistants improve logical rigor and student verification in undergraduate proof writing.
+\end{abstract}
+
+\section{Introduction}
+Learning mathematical proof construction requires continuous feedback and error localization.
+
+\begin{equation}
+\forall x \in \mathbb{R}, \quad f(x) \ge 0 \implies \int_a^b f(x) \, dx \ge 0
+\end{equation}
+
+\begin{figure}
+\centering
+\includegraphics{proof_dag.png}
+\caption{Proof dependency acyclic graph generated via Lean 4.}
+\end{figure}
+
+\section{Empirical Evaluation}
+We evaluated student proof submissions across three semesters.
+
+\begin{table}
+\caption{Student proof success rates before and after tool deployment.}
+\begin{tabular}{|l|c|}
+Semester & Success \\
+Fall 2023 & 68\% \\
+Spring 2024 & 89\% \\
+\end{tabular}
+\end{table}
+
+\begin{thebibliography}{99}
+\bibitem{knuth84} D. E. Knuth (1984). The TeXbook. Addison-Wesley. 10.1000/knuth84.
+\end{thebibliography}
+
+\end{document}

@@ -1,0 +1,44 @@
+{
+  "title": [
+    "Algorithmic Scaffolding in Higher Education: A Crossref Registered Record"
+  ],
+  "author": [
+    {
+      "given": "Frank",
+      "family": "Scientist",
+      "sequence": "first"
+    },
+    {
+      "given": "Grace",
+      "family": "Hopper",
+      "sequence": "additional"
+    }
+  ],
+  "issued": {
+    "date-parts": [
+      [
+        2024,
+        5,
+        12
+      ]
+    ]
+  },
+  "DOI": "10.1145/3491101.3503719",
+  "URL": "http://dx.doi.org/10.1145/3491101.3503719",
+  "abstract": "<jats:p>An empirical assessment of algorithmic scaffolding without automated grading intervention.</jats:p>",
+  "link": [
+    {
+      "URL": "https://dl.acm.org/doi/pdf/10.1145/3491101.3503719",
+      "content-type": "application/pdf"
+    }
+  ],
+  "reference": [
+    {
+      "key": "ref1",
+      "article-title": "Scaffolding Theory Revisited",
+      "author": "Wood et al.",
+      "year": "1976",
+      "DOI": "10.1111/j.1469-7610.1976.tb00381.x"
+    }
+  ]
+}

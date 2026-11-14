@@ -1,0 +1,6 @@
+# 3Pass Research Corpus: Intake Log
+
+Append-only ledger of source routing, extraction, and wiki synchronization events.
+
+- `[2026-11-13 19:33:40]` SYNC_ALL synced 287 draft pages with empty researcher appraisal sections.
+- `[2026-11-13 19:44:12]` SYNC_ALL synced 287 draft pages with empty researcher appraisal sections.

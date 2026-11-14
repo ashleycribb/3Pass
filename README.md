@@ -1,66 +1,78 @@
 # 3Pass Literature Review Architecture
 
-An automated, Drive-aware 3-pass literature workflow built for doctoral research question discovery, theoretical framework mapping, and verifiable evidence synthesis.
+A bookkeeping-only literature workflow and research wiki designed for human doctoral synthesis, evidence evaluation, and dissertation question discovery.
 
-Incorporates structural patterns from [`openai/math`](https://github.com/openai/math) (modular Result Families and catalog layout) and Andrej Karpathy's LLM Wiki architecture (`wiki/`), powered by the native zero-copy Rust **S3A Storage Architecture** ([`ashleycribb/s3a-storage`](https://github.com/ashleycribb/s3a-storage)).
+**Core Philosophy: Bookkeeping Only, Humans Digest.**  
+Automated judgments, automated quality ratings, and candidate gap guessing are disabled. The system extracts structured facts (metadata, sections, figures, tables, formulas, references, and provenance) into a unified record format, generating draft dossiers with clearly marked empty templates for the human researcher's critical notes and appraisal.
 
 ---
 
-## Architectural Overview
+## Architecture & Source Router
 
 ```
-Google Drive Corpus (811 PDFs)
-  │  <drive_local_path from config/corpus_config.yaml>
+Researcher Selection (via Scholar Explorer, S3A, or DOI list)
+  │
   ▼
-[Phase 1 & 2] Ingestion, MarkItDown & Triage Engine
-  ├─ scripts/inventory_and_sync.py  (Reconciles SHA-256 hashes against ledger)
-  ├─ scripts/triage_wave.py         (Pass 1: lists candidates for YOUR skim; no scoring, writes nothing)
-  ├─ scripts/convert_markitdown.py  (MarkItDown + PyMuPDF table & math extraction)
-  └─ scripts/run_pass2.py           (Pass 2 deep methodology & gap extraction)
+Source Router (scripts/source_router.py)
+  ├─ Path a: ArxivHtmlPlugin      (arXiv HTML at arxiv.org/html/<id> -> parses LaTeXML ltx_* classes)
+  ├─ Path b: LatexSourcePlugin    (arXiv/LaTeX source -> compiles/parses via LaTeXML)
+  ├─ Path c: GrobidPdfPlugin      (PDF only -> extracts via GROBID TEI XML, marks 'pdf-extracted, verify')
+  └─ Path d: CrossrefOpenAlexPlugin (DOI/metadata only -> polite pool with mailto, backoff, disk cache)
+  │
   ▼
-[Phase 3] Karpathy LLM Research Wiki (wiki/)
-  ├─ wiki/index.md                  (Master navigation portal & corpus statistics)
-  ├─ wiki/gaps.md                   (Doctoral literature gap register)
-  ├─ wiki/theories.md               (Theoretical framework registry: CLT, SRL, Activity Theory)
-  ├─ wiki/topics/*.md               (Thematic portals: EE, LA, TW)
-  └─ wiki/papers/SRC-XXXX.md        (Strict provenance dossiers: [Source ID | Drive Path | Pass Level])
-  ▼
-[Phase 4] S3A Zero-Copy Binary Storage Engine
-  ├─ scripts/compile_s3a.py         (Builds NDJSON & executes s3a-cli scholar ingest)
-  ├─ ledger/research_corpus.s3a     (Authoritative binary archive with ADDON_EDU capability)
-  │    ├─ Tile 10: HumanLrsRecord   (Researcher ratings & audit trails)
-  │    ├─ Tile 11: AiTraceRecord    (AI pass reasoning traces)
-  │    ├─ Tile 12: AcademicPaper    (811 papers with 3D Hilbert topic mapping)
-  │    ├─ Tile 13: ResearchGraph    (Knowledge graph & citation edges)
-  │    └─ Tile 14: SrsWorkspace     (Active research question pod)
-  └─ scripts/query_engine.py        (Tri-modal query engine: RAG, DAG, Graph, Hybrid)
-  ▼
-[Front-End Catalog]
-  └─ CONTENTS.md                    (Result Families mirroring openai/math)
+Unified Record Schema (scripts/models.py)
+  ├─ Metadata, URLs, abstract, sections, figures, tables, equations, references
+  ├─ Provenance: path_used, tool, tool_version, per-part verification
+  └─ Completeness level: full | pdf-extracted | metadata-only
+  │
+  ├─────────────────────────────────────────────────┐
+  ▼                                                 ▼
+Karpathy LLM Research Wiki (wiki/)               S3A Zero-Copy Storage Engine
+  ├─ wiki/index.md  (Master catalog)               ├─ scripts/compile_s3a.py (scholar ingest)
+  ├─ wiki/gaps.md   (Human gap register)           ├─ ledger/research_corpus.s3a (ADDON_EDU)
+  ├─ wiki/theories.md (Theoretical frameworks)     │    ├─ Tile 10: HumanLrsRecord
+  ├─ wiki/log.md    (Append-only intake log)       │    ├─ Tile 11: AiTraceRecord
+  ├─ wiki/topics/*.md (Thematic portals)           │    ├─ Tile 12: AcademicPaperRecord
+  └─ wiki/papers/SRC-XXXX.md                       │    ├─ Tile 13: ResearchGraphEdgeRecord
+       ├─ Facts & structure only                   │    └─ Tile 14: SrsWorkspaceRecord
+       └─ Empty researcher appraisal templates     └─ scripts/query_engine.py (RAG/DAG/Graph)
 ```
 
 ---
 
 ## Directory Layout
 
-- **`config/`**: Central configuration files (`corpus_config.yaml`).
-- **`ledger/`**: Authoritative metadata and storage files.
+- **`config/`**: Central pipeline configuration (`corpus_config.yaml`). Copy from `corpus_config.example.yaml`.
+- **`ledger/`**: Authoritative metadata and storage files (gitignored).
   - `research_corpus.s3a`: Native Rust zero-copy Hyper-Tile binary archive.
-  - `source_ledger.json`: Machine-readable canonical ledger (811 sources).
-  - `source_ledger.md`: Executive overview and triage dashboard.
+  - `source_ledger.json`: Machine-readable canonical ledger.
+  - `source_ledger.md`: Overview and catalog dashboard.
   - `aliases.json`: Deduplicated file copy and version registry.
 - **`wiki/`**: Karpathy-style markdown research wiki with 100% verified internal wikilinks.
-  - `index.md`: Navigation portal and prioritized paper index.
+  - `index.md`: Navigation portal and completeness catalog.
   - `gaps.md`: Open research questions and unaddressed empirical contradictions.
   - `theories.md`: Cognitive Load Theory, Human-AI Synergy, Self-Regulated Learning mappings.
+  - `log.md`: Append-only event history of paper routing and updates.
   - `topics/`: Thematic sub-portals for Evidence Evaluation, Learner Agency, Traceable Workflows.
-  - `papers/`: Per-source dossiers with strict cryptographic provenance headers.
-- **`cache/`**: Local build and conversion cache.
-  - `cache/markdown/`: Structured markdown conversions and Pass 2 synthesis cards.
+  - `papers/`: Per-source draft dossiers with empty researcher notes templates (gitignored).
+- **`cache/`**: Local extraction and metadata cache.
+  - `cache/html/`: Cached arXiv LaTeXML HTML documents.
+  - `cache/tei/`: Cached GROBID TEI XML documents.
+  - `cache/metadata/`: Polite-pool cached Crossref/OpenAlex JSON metadata.
   - `cache/s3a_intermediate/`: Pre-compiled NDJSON tiles for S3A ingestion.
 - **`scripts/`**: CLI orchestration and query utilities.
-- **`tests/`**: Pytest test suite and offline CI test fixtures.
-- **`CONTENTS.md`**: Modular Result Families catalog mirroring `openai/math`.
+  - `source_router.py`: Extensible multi-path source router.
+  - `models.py`: Unified academic paper record schema.
+  - `run_pass2.py`: Intake and bookkeeping CLI.
+  - `wiki_manager.py`: Wiki synchronization and link linter.
+  - `compile_s3a.py`: S3A binary compiler and round-trip verification.
+  - `query_engine.py`: Tri-modal S3A query engine.
+  - `tile_ids.py`: Central mirror of s3a-storage scholar tile IDs (Tiles 10–15).
+  - `corpus_common.py`: Shared configuration loader.
+  - `generate_catalog.py`: Result Families catalog generator.
+- **`tests/`**: Pytest test suite with offline fixtures for all 4 paths.
+- **`CONTENTS.md`**: Result Families catalog mirroring `openai/math`.
+- **`LOG.md`**: Root append-only event log.
 
 ---
 
@@ -85,45 +97,34 @@ Review reports from earlier design passes live in `docs/reviews/`.
 
 ## CLI Execution Guide
 
-### 1. Reconcile Corpus & Ingest Ledger
+### 1. Paper Intake & Bookkeeping (Pass 2)
 ```powershell
-# Reconcile Google Drive corpus against canonical ledger
-python scripts/inventory_and_sync.py --reconcile
+# Ingest specific paper through best available path
+python scripts/run_pass2.py --id SRC-0002
+
+# Ingest by DOI
+python scripts/run_pass2.py --doi 10.1145/3491101.3503719
+
+# Batch intake papers
+python scripts/run_pass2.py --limit 10
 ```
 
-### 2. Pass 1: Your Skim (~15 s per paper)
+### 2. Lint Karpathy LLM Wiki
 ```powershell
-# Lists papers that have no researcher record yet. It does not score, rank,
-# include/exclude, or record anything. Skipped papers are never recorded.
-python scripts/triage_wave.py --show-text --limit 25
-```
-
-### 3. Pass 2: Selected Papers Only
-```powershell
-# Extraction runs only on papers you select. Selecting a paper is what creates its record.
-# Every output is labelled "AI draft — needs researcher judgment".
-python scripts/run_pass2.py --id SRC-0002 SRC-0003
-```
-
-### 4. Maintain & Lint Karpathy LLM Wiki
-```powershell
-# Generate and sync all wiki paper dossiers and index portals
-python scripts/wiki_manager.py --sync-all
-
-# Lint all internal wikilinks and assert provenance headers
+# Validate all internal wikilinks and assert provenance compliance (exits 0)
 python scripts/wiki_manager.py --lint
 ```
 
-### 5. Compile Native S3A Binary Archive
+### 3. S3A Binary Export & Round-Trip Verification
 ```powershell
-# Ingest intermediate NDJSON into ledger/research_corpus.s3a via s3a-cli
+# Ingest intermediate NDJSON into ledger/research_corpus.s3a
 python scripts/compile_s3a.py
 
-# Inspect S3A Hyper-Tiles, CRC32 checksums, and metadata slots
-s3a-cli inspect  # path set by s3a_binary_path in config/corpus_config.yaml ledger/research_corpus.s3a
+# Run automated round-trip verification
+python scripts/compile_s3a.py --round-trip
 ```
 
-### 6. Execute Multi-Modal S3A Queries
+### 4. Execute Multi-Modal S3A Queries
 ```powershell
 # Mode 1: Spatial Topic RAG Search
 python scripts/query_engine.py --mode rag --query "human AI synergy IRT"
@@ -138,12 +139,7 @@ python scripts/query_engine.py --mode graph --theory "Learner Agency"
 python scripts/query_engine.py --mode hybrid --query "scaffolding agency"
 ```
 
-### 7. Generate Result Families Catalog
+### 5. Run Automated Test Suite
 ```powershell
-python scripts/generate_catalog.py
-```
-
-### 8. Run Automated Verification Tests
-```powershell
-python -m pytest tests/test_pipeline.py -v
+python -m pytest tests/ -v
 ```

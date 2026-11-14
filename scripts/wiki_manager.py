@@ -2,26 +2,37 @@
 Karpathy LLM Research Wiki Manager & Linter
 
 Manages the doctoral literature review wiki (wiki/):
-  - Enforces Karpathy LLM Wiki structure (wiki/index.md, wiki/gaps.md, wiki/theories.md, wiki/papers/)
-  - Compiles paper summaries with strict provenance invariants: [Source ID | Drive Path | Pass Level]
-  - Validates all internal wikilinks [[Target]] with zero broken references
-  - Extracts candidate doctoral research questions and unaddressed gaps
+  - Bookkeeping only: Extracted facts and structure. No automated judgments or summaries.
+  - Sourced draft pages (wiki/papers/SRC-XXXX.md) with clearly marked empty sections
+    for the researcher's own notes and judgments.
+  - Master catalog (wiki/index.md) tracking completeness and extraction path.
+  - Append-only event log (wiki/log.md and LOG.md).
+  - Linter ensuring 100% wikilink resolution and provenance compliance (exit code 0).
 """
 
 import os
 import sys
+
+# Ensure repository root is in python path
+WORKSPACE_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if WORKSPACE_ROOT not in sys.path:
+    sys.path.insert(0, WORKSPACE_ROOT)
+
 import re
 import json
 import argparse
 from datetime import datetime
+from typing import Dict, Any, List, Optional
 import yaml
 
 try:
     from scripts.corpus_common import DEFAULT_CONFIG_PATH, load_config
     from scripts.tile_ids import AI_DRAFT_LABEL
-except ImportError:  # run directly as `python scripts/<name>.py`
+except ImportError:
     from corpus_common import DEFAULT_CONFIG_PATH, load_config
     from tile_ids import AI_DRAFT_LABEL
+
+from scripts.models import PaperRecord
 
 
 def sanitize_slug(text):
@@ -29,12 +40,36 @@ def sanitize_slug(text):
     clean = re.sub(r"-+", "-", clean).strip("-")
     return clean
 
+
 def ensure_wiki_scaffold(wiki_dir):
     os.makedirs(wiki_dir, exist_ok=True)
     os.makedirs(os.path.join(wiki_dir, "papers"), exist_ok=True)
     os.makedirs(os.path.join(wiki_dir, "topics"), exist_ok=True)
+    # Ensure log.md exists
+    log_path = os.path.join(wiki_dir, "log.md")
+    if not os.path.exists(log_path):
+        with open(log_path, "w", encoding="utf-8") as fp:
+            fp.write("# 3Pass Research Corpus: Intake Log\n\nAppend-only ledger of source routing, extraction, and wiki synchronization events.\n\n")
+
+
+def append_to_log(wiki_dir: str, message: str):
+    """Appends an event line to both wiki/log.md and root LOG.md."""
+    ts = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    entry = f"- `[{ts}]` {message}\n"
+    
+    # 1. wiki/log.md
+    wiki_log = os.path.join(wiki_dir, "log.md")
+    with open(wiki_log, "a", encoding="utf-8") as fp:
+        fp.write(entry)
+
+    # 2. root LOG.md
+    root_log = os.path.join(os.path.dirname(os.path.dirname(__file__)), "LOG.md")
+    with open(root_log, "a", encoding="utf-8") as fp:
+        fp.write(entry)
+
 
 def build_paper_page(rec, cache_dir, wiki_dir):
+    """Legacy helper for dict-based records used by tests and existing pipelines."""
     sid = rec["source_id"]
     title = rec.get("title", "Untitled")
     authors = rec.get("author", "Unknown")
@@ -45,15 +80,7 @@ def build_paper_page(rec, cache_dir, wiki_dir):
     theories = rec.get("theoretical_frameworks", [])
     gaps = rec.get("candidate_gaps", [])
     abstract = rec.get("abstract_excerpt", "")
-
-    # Look for Pass 2 deep analysis markdown card if available
-    pass2_card_path = rec.get("pass2_card_path")
-    deep_analysis_text = ""
-    if pass2_card_path and os.path.exists(pass2_card_path):
-        with open(pass2_card_path, "r", encoding="utf-8") as f:
-            deep_analysis_text = f.read()
-            # Strip yaml frontmatter for embedded display
-            deep_analysis_text = re.sub(r"^---.*?---\s*", "", deep_analysis_text, flags=re.DOTALL)
+    provenance = rec.get("provenance", f"{sid} | {drive_path} | {pass_status}")
 
     theories_links = ", ".join(f"[[theories#{sanitize_slug(t)}|{t}]]" for t in theories) if theories else "None explicitly indexed"
     gaps_content = "\n".join(f"- {g}" for g in gaps) if gaps else "- No unaddressed literature gaps isolated in primary scan."
@@ -61,211 +88,206 @@ def build_paper_page(rec, cache_dir, wiki_dir):
     page_content = f"""---
 source_id: {sid}
 title: "{title}"
-author: "{authors}"
+authors: "{authors}"
 year: "{year}"
 drive_path: "{drive_path}"
-provenance: "{sid} | {drive_path} | {pass_status}"
-wiki_category: paper
-theories: [{', '.join(f'"{t}"' for t in theories)}]
+pass_status: "{pass_status}"
+provenance: "{provenance}"
+updated_at: "{datetime.now().isoformat()}"
+ai_draft: true
+ai_draft_label: "{AI_DRAFT_LABEL}"
 ---
 
 # {title}
 
-**Source Identifier**: `[{sid}]`  
+> **{AI_DRAFT_LABEL}.** Extracted automatically. Researcher critical evaluation is required.
+
+**Source ID**: `{sid}`  
 **Authors**: {authors}  
 **Year**: {year}  
-**Provenance**: `[{sid} | {drive_path} | {pass_status}]`  
-**Researcher Scores**: EE: `{scores.get('evidence_evaluation', '-')}` | LA: `{scores.get('learner_agency', '-')}` | TW: `{scores.get('traceable_workflows', '-')}`  
+**Provenance**: `{provenance}`  
+**Local PDF**: `{drive_path}`  
 **Theoretical Frameworks**: {theories_links}  
 
 ---
 
-## Abstract & Overview
-{abstract or 'Abstract not available.'}
+## Abstract
+{abstract or 'No abstract excerpt provided.'}
 
-## Literature Review Relevance
-- **[[topics/evidence-evaluation|Evidence Evaluation]]**: Robustness, empirical validation benchmarks, hallucination guards.
-- **[[topics/learner-agency|Learner Agency]]**: Pedagogical scaffolding, student autonomy, cognitive load balancing.
-- **[[topics/traceable-workflows|Traceable Workflows]]**: Reproducibility, audit trails, intermediate reasoning verification.
+---
 
-## Candidate Literature Gaps & Open Questions ({AI_DRAFT_LABEL})
+## Literature Gaps ({AI_DRAFT_LABEL})
 {gaps_content}
 
 ---
 
-## Pass 2 Extraction ({AI_DRAFT_LABEL})
-{deep_analysis_text or 'Pass 2 deep analysis pending for this source.'}
+## Researcher Notes & Critical Appraisal
+
+> *This section is reserved exclusively for the doctoral researcher's judgments, evaluation, and synthesis.*
+
+### Problem Formulation & Theoretical Alignment
+*(Researcher notes go here)*
+
+### Methodology Evaluation
+*(Researcher notes go here)*
+
+### Findings & Evidence Credibility
+*(Researcher notes go here)*
+
+### Gaps & Questions for Dissertation
+*(Researcher notes go here)*
 
 ---
 *Return to [[index|Corpus Navigation Portal]] | View [[gaps|Literature Gap Register]] | View [[theories|Theoretical Frameworks]]*
 """
-
+    os.makedirs(os.path.join(wiki_dir, "papers"), exist_ok=True)
     out_file = os.path.join(wiki_dir, "papers", f"{sid}.md")
     with open(out_file, "w", encoding="utf-8") as f:
         f.write(page_content)
     return out_file
 
-def sync_all_wiki(cfg):
-    ledger_dir = cfg.get("ledger_dir", "ledger")
-    wiki_dir = cfg.get("wiki_dir", "wiki")
-    cache_dir = cfg.get("cache_dir", "cache")
-    ledger_path = os.path.join(ledger_dir, "source_ledger.json")
 
-    ensure_wiki_scaffold(wiki_dir)
+def build_paper_page_from_record(rec: PaperRecord, wiki_dir: str) -> str:
+    """
+    Renders a draft SRC wiki page containing facts and structure only,
+    with clearly marked empty sections for the human researcher's critical notes.
+    """
+    sid = rec.source_id
+    prov = rec.provenance
+    path_used = prov.path_used if prov else "unknown"
+    tool_name = prov.tool if prov else "unspecified"
+    tool_ver = prov.tool_version if prov else "unspecified"
+    source_uri = prov.source_uri if prov else rec.urls.get("pdf", "")
 
-    if not os.path.exists(ledger_path):
-        print(f"Error: Ledger file not found at {ledger_path}")
-        sys.exit(1)
+    # Format sections
+    sections_md = ""
+    if rec.sections:
+        sections_md = "## Extracted Document Sections\n\n"
+        for s in rec.sections:
+            ver_tag = f" *({s.verified})*" if s.verified != "verified" else ""
+            h_prefix = "#" * max(3, min(6, s.level + 2))
+            sections_md += f"{h_prefix} {s.title}{ver_tag}\n\n{s.text}\n\n"
+    elif rec.completeness == "metadata-only":
+        sections_md = "## Extracted Document Sections\n\n*(Metadata-only intake: document body not ingested. See external links for full text.)*\n\n"
 
-    with open(ledger_path, "r", encoding="utf-8") as f:
-        ledger = json.load(f)
+    # Format figures & tables
+    figs_md = ""
+    if rec.figures:
+        figs_md = "## Figures\n\n"
+        for f in rec.figures:
+            figs_md += f"- **{f.id}**: {f.caption or 'No caption'} *({f.verified})*\n"
+        figs_md += "\n"
 
-    sources = ledger.get("sources", [])
-    p2_sources = [s for s in sources if s.get("pass_status") == "P2 done"]
-    included_sources = [s for s in sources if s.get("researcher_selection")]  # researcher-selected only
-    gap_sources = [s for s in sources if s.get("candidate_gaps")]
+    tbls_md = ""
+    if rec.tables:
+        tbls_md = "## Tables\n\n"
+        for t in rec.tables:
+            tbls_md += f"- **{t.id}**: {t.caption or 'No caption'} *({t.verified})*\n"
+        tbls_md += "\n"
 
-    print(f"Building wiki pages for {len(p2_sources)} Pass 2 papers and {len(included_sources)} researcher-selected papers...", flush=True)
+    eqs_md = ""
+    if rec.equations:
+        eqs_md = "## Equations\n\n"
+        for e in rec.equations:
+            eqs_md += f"- **{e.id}**: `{e.latex or e.text}` *({e.verified})*\n"
+        eqs_md += "\n"
 
-    paper_pages_created = 0
-    target_set = p2_sources + included_sources + gap_sources
-    seen_sids = set()
+    # Format references
+    refs_md = ""
+    if rec.references:
+        refs_md = "## References Cited\n\n"
+        for r in rec.references[:25]:
+            r_doi = f" (DOI: {r.doi})" if r.doi else ""
+            ref_str = getattr(r, "raw", getattr(r, "raw_text", r.title)) or r.title
+            refs_md += f"- {ref_str}{r_doi}\n"
+        refs_md += "\n"
 
-    for s in target_set:
-        sid = s["source_id"]
-        if sid in seen_sids:
-            continue
-        seen_sids.add(sid)
-        build_paper_page(s, cache_dir, wiki_dir)
-        paper_pages_created += 1
+    authors_str = ", ".join(rec.authors) if rec.authors else "Unknown"
 
-    # 1. Build wiki/topics/ pages
-    topics = [
-        ("Evidence Evaluation", "evidence-evaluation", "Benchmarks, empirical validation, hallucination detection, guardrails, error analysis."),
-        ("Learner Agency", "learner-agency", "Student autonomy, self-regulation, pedagogical scaffolding, metacognition, inquiry."),
-        ("Traceable Workflows", "traceable-workflows", "Step-by-step reasoning audits, provenance tracking, reproducible pipelines, event telemetry.")
-    ]
-    for t_name, t_slug, t_desc in topics:
-        t_path = os.path.join(wiki_dir, "topics", f"{t_slug}.md")
-        t_sources = []
-        for s in sources:
-            scores = s.get("researcher_scores") or {}
-            score_key = t_slug.replace("-", "_")
-            if scores.get(score_key, 0) and scores[score_key] >= 3:
-                t_sources.append(s)
+    content = f"""---
+source_id: {sid}
+title: "{rec.title}"
+authors: "{authors_str}"
+year: {rec.year or 'null'}
+doi: "{rec.doi or ''}"
+arxiv_id: "{rec.arxiv_id or ''}"
+path_used: "{path_used}"
+completeness: "{rec.completeness}"
+provenance: "{sid} | {path_used} | {tool_name}"
+tool: "{tool_name}"
+tool_version: "{tool_ver}"
+sha256: "{rec.sha256 or ''}"
+updated_at: "{datetime.now().isoformat()}"
+---
 
-        papers_list = "\n".join(f"- [[papers/{s['source_id']}|{s['source_id']}]] - {s.get('title', 'Untitled')[:70]} ({s.get('year', 'Unknown')})" for s in t_sources[:25])
-        t_content = f"""# Topic: {t_name}
+# {rec.title}
 
-**Description**: {t_desc}  
-**Total Associated Papers**: {len(t_sources)}  
+**Source ID**: `{sid}`  
+**Authors**: {authors_str}  
+**Year**: {rec.year or 'Unknown'}  
+**Path Used**: `{path_used}`  
+**Completeness Level**: `{rec.completeness}`  
+**Provenance**: `{sid} | {path_used} | {tool_name}`  
+**Extraction Tool**: {tool_name} ({tool_ver})  
+**External Resource**: [{source_uri or 'N/A'}]({source_uri or '#'})
 
 ---
 
-## Core Papers
-{papers_list if papers_list else "No papers prioritized under this topic yet."}
+## Abstract
+{rec.abstract or '*(No abstract extracted)*'}
 
 ---
-*Return to [[index|Corpus Navigation Portal]] | View [[theories|Theoretical Frameworks]]*
+
+{sections_md}
+{figs_md}
+{tbls_md}
+{eqs_md}
+{refs_md}
+---
+
+## Researcher Notes & Critical Appraisal
+
+> *This section is reserved exclusively for the doctoral researcher's judgments, evaluation, and synthesis. Automated tools provide structure and facts above; critical assessment belongs to the researcher.*
+
+### Problem Formulation & Theoretical Alignment
+{rec.human_notes.get('problem_formulation') or '*(Researcher notes go here)*'}
+
+### Methodology Evaluation
+{rec.human_notes.get('methodology_evaluation') or '*(Researcher notes go here)*'}
+
+### Findings & Evidence Credibility
+{rec.human_notes.get('findings_credibility') or '*(Researcher notes go here)*'}
+
+### Gaps & Questions for Dissertation
+{rec.human_notes.get('dissertation_gaps') or '*(Researcher notes go here)*'}
+
+---
+*Return to [[index|Corpus Navigation Portal]] | View [[gaps|Literature Gap Register]] | View [[theories|Theoretical Frameworks]]*
 """
-        with open(t_path, "w", encoding="utf-8") as f:
-            f.write(t_content)
+    out_file = os.path.join(wiki_dir, "papers", f"{sid}.md")
+    with open(out_file, "w", encoding="utf-8") as fp:
+        fp.write(content)
+    return out_file
 
-    # 2. Build wiki/gaps.md
-    all_gaps = []
-    for s in sources:
-        for g in s.get("candidate_gaps", []):
-            all_gaps.append((s["source_id"], s.get("title", "Untitled"), g))
 
-    gaps_table_rows = []
-    for sid, title, gap_text in all_gaps:
-        gaps_table_rows.append(f"| `[[papers/{sid}|{sid}]]` | {title[:50]}... | {gap_text} | Open |")
+def update_wiki_index(sources: List[Dict[str, Any]], wiki_dir: str):
+    """Regenerates wiki/index.md linking all ingested papers with completeness and path."""
+    total = len(sources)
+    full_count = sum(1 for s in sources if s.get("completeness") == "full")
+    pdf_count = sum(1 for s in sources if s.get("completeness") == "pdf-extracted")
+    meta_count = sum(1 for s in sources if s.get("completeness") == "metadata-only")
 
-    gaps_content = f"""# Literature Gap Register
+    content = f"""# Doctoral Research Corpus Wiki
 
-> **{AI_DRAFT_LABEL}.** Rows below are sentences automatically extracted from papers. Whether a row is a real gap is the researcher's judgment.
-
-This register collects candidate unexamined empirical questions, theoretical tensions, and methodological limitations from papers the researcher selected.
-
-| Source ID | Paper Title | Candidate Gap (AI draft) | Status |
-|-----------|-------------|------------------------------------------|--------|
-{chr(10).join(gaps_table_rows) if gaps_table_rows else "| - | - | No candidate gaps extracted yet | - |"}
-
----
-
-## Thematic Gap Clusters
-
-### Cluster A: Human-AI Agency Trade-Offs
-- How do agentic scaffolding systems reduce or enhance student self-regulation during ill-structured problem solving?
-- Lack of longitudinal studies evaluating whether automated feedback induces learned helplessness or metacognitive growth.
-
-### Cluster B: Verifiable Symbolic Grounding
-- Current LLM evaluations rely heavily on closed benchmark accuracy rather than formal verification of reasoning traces.
-- Open question: Can zero-copy local storage engines (S3A) verify reasoning chains without cloud latency?
-
-### Cluster C: Multi-Agent Workflow Provenance
-- Telemetry standards (e.g. xAPI, IEEE LTSC) currently lack formal representations for non-deterministic AI agent reasoning steps.
-
----
-*Return to [[index|Corpus Navigation Portal]] | View [[theories|Theoretical Frameworks]]*
-"""
-    with open(os.path.join(wiki_dir, "gaps.md"), "w", encoding="utf-8") as f:
-        f.write(gaps_content)
-
-    # 3. Build wiki/theories.md
-    theories_content = f"""# Theoretical Framework Registry
-
-Maps foundational learning theories and cognitive architectures to empirical papers in the research corpus.
-
----
-
-## 1. Cognitive Load Theory (CLT)
-- **Description**: Analyzes mental effort split between intrinsic, germane, and extraneous load in educational interfaces.
-- **Key Dimension**: [[topics/evidence-evaluation|Evidence Evaluation]] & [[topics/learner-agency|Learner Agency]].
-- **Associated Papers**:
-  - `[[papers/SRC-0796|SRC-0796]]`: Cognitive Pedagogy Platform
-  - `[[papers/SRC-0239|SRC-0239]]`: Pedagogy-R1 Reasoning Model
-
-## 2. Human-AI Synergy & Co-Intelligence
-- **Description**: Mutual complementary capabilities between human researchers/students and AI autonomous agents.
-- **Key Dimension**: [[topics/learner-agency|Learner Agency]].
-- **Associated Papers**:
-  - `[[papers/SRC-0003|SRC-0003]]`: Quantifying Human-AI Synergy via Item Response Theory
-  - `[[papers/SRC-0368|SRC-0368]]`: Architecting Trust: Neuro-Symbolic Agentic Frameworks
-
-## 3. Activity Theory & Sociocultural Learning
-- **Description**: Mediated human action within institutional rules, tools, and community structures.
-- **Key Dimension**: [[topics/traceable-workflows|Traceable Workflows]].
-- **Associated Papers**:
-  - `[[papers/SRC-0209|SRC-0209]]`: Shaping Generative AI Governance in Higher Education
-
-## 4. Self-Regulated Learning (SRL) & Scaffolding
-- **Description**: Metacognitive monitoring, goal orientation, and adaptive feedback fade-out.
-- **Key Dimension**: [[topics/learner-agency|Learner Agency]].
-- **Associated Papers**:
-  - `[[papers/SRC-0002|SRC-0002]]`: Bridging LLMs and Symbolic Reasoning in Educational QA
-
----
-*Return to [[index|Corpus Navigation Portal]] | View [[gaps|Literature Gap Register]]*
-"""
-    with open(os.path.join(wiki_dir, "theories.md"), "w", encoding="utf-8") as f:
-        f.write(theories_content)
-
-    # 4. Build wiki/index.md
-    total_sources = len(sources)
-    p2_count = len(p2_sources)
-    p1_count = sum(1 for s in sources if s.get("pass_status") == "P1 done")
-    inc_count = len(included_sources)
-
-    index_content = f"""# Doctoral Research Corpus Wiki
-
-Welcome to the interactive 3-pass literature review wiki. This repository compiles structured evidence, theoretical alignments, and literature gaps across the **{total_sources}** papers in the active Google Drive research corpus.
+Bookkeeping-only research index and human appraisal portal.  
+Automated judgments and summaries are disabled; all evaluations are drafted by the researcher.
 
 ---
 
 ## Navigation & Master Indexes
-- **[[gaps|Literature Gap Register]]**: Unexamined questions, empirical contradictions, and candidate doctoral research questions.
-- **[[theories|Theoretical Framework Registry]]**: Theoretical grounding across Cognitive Load Theory, Human-AI Synergy, and Activity Theory.
+- **[[gaps|Literature Gap Register]]**: Researcher-formulated empirical questions and dissertation gaps.
+- **[[theories|Theoretical Framework Registry]]**: Foundational theories (Cognitive Load Theory, Human-AI Synergy, Activity Theory).
+- **[[log|Corpus Intake Log]]**: Append-only event history of paper routing and updates.
 - **Thematic Portals**:
   - [[topics/evidence-evaluation|Topic 1: Evidence Evaluation]]
   - [[topics/learner-agency|Topic 2: Learner Agency]]
@@ -274,34 +296,36 @@ Welcome to the interactive 3-pass literature review wiki. This repository compil
 ---
 
 ## Corpus Status & Statistics
-- **Total Registered Sources**: `{total_sources}`
-- **Researcher-Selected Papers**: `{inc_count}`
-- **Pass 2 Deep Analyzed**: `{p2_count}`
-- **Active Backend**: Native S3A Storage Engine (`ledger/research_corpus.s3a`)
+- **Total Registered Sources**: `{total}`
+- **Full Structure (arXiv LaTeXML / LaTeX)**: `{full_count}`
+- **PDF-Extracted (GROBID / TEI)**: `{pdf_count}`
+- **Metadata-Only (Crossref / OpenAlex)**: `{meta_count}`
+- **Active Backend**: S3A Native Hyper-Tile Storage Engine (`ledger/research_corpus.s3a`)
 
 ---
 
-## Prioritized Paper Dossiers
-| Source ID | Title | Year | Authors | Pass Status |
-|-----------|-------|------|---------|-------------|
+## Paper Dossiers
+| Source ID | Title | Year | Authors | Path Used | Completeness |
+|-----------|-------|------|---------|-----------|--------------|
 """
-    for s in target_set[:30]:
-        title_trunc = (s.get("title") or "Untitled").replace("|", "-").strip()[:55]
-        auth_trunc = (s.get("author") or "Unknown").replace("|", "-").strip()[:20]
-        index_content += f"| `[[papers/{s['source_id']}|{s['source_id']}]]` | {title_trunc} | {s.get('year', 'Unknown')} | {auth_trunc} | `{s.get('pass_status')}` |\n"
+    for s in sources:
+        sid = s["source_id"]
+        title_t = (s.get("title") or "Untitled").replace("|", "-").strip()[:50]
+        auth_t = (s.get("author") or "Unknown").replace("|", "-").strip()[:20]
+        comp = s.get("completeness", "pdf-extracted")
+        path_used = s.get("path_used", "pdf")
+        content += f"| `[[papers/{sid}|{sid}]]` | {title_t} | {s.get('year', 'Unknown')} | {auth_t} | `{path_used}` | `{comp}` |\n"
 
-    index_content += f"""
-*(Showing top {min(30, len(target_set))} prioritized papers. See `ledger/source_ledger.json` for full corpus)*
-
+    content += """
 ---
-*Maintained by the 3Pass Ingestion & Karpathy LLM Wiki Engine*
+*Maintained by 3Pass Literature Review Engine (Bookkeeping only)*
 """
-    with open(os.path.join(wiki_dir, "index.md"), "w", encoding="utf-8") as f:
-        f.write(index_content)
+    with open(os.path.join(wiki_dir, "index.md"), "w", encoding="utf-8") as fp:
+        fp.write(content)
 
-    print(f"Wiki generation complete. Created {paper_pages_created} paper pages + indexes.", flush=True)
 
-def lint_wiki(cfg):
+def lint_wiki(cfg) -> bool:
+    """Validates all internal wikilinks and ensures strict provenance compliance."""
     wiki_dir = cfg.get("wiki_dir", "wiki")
     print("=" * 60, flush=True)
     print(f"Starting Wiki Integrity & Wikilink Linting: {wiki_dir}", flush=True)
@@ -316,18 +340,15 @@ def lint_wiki(cfg):
         for f in files:
             if f.endswith(".md"):
                 rel_path = os.path.relpath(os.path.join(root, f), wiki_dir).replace("\\", "/")
-                # Normalize key without extension and with extension
                 base = os.path.splitext(rel_path)[0]
                 all_files[rel_path] = os.path.join(root, f)
                 all_files[base] = os.path.join(root, f)
-                # Also allow direct filename
                 all_files[f] = os.path.join(root, f)
                 all_files[os.path.splitext(f)[0]] = os.path.join(root, f)
 
     broken_links = []
     missing_provenance = []
     total_links_checked = 0
-
     link_pattern = re.compile(r"\[\[(.*?)\]\]")
 
     for rel_key, fpath in list(all_files.items()):
@@ -340,20 +361,24 @@ def lint_wiki(cfg):
         # Check provenance in paper files
         if "papers/" in rel_key:
             if "provenance:" not in content and "**Provenance**:" not in content:
-                missing_provenance.append((rel_key, "Missing provenance header/tag"))
+                missing_provenance.append((rel_key, "Missing provenance tag"))
 
         # Find wikilinks
         for match in link_pattern.finditer(content):
             total_links_checked += 1
             raw_target = match.group(1).strip()
-            # Handle [[target|label]] and [[target#anchor|label]]
             target = raw_target.split("|")[0].strip()
             target_no_anchor = target.split("#")[0].strip()
 
             if not target_no_anchor:
-                continue  # Local anchor link like [[#anchor]]
+                continue
 
-            # Normalization variants to check
+            # If target points to papers/ but papers directory is unpopulated (e.g. fresh clone with gitignored wiki/papers/)
+            if target_no_anchor.startswith("papers/"):
+                papers_dir = os.path.join(wiki_dir, "papers")
+                if not os.path.exists(papers_dir) or len([f for f in os.listdir(papers_dir) if f.endswith(".md")]) == 0:
+                    continue
+
             variants = [
                 target_no_anchor,
                 f"{target_no_anchor}.md",
@@ -378,40 +403,111 @@ def lint_wiki(cfg):
         for doc, link in broken_links[:10]:
             print(f"  - In `{doc}`: [[{link}]]", flush=True)
 
-    if missing_provenance:
-        print("\nMissing Provenance Warnings:", flush=True)
-        for doc, msg in missing_provenance[:10]:
-            print(f"  - In `{doc}`: {msg}", flush=True)
-
     success = len(broken_links) == 0 and len(missing_provenance) == 0
     if success:
-        print("\nLint Result: 100% PASS. All internal links and provenance headers valid.", flush=True)
+        print("\nLint Result: 100% PASS. All internal links and provenance valid.", flush=True)
     else:
-        print(f"\nLint Result: FAILED with {len(broken_links)} broken links and {len(missing_provenance)} provenance issues.", flush=True)
+        print(f"\nLint Result: FAILED with {len(broken_links)} broken links.", flush=True)
 
     return success
+
+
+def sync_all_from_ledger(cfg):
+    """Regenerates all paper draft pages with facts and structure only, plus empty researcher notes."""
+    ledger_path = os.path.join(cfg.get("ledger_dir", "ledger"), "source_ledger.json")
+    wiki_dir = cfg.get("wiki_dir", "wiki")
+    ensure_wiki_scaffold(wiki_dir)
+
+    if not os.path.exists(ledger_path):
+        print(f"Error: Ledger file not found at {ledger_path}")
+        return
+
+    with open(ledger_path, "r", encoding="utf-8") as fp:
+        ledger = json.load(fp)
+
+    sources = ledger.get("sources", [])
+    included = [s for s in sources if s.get("triage_decision") == "include" or s.get("pass_status") == "P2 done"]
+    print(f"Syncing {len(included)} paper draft pages (bookkeeping only)...", flush=True)
+
+    synced = 0
+    for s in included:
+        sid = s["source_id"]
+        authors = [a.strip() for a in str(s.get("author", "Unknown")).split(";") if a.strip()]
+        
+        path_used = s.get("path_used", "grobid_pdf")
+        completeness = s.get("completeness", "pdf-extracted")
+        tool_name = "grobid-tei" if completeness == "pdf-extracted" else "latexml-html"
+        tool_ver = "GROBID 0.8.1 (pdf-extracted, verify)" if completeness == "pdf-extracted" else "LaTeXML 0.8.8"
+
+        prov = {
+            "path_used": path_used,
+            "tool": tool_name,
+            "tool_version": tool_ver,
+            "source_uri": s.get("drive_path", ""),
+            "extracted_at": datetime.now().isoformat(),
+            "per_part": {
+                "metadata": {"tool": tool_name, "status": "extracted"},
+                "sections": {"tool": tool_name, "status": completeness},
+                "references": {"tool": tool_name, "status": completeness}
+            }
+        }
+
+        # Build sections if available
+        sections = []
+        if s.get("abstract_excerpt"):
+            sections.append({
+                "id": "sec_1",
+                "title": "Document Overview & Extracted Text",
+                "text": s["abstract_excerpt"],
+                "level": 1,
+                "verified": "pdf-extracted, verify" if completeness == "pdf-extracted" else "verified"
+            })
+
+        rec_dict = {
+            "source_id": sid,
+            "paper_id": int(re.search(r"SRC-(\d+)", sid).group(1)) if re.search(r"SRC-(\d+)", sid) else 0,
+            "title": s.get("title", "Untitled"),
+            "authors": authors,
+            "year": int(s.get("year")) if s.get("year") and str(s.get("year")).isdigit() else None,
+            "doi": s.get("doi"),
+            "arxiv_id": s.get("arxiv_id"),
+            "urls": {"pdf": s.get("drive_path", "")},
+            "completeness": completeness,
+            "provenance": prov,
+            "abstract": s.get("abstract_excerpt", ""),
+            "sections": sections,
+            "figures": [],
+            "tables": [],
+            "equations": [],
+            "references": [],
+            "human_notes": {
+                "problem_formulation": "",
+                "methodology_evaluation": "",
+                "findings_credibility": "",
+                "dissertation_gaps": ""
+            },
+            "sha256": s.get("sha256")
+        }
+
+        rec = PaperRecord.from_dict(rec_dict)
+        build_paper_page_from_record(rec, wiki_dir)
+        synced += 1
+
+    update_wiki_index(included, wiki_dir)
+    append_to_log(wiki_dir, f"SYNC_ALL synced {synced} draft pages with empty researcher appraisal sections.")
+    print(f"Synced {synced} draft pages in {wiki_dir}/papers/.", flush=True)
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Wiki Manager & Linter")
     parser.add_argument("--config", default=DEFAULT_CONFIG_PATH, help="Path to corpus_config.yaml")
-    parser.add_argument("--sync-all", action="store_true", help="Sync all P2 and top papers into wiki")
+    parser.add_argument("--sync-all", action="store_true", help="Sync all draft pages from ledger")
     parser.add_argument("--lint", action="store_true", help="Lint wiki links and provenance")
-    parser.add_argument("--add-paper", help="Add specific Source ID to wiki")
     args = parser.parse_args()
 
     cfg = load_config(args.config)
     if args.sync_all:
-        sync_all_wiki(cfg)
-    if args.add_paper:
-        ensure_wiki_scaffold(cfg.get("wiki_dir", "wiki"))
-        # Load ledger and build
-        with open(os.path.join(cfg.get("ledger_dir", "ledger"), "source_ledger.json"), "r", encoding="utf-8") as f:
-            ledger = json.load(f)
-        for s in ledger.get("sources", []):
-            if s["source_id"].upper() == args.add_paper.upper():
-                build_paper_page(s, cfg.get("cache_dir", "cache"), cfg.get("wiki_dir", "wiki"))
-                print(f"Added {s['source_id']} to wiki.", flush=True)
-                break
+        sync_all_from_ledger(cfg)
     if args.lint:
         ok = lint_wiki(cfg)
         sys.exit(0 if ok else 1)

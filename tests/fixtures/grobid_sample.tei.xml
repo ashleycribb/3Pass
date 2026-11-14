@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TEI xmlns="http://www.tei-c.org/ns/1.0">
+  <teiHeader>
+    <fileDesc>
+      <titleStmt>
+        <title level="a" type="main">Empirical Study of Student Agency in Collaborative Inquiry</title>
+        <author>
+          <persName>Eve Analyst</persName>
+        </author>
+      </titleStmt>
+    </fileDesc>
+    <profileDesc>
+      <abstract>
+        <p>This paper presents a longitudinal study examining how adaptive scaffolding impacts learner agency and self-regulation in collaborative science environments.</p>
+      </abstract>
+    </profileDesc>
+  </teiHeader>
+  <text>
+    <body>
+      <div>
+        <head>1. Methodology and Context</head>
+        <p>A mixed-methods quasi-experimental design was deployed across 14 high school classrooms over 12 weeks.</p>
+      </div>
+      <div>
+        <head>2. Observations and Findings</head>
+        <p>Students exhibiting higher agency scores demonstrated more frequent metacognitive regulation episodes.</p>
+      </div>
+      <figure>
+        <head>Figure 1: Agency trajectory over 12 weeks.</head>
+      </figure>
+      <figure type="table">
+        <head>Table 1: Pre/post survey ANOVA results.</head>
+      </figure>
+    </body>
+    <back>
+      <div type="references">
+        <listBibl>
+          <biblStruct>
+            <analytic>
+              <title level="a">Theoretical Foundations of Self-Regulated Learning</title>
+              <author><persName>B. J. Zimmerman</persName></author>
+            </analytic>
+            <monogr>
+              <title level="j">Educational Psychologist</title>
+              <imprint><date>2002</date></imprint>
+            </monogr>
+          </biblStruct>
+        </listBibl>
+      </div>
+    </back>
+  </text>
+</TEI>

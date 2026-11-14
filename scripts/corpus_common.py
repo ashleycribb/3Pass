@@ -7,6 +7,7 @@ config/corpus_config.example.yaml to config/corpus_config.yaml and edit it.
 """
 
 import os
+import shutil
 import yaml
 
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -32,6 +33,10 @@ def load_config(config_path=DEFAULT_CONFIG_PATH):
     if config_path and os.path.exists(config_path):
         with open(config_path, "r", encoding="utf-8") as f:
             cfg.update(yaml.safe_load(f) or {})
+    if os.environ.get("S3A_BINARY_PATH"):
+        cfg["s3a_binary_path"] = os.environ["S3A_BINARY_PATH"]
+    elif os.environ.get("S3A_CLI"):
+        cfg["s3a_binary_path"] = os.environ["S3A_CLI"]
     return cfg
 
 

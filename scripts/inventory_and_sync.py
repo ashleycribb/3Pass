@@ -14,7 +14,6 @@ try:
 except ImportError:  # run directly as `python scripts/<name>.py`
     from corpus_common import DEFAULT_CONFIG_PATH, load_config, require_config_value
 
-
 def compute_sha256(filepath):
     h = hashlib.sha256()
     with open(filepath, "rb") as f:
