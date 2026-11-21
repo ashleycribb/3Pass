@@ -29,9 +29,11 @@ from pathlib import Path
 
 try:
     from . import verify_conversion as vc
+    from . import inventory as inv_mod
 except ImportError:  # run directly as `python scripts/verified_pdf/agent_tool.py`
     sys.path.insert(0, str(Path(__file__).resolve().parent))
     import verify_conversion as vc  # noqa: E402
+    import inventory as inv_mod  # noqa: E402
 
 # Flags that put the content of a specific block at risk -> that block is held.
 CONTENT_RISK = {"T2", "T4", "B1", "B2", "B3", "F1", "E1"}
@@ -164,12 +166,21 @@ def build_verified_view(pdf_path: Path, conv_dir: Path, report=None) -> dict:
         blk["page_complete"] = all(page_state[p]["complete"] for p in blk["pages"]) if blk["pages"] else True
         blocks.append(blk)
 
+    inv = inv_mod.write(conv_dir)                  # anchors.json: anchor + fingerprint per block
+    fps = {}
+    for x in inv["anchors"]:
+        fps.setdefault(x["id"], []).append(x["fingerprint"])
+    for b in blocks:
+        b["fingerprints"] = [f for r in b.get("merged_from", [b["id"]]) for f in fps.get(r, [])]
+
     doc_flags = [f for f in open_flags if f["check"] in DOC_LEVEL]
     order_ok = not any(f["check"] == "O1" for f in doc_flags)
     view = {
         "schema": "verified-pdf-view/v1",
         "source_pdf": pdf_path.name,
         "source_sha256": report["source_sha256"],
+        "inventory": {"file": "anchors.json", "schema": inv["schema"],
+                      "document_fingerprint": inv["document_fingerprint"]},
         "built_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "document_status": ("VERIFIED" if not open_flags else "PARTIAL"),
         "reading_order_verified": order_ok,

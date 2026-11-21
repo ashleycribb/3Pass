@@ -6,8 +6,8 @@ Usage:
 
 Both modes end the same way: the check groups (text, tables, figures, document; see
 verify_conversion.CHECK_GROUP) run in parallel, and their union is exactly the serial
-verification. anchors.json lists every block with id, kind, page, bounding box (top-left
-origin, PDF points) and reading-order position.
+verification. The verified view writes anchors.json (see inventory.py): every block with id,
+kind, page, bounding box (top-left origin, PDF points), reading-order position and fingerprint.
 
 --mode shards (default, faster)
   The PDF is cut into contiguous page ranges, one per worker. Each range goes through the
@@ -254,7 +254,6 @@ def run_shards(pdf: Path, out_root: Path, ocr=False, scale=2.0, grobid=None, wor
         "mode": f"parallel (page shards: {[(cuts[i] + 1, cuts[i + 1]) for i in range(n)]})",
         "tools": {k: version(k) for k in ("docling", "docling-core", "docling-ibm-models", "pypdfium2")},
     })
-    (out / "anchors.json").write_text(json.dumps(anchors_of(doc), indent=1), encoding="utf-8")
     return _verify_and_view(pdf, out, manifest, timings, t0, ctx, workers, list(vc.GROUPS), [])
 
 
@@ -322,7 +321,6 @@ def run(pdf: Path, out_root: Path, ocr=False, scale=2.0, grobid=None, workers=No
         "table_interior_text_blocks_dropped": dropped,
         "tools": {k: version(k) for k in ("docling", "docling-core", "docling-ibm-models", "pypdfium2")},
     })
-    (out / "anchors.json").write_text(json.dumps(anchors, indent=1), encoding="utf-8")
     crops = stage / "review" / "crops"
     if crops.exists():
         (out / "review" / "crops").mkdir(parents=True, exist_ok=True)
