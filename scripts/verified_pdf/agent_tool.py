@@ -62,9 +62,11 @@ def _decisions(conv_dir: Path):
     return out
 
 
-def build_verified_view(pdf_path: Path, conv_dir: Path) -> dict:
+def build_verified_view(pdf_path: Path, conv_dir: Path, report=None) -> dict:
+    """`report` may be a review.json just produced for these exact outputs (parallel.py);
+    otherwise the conversion is verified here."""
     shutil.rmtree(conv_dir / "verified", ignore_errors=True)   # never leave a stale view behind
-    report = vc.verify(pdf_path, conv_dir)
+    report = report or vc.verify(pdf_path, conv_dir)
     decisions = _decisions(conv_dir)
     open_flags = [f for f in report["flags"] if f["id"] not in decisions or decisions[f["id"]]["decision"] == "corrected"]
     cleared = [f for f in report["flags"] if f not in open_flags]
@@ -280,7 +282,7 @@ def check_quote(pdf_path: Path, quote: str, page=None) -> dict:
             "note": "normalized = same letters and digits in the same order; punctuation/case/spacing may differ"}
 
 
-def ingest(pdfs, out: Path, ocr=False, grobid=None) -> list:
+def ingest(pdfs, out: Path, ocr=False, grobid=None, parallel=False) -> list:
     try:
         from . import pdf_to_md_html as conv
     except ImportError:
@@ -289,8 +291,15 @@ def ingest(pdfs, out: Path, ocr=False, grobid=None) -> list:
     for pdf in pdfs:
         pdf = Path(pdf)
         try:
-            conv.convert(pdf, out, ocr=ocr, grobid=grobid)
-            v = build_verified_view(pdf, out / pdf.stem)
+            if parallel:
+                try:
+                    from . import parallel as par
+                except ImportError:
+                    import parallel as par
+                v = par.run_shards(pdf, out, ocr=ocr, grobid=grobid)["view"]
+            else:
+                conv.convert(pdf, out, ocr=ocr, grobid=grobid)
+                v = build_verified_view(pdf, out / pdf.stem)
             results.append({"pdf": pdf.name, "status": v["document_status"], "counts": v["counts"],
                             "reading_order_verified": v["reading_order_verified"],
                             "incomplete_pages": [p["page"] for p in v["pages"] if not p["complete"]],
@@ -314,6 +323,7 @@ def main():
     sub = ap.add_subparsers(dest="cmd", required=True)
     a1 = sub.add_parser("ingest"); a1.add_argument("pdfs", nargs="+"); a1.add_argument("--out", type=Path, default=Path("converted"))
     a1.add_argument("--ocr", action="store_true"); a1.add_argument("--grobid")
+    a1.add_argument("--parallel", action="store_true", help="page shards in parallel (see parallel.py); same outputs and checks")
     a2 = sub.add_parser("blocks"); a2.add_argument("converted_dir", type=Path); a2.add_argument("--include-held", action="store_true")
     a3 = sub.add_parser("check-quote"); a3.add_argument("pdf", type=Path); a3.add_argument("quote"); a3.add_argument("--page", type=int)
     a4 = sub.add_parser("rebuild", help="re-verify and rebuild the verified view (e.g. after decisions.json)")
@@ -321,7 +331,7 @@ def main():
     sub.add_parser("mcp")
     a = ap.parse_args()
     if a.cmd == "ingest":
-        res = ingest(a.pdfs, a.out, a.ocr, a.grobid)
+        res = ingest(a.pdfs, a.out, a.ocr, a.grobid, a.parallel)
         print(json.dumps(res, indent=2))
         sys.exit(1 if any(r["status"] == "FAILED" for r in res) else 0)
     if a.cmd == "blocks":
