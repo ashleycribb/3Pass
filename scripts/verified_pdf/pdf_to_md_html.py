@@ -57,8 +57,15 @@ def convert(pdf: Path, out_root: Path, ocr=False, scale=2.0, grobid=None) -> dic
     (out / "tables").mkdir(exist_ok=True)
     t0 = time.time()
     result = build_converter(ocr, scale).convert(pdf)
-    doc = result.document
     warnings = [str(e) for e in (result.errors or [])]
+    return write_outputs(result.document, pdf, out, warnings, t0, ocr, scale, grobid)
+
+
+def write_outputs(doc, pdf: Path, out: Path, warnings, t0, ocr, scale, grobid=None, extra=None) -> dict:
+    """Write .md, .html, .docling.json, images/, tables/*.csv and manifest.json for a DoclingDocument.
+    Shared by the serial converter and the anchor-and-workers path (parallel.py)."""
+    (out / "images").mkdir(parents=True, exist_ok=True)
+    (out / "tables").mkdir(exist_ok=True)
 
     # Markdown + HTML share the same referenced image files.
     doc.save_as_markdown(out / f"{pdf.stem}.md", artifacts_dir=Path("images"),
@@ -103,6 +110,7 @@ def convert(pdf: Path, out_root: Path, ocr=False, scale=2.0, grobid=None) -> dic
         "image_scale": scale,
         "seconds": round(time.time() - t0, 1),
         "tools": {"docling": version("docling"), "docling-core": version("docling-core")},
+        **(extra or {}),
         "warnings": warnings,
         "outputs": sorted(str(p.relative_to(out)) for p in out.rglob("*") if p.is_file()),
     }

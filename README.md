@@ -161,6 +161,23 @@ python scripts/verified_pdf/agent_tool.py rebuild paper.pdf cache/verified_pdf/p
 python scripts/verified_pdf/agent_tool.py mcp
 ```
 
+Parallel mode (same outputs, same checks): add `--parallel` to `ingest`, pass `"parallel": True`
+to the router input, or run `scripts/verified_pdf/parallel.py` directly. The default `--mode shards`
+splits the PDF into page ranges, one per CPU, each converted by the unchanged serial pipeline; the
+check groups (text, tables, figures, document) then run in parallel, and their union is exactly the
+serial verification. `--mode anchors` runs a layout-only pass first, then separate table, figure and
+text workers. Both write `anchors.json` (every block with page, box and reading-order position).
+Measured on a 2-CPU machine with identical verified blocks and flags in every case: a 29-page paper
+with 5 tables took 47.6 s sharded vs 54.9 s serial; a 13-page text-only paper and the fixture showed no
+gain; `--mode anchors` was slower (72 s) because its table worker repeats layout on table pages.
+
+Inventory: every conversion gets `anchors.json` (`scripts/verified_pdf/inventory.py`). Each anchor has
+page, box and reading-order position (where) plus a content `fingerprint` (what) and a looser
+`match_key` (same letters and digits, for matching across LaTeX/PDF or converter versions); pages and
+the document get fingerprints built from them. `python scripts/verified_pdf/inventory.py DIR --compare
+OTHER` lists the pages and blocks that differ (exit 0 identical, 4 different). On the three test papers,
+shard-mode output has the same document fingerprint as serial; anchor mode differs only in figure pixels.
+
 ### 6. Run Automated Test Suite
 ```powershell
 python -m pytest tests/ -v
