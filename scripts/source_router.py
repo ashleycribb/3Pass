@@ -1529,13 +1529,19 @@ class VerifiedPdfPlugin(BaseSourcePlugin):
             from scripts.verified_pdf import pdf_to_md_html
             from pathlib import Path as _P
             run_root = _P(self.out_root) / sha256_val[:16]
-            pdf_to_md_html.convert(_P(pdf_path), run_root, ocr=bool(paper_input.get("ocr")))
+            view = None
+            if paper_input.get("parallel"):   # anchor-and-workers mode; same outputs and checks
+                from scripts.verified_pdf import parallel
+                view = parallel.run_shards(_P(pdf_path), run_root, ocr=bool(paper_input.get("ocr")))["view"]
+            else:
+                pdf_to_md_html.convert(_P(pdf_path), run_root, ocr=bool(paper_input.get("ocr")))
             conv_dir = run_root / _P(pdf_path).stem
             live = True
             manifest = json.loads((conv_dir / "manifest.json").read_text(encoding="utf-8"))
             tool_version = f"docling {manifest['tools']['docling']} + 3Pass verifier (pdfium)"
 
-        view = agent_tool.build_verified_view(Path(pdf_path), conv_dir)
+        if not live or view is None:
+            view = agent_tool.build_verified_view(Path(pdf_path), conv_dir)
         record = self._record_from_view(view, conv_dir, paper_input, pdf_path, sha256_val, tool_version)
 
         # Metadata + references from GROBID, if reachable. Never claim a GROBID run that did not happen.

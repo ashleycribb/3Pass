@@ -125,7 +125,26 @@ def reachable_refs(d) -> set:
     return seen
 
 
-def verify(pdf_path: Path, conv_dir: Path):
+GROUPS = ("text", "tables", "figures", "document")
+CHECK_GROUP = {"T2": "text", "E1": "text",
+               "B1": "tables", "B2": "tables", "B3": "tables", "B4": "tables",
+               "F1": "figures", "F3": "figures",
+               "T1": "document", "T3": "document", "T4": "document", "T4-in-image": "document",
+               "T5": "document", "F2": "document", "M1": "document", "O1": "document"}
+CHECK_ORDER = ["T1", "T5", "T2", "E1", "T4", "B1", "B2", "B3", "B4", "F1", "F3", "M1", "F2", "T3", "O1"]
+
+
+def sort_flags(flags):
+    """Deterministic order, so a parallel run (union of groups) equals a serial run."""
+    return sorted(flags, key=lambda f: (CHECK_ORDER.index(f["check"]), f["page"] or 0, f["ref"] or "", f["id"]))
+
+
+def verify(pdf_path: Path, conv_dir: Path, only=GROUPS, write=True):
+    """Run the checks. `only` selects check groups (see CHECK_GROUP) so they can run in
+    parallel; the union of all groups is exactly the full verification."""
+    only = set(only)
+    want = lambda check: CHECK_GROUP[check] in only
+    DOC = "document" in only
     stem, d = load_doc(conv_dir)
     reach = reachable_refs(d)
     pdf = Pdf(pdf_path)
@@ -134,11 +153,17 @@ def verify(pdf_path: Path, conv_dir: Path):
     md_j = joined(html.unescape(md))   # Markdown escapes < and & as entities; they render correctly
     htm_plain = re.sub(r"list-style-type:\s*'([^']*)'[^>]*>", lambda m: ">" + m.group(1), htm)  # list markers
     html_j = joined(html.unescape(re.sub(r"<[^>]+>", " ", re.sub(r"(?is)<(style|script).*?</\1>", " ", htm_plain))))
-    flags, passed = [], Counter()
+    class _Passed(Counter):
+        def __setitem__(self, k, v):
+            if want(k):
+                super().__setitem__(k, v)
+    flags, passed = [], _Passed()
     crops = conv_dir / "review" / "crops"
     crops.mkdir(parents=True, exist_ok=True)
 
     def flag(check, detail, page=None, bbox=None, origin="BOTTOMLEFT", ref=None, extracted=None):
+        if not want(check):
+            return
         fid = f"{check}-" + hashlib.sha1(f"{check}|{ref}|{page}|{detail}".encode()).hexdigest()[:10]
         item = {"id": fid, "check": check, "page": page, "ref": ref, "detail": detail,
                 "extracted": extracted, "status": "NEEDS_REVIEW"}
@@ -188,12 +213,11 @@ def verify(pdf_path: Path, conv_dir: Path):
             continue
         for pr in t.get("prov", []):
             pg = pr["page_no"]
-            src = pdf.box_text(pg, pr["bbox"], pr["bbox"]["coord_origin"])
             seg = text[pr["charspan"][0]:pr["charspan"][1]] if len(t.get("prov", [])) > 1 else text
             page_covered[pg].update(words(seg) + words(t.get("marker") or ""))
-            if pg in no_text_layer:
+            if pg in no_text_layer or not want("T2"):
                 continue
-            src_j = joined(src)
+            src_j = joined(pdf.box_text(pg, pr["bbox"], pr["bbox"]["coord_origin"]))
             missing = [w for w in words(seg) if w not in src_j]
             if missing:
                 flag("T2", f"words not found in the PDF at this location: {' '.join(missing[:25])}",
@@ -221,6 +245,8 @@ def verify(pdf_path: Path, conv_dir: Path):
         cells = tb["data"]["table_cells"]
         for c in cells:
             page_covered[pg].update(words(c["text"]))
+        if not want("B1"):
+            continue
         bad = 0
         for c in cells:
             src = pdf.box_text(pg, c["bbox"], c["bbox"]["coord_origin"])
@@ -280,7 +306,7 @@ def verify(pdf_path: Path, conv_dir: Path):
     # Figures
     for n, pic in enumerate(d["pictures"], 1):
         pr = pic["prov"][0] if pic.get("prov") else None
-        if pr and pic["self_ref"] in reach:
+        if DOC and pr and pic["self_ref"] in reach:
             page_covered[pr["page_no"]].update(words(pdf.box_text(pr["page_no"], pr["bbox"], pr["bbox"]["coord_origin"])))
         uri = (pic.get("image") or {}).get("uri")
         ok = False
@@ -299,6 +325,17 @@ def verify(pdf_path: Path, conv_dir: Path):
             flag("F3", f"figure {n} has no caption attached; confirm it is a real figure and nothing is lost",
                  pr and pr["page_no"], pr and pr["bbox"], pr and pr["bbox"]["coord_origin"], pic["self_ref"])
 
+    if want("B4"):
+        _check_b4(d, md, htm, flag, passed)
+    if DOC:
+        _check_document(pdf, conv_dir, md, htm_plain, n_pages, no_text_layer, page_covered, flag, passed)
+    flags = sort_flags(flags)
+    if not write:
+        return {"flags": flags, "checks_passed": dict(passed)}
+    return write_report(pdf_path, conv_dir, stem, flags, passed)
+
+
+def _check_b4(d, md, htm, flag, passed):
     # B4: tables in the final .md and .html equal the verified table model, cell by cell
     model = [[[joined(c["text"]) for c in row] for row in tb["data"]["grid"]] for tb in d["tables"]]
     md_tables, cur = [], []
@@ -324,6 +361,8 @@ def verify(pdf_path: Path, conv_dir: Path):
             else:
                 passed["B4"] += 1
 
+
+def _check_document(pdf, conv_dir, md, htm_plain, n_pages, no_text_layer, page_covered, flag, passed):
     # M1: the final .md / .html contain no words that are absent from the PDF
     pdf_all = Counter()
     for p in range(1, n_pages + 1):
@@ -381,6 +420,8 @@ def verify(pdf_path: Path, conv_dir: Path):
         else:
             passed["O1"] += 1
 
+
+def write_report(pdf_path, conv_dir, stem, flags, passed):
     report = {
         "source_pdf": pdf_path.name,
         "source_sha256": hashlib.sha256(pdf_path.read_bytes()).hexdigest(),
