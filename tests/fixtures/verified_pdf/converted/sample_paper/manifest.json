@@ -1,0 +1,50 @@
+{
+  "source_pdf": "sample_paper.pdf",
+  "source_sha256": "63475b459ff08494bccb9f6d5ea43b99b4e38acccb6f547382c703e9a65522ee",
+  "pages": 2,
+  "text_items": 18,
+  "markdown_chars": 1607,
+  "tables": [
+    {
+      "n": 1,
+      "page": 1,
+      "bbox": [
+        71.0164566040039,
+        331.36358642578125,
+        462.7433776855469,
+        412.83837890625
+      ],
+      "rows": 3,
+      "cols": 4,
+      "caption": "Table 1: Invented counts per review stage."
+    }
+  ],
+  "pictures": [
+    {
+      "n": 1,
+      "page": 2,
+      "bbox": [
+        104.99163055419922,
+        471.27685546875,
+        469.44110107421875,
+        693.9273071289062
+      ],
+      "caption": "Figure 1: Retention rate by stage (invented data)."
+    }
+  ],
+  "ocr": false,
+  "image_scale": 2.0,
+  "seconds": 7.4,
+  "tools": {
+    "docling": "2.151.1",
+    "docling-core": "2.108.0"
+  },
+  "warnings": [],
+  "outputs": [
+    "images/image_000000_afc3610240a9ab2ab88053ce15193a478109a245457e5665ee4b64554eefe3cf.png",
+    "sample_paper.docling.json",
+    "sample_paper.html",
+    "sample_paper.md",
+    "tables/table-1.csv"
+  ]
+}

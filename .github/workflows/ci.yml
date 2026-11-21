@@ -83,3 +83,27 @@ jobs:
       - name: Run Real-Paper Smoke Test (Live GROBID & Publisher XML)
         run: |
           python scripts/smoke_test_real_papers.py
+
+  verified-pdf-e2e:
+    # Optional heavy job: real Docling conversion of the synthetic fixture, then the full verified-PDF tests.
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 3Pass
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: Install Python Dependencies (CPU torch + Docling)
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
+          pip install -r requirements-verified-pdf.txt
+
+      - name: Run Verified PDF Tests (including Docling end-to-end)
+        run: |
+          python -m pytest tests/test_verified_pdf.py -v

@@ -5,8 +5,10 @@ Input: A paper selected by the researcher (from S3A, source ledger, DOI, or path
 Evaluates plugins in priority order and selects the best available path:
   1. ArxivHtmlPlugin: arXiv with HTML at arxiv.org/html/<id> -> parses LaTeXML ltx_* classes
   2. LatexSourcePlugin: arXiv/source with LaTeX -> compiles/parses via LaTeXML
-  3. GrobidPdfPlugin: PDF only -> extracts via GROBID (TEI XML), marks every part 'pdf-extracted, verify'
-  4. CrossrefOpenAlexPlugin: DOI/metadata only -> polite pool with mailto, backoff, disk cache per DOI
+  3. PublisherXmlPlugin: publisher JATS XML -> full structure
+  4. VerifiedPdfPlugin: PDF -> text, tables, figures verified block-by-block against the PDF (needs Docling)
+  5. GrobidPdfPlugin: PDF only -> extracts via GROBID (TEI XML), marks every part 'pdf-extracted, verify'
+  6. CrossrefOpenAlexPlugin: DOI/metadata only -> polite pool with mailto, backoff, disk cache per DOI
 
 Bookkeeping only: Extracted facts and structure. No automated judgments or summaries.
 """
@@ -1465,6 +1467,215 @@ class CrossrefOpenAlexPlugin(BaseSourcePlugin):
         )
 
 
+
+def verified_pdf_available() -> bool:
+    """True when the optional Docling converter for the verified PDF path is installed."""
+    try:
+        import importlib.util
+        return importlib.util.find_spec("docling") is not None
+    except Exception:
+        return False
+
+
+class VerifiedPdfPlugin(BaseSourcePlugin):
+    """
+    Path c+: PDF -> Markdown/HTML with text, tables and figures, verified against the PDF itself.
+
+    Conversion: Docling (optional dependency, see requirements-verified-pdf.txt).
+    Verification: scripts/verified_pdf/verify_conversion.py checks every block against the PDF's
+    own text layer and page geometry (pypdfium2), independently of the converter.
+    Only blocks that pass become record content with status 'pdf-verified'; anything else is
+    kept out of the text and marked 'held, review'. Metadata and references come from GROBID
+    when it is reachable; a reference is marked 'pdf-verified' only if its title is found in the
+    PDF text layer, otherwise it stays 'pdf-extracted, verify'.
+    Completeness: 'pdf-verified' when no flag is open, else 'pdf-extracted'.
+    Falls through to GrobidPdfPlugin when Docling is not installed.
+    """
+    name = "verified_pdf"
+    priority = 65
+
+    BLOCK_STATUS = {"verified": "pdf-verified", "held": "held, review"}
+
+    def __init__(self, grobid_url: Optional[str] = None, out_root: Optional[str] = None):
+        super().__init__()
+        self.grobid_url = grobid_url or os.environ.get("GROBID_URL", "http://localhost:8070")
+        self.out_root = out_root or os.path.join(DEFAULT_CACHE_DIR, "verified_pdf")
+
+    def can_handle(self, paper_input: Dict[str, Any]) -> bool:
+        if paper_input.get("disable_verified_pdf"):
+            return False
+        if paper_input.get("verified_dir_fixture"):
+            return True
+        pdf_path = paper_input.get("drive_path") or paper_input.get("original_path")
+        return bool(pdf_path and os.path.exists(pdf_path) and pdf_path.lower().endswith(".pdf")
+                    and verified_pdf_available())
+
+    def extract(self, paper_input: Dict[str, Any]) -> PaperRecord:
+        from pathlib import Path
+        from scripts.verified_pdf import agent_tool
+
+        pdf_path = paper_input.get("drive_path") or paper_input.get("original_path")
+        fixture_dir = paper_input.get("verified_dir_fixture")
+        if not pdf_path or not os.path.exists(pdf_path):
+            raise FileNotFoundError(f"PDF source file not found: {pdf_path}")
+        with open(pdf_path, "rb") as f:
+            sha256_val = hashlib.sha256(f.read()).hexdigest()
+
+        if fixture_dir:
+            conv_dir = Path(fixture_dir)
+            tool_version = "fixture conversion (verified against PDF)"
+            live = False
+        else:
+            from scripts.verified_pdf import pdf_to_md_html
+            from pathlib import Path as _P
+            run_root = _P(self.out_root) / sha256_val[:16]
+            pdf_to_md_html.convert(_P(pdf_path), run_root, ocr=bool(paper_input.get("ocr")))
+            conv_dir = run_root / _P(pdf_path).stem
+            live = True
+            manifest = json.loads((conv_dir / "manifest.json").read_text(encoding="utf-8"))
+            tool_version = f"docling {manifest['tools']['docling']} + 3Pass verifier (pdfium)"
+
+        view = agent_tool.build_verified_view(Path(pdf_path), conv_dir)
+        record = self._record_from_view(view, conv_dir, paper_input, pdf_path, sha256_val, tool_version)
+
+        # Metadata + references from GROBID, if reachable. Never claim a GROBID run that did not happen.
+        grobid = GrobidPdfPlugin(grobid_url=self.grobid_url)
+        tei_rec = None
+        if paper_input.get("tei_fixture"):
+            tei_rec = grobid._parse_tei_xml(paper_input["tei_fixture"], paper_input, pdf_path)
+            grobid_tool = "tei-xml-fixture"
+        elif live and paper_input.get("use_grobid", True):
+            try:
+                tei_xml, ver = grobid._call_grobid(pdf_path)
+                tei_rec = grobid._parse_tei_xml(tei_xml, paper_input, pdf_path, is_live_request=True, grobid_version=ver)
+                grobid_tool = f"GROBID {ver}"
+            except RuntimeError:
+                tei_rec = None
+        if tei_rec is not None:
+            if tei_rec.title and not paper_input.get("title"):
+                record.title = tei_rec.title
+            record.authors = tei_rec.authors or record.authors
+            record.year = tei_rec.year or record.year
+            record.doi = tei_rec.doi or record.doi
+            for ref in tei_rec.references:
+                hit = agent_tool.check_quote(Path(pdf_path), ref.title) if ref.title and len(ref.title) > 12 else {"found": False}
+                ref.verified = "pdf-verified" if hit.get("found") else "pdf-extracted, verify"
+            record.references = tei_rec.references
+            title_hit = agent_tool.check_quote(Path(pdf_path), record.title) if record.title != "Untitled" else {"found": False}
+            record.provenance.per_part["metadata"] = {
+                "tool": grobid_tool,
+                "status": "title pdf-verified; authors/year/doi pdf-extracted, verify" if title_hit.get("found")
+                else "pdf-extracted, verify"}
+            record.provenance.per_part["references"] = {
+                "tool": grobid_tool,
+                "status": "title checked against PDF text layer (pdf-verified per reference where found)"}
+        return record
+
+    def _record_from_view(self, view, conv_dir, paper_input, pdf_path, sha256_val, tool_version) -> PaperRecord:
+        blocks = view["blocks"]
+        sections: List[SectionRecord] = []
+        figures: List[FigureRecord] = []
+        tables: List[TableRecord] = []
+        equations: List[EquationRecord] = []
+        current = None
+        title = paper_input.get("title") or ""
+        abstract = ""
+
+        def status_of(b):
+            st = self.BLOCK_STATUS[b["status"]]
+            if b["status"] == "verified" and not b.get("page_complete", True):
+                st = "pdf-verified, page incomplete"
+            if b["status"] == "verified" and b.get("needs_confirmation"):
+                st = "pdf-verified, confirm"
+            return st
+
+        def worst(a, b):
+            order = ["pdf-verified", "pdf-verified, confirm", "pdf-verified, page incomplete", "held, review"]
+            return max(a, b, key=order.index)
+
+        for b in blocks:
+            st = status_of(b)
+            pages = ",".join(map(str, b.get("pages", [])))
+            if b["type"] in ("heading", "title") and b["status"] == "verified":
+                if b["type"] == "title" and not title:
+                    title = b["text"]
+                current = SectionRecord(id=f"sec_{len(sections) + 1}", title=b["text"], text="",
+                                        level=(b.get("level") or 1), verified=st)
+                sections.append(current)
+                continue
+            if b["type"] == "table":
+                md = agent_tool_md_table(b["rows"]) if b["status"] == "verified" else \
+                    f"*(held for review, p.{pages}: {'; '.join(b.get('held_reason', []))[:300]})*"
+                tables.append(TableRecord(id=f"tab_{len(tables) + 1}", caption=b.get("caption") or "",
+                                          markdown=md, verified=st))
+                continue
+            if b["type"] == "figure":
+                img = str(conv_dir / b["image"]) if b.get("image") and b["status"] == "verified" else ""
+                figures.append(FigureRecord(id=f"fig_{len(figures) + 1}", caption=b.get("caption") or "",
+                                            url_or_path=img, verified=st))
+                continue
+            if b["type"] == "formula":
+                equations.append(EquationRecord(
+                    id=f"eq_{len(equations) + 1}",
+                    latex=b.get("text", "") if b["status"] == "verified" else f"[HELD p.{pages}: formula not verified]",
+                    verified=st))
+                continue
+            if current is None:
+                current = SectionRecord(id="sec_1", title="Front matter", text="", level=1, verified="pdf-verified")
+                sections.append(current)
+            piece = b["text"] if b["status"] == "verified" else f"[HELD p.{pages}: content withheld until reviewed]"
+            if b["type"] == "list_item":
+                piece = f"- {(b.get('marker') + ' ') if b.get('marker') else ''}{piece}"
+            current.text = (current.text + "\n\n" + piece).strip()
+            current.verified = worst(current.verified, st)
+            if current.title.strip().lower() == "abstract" and b["status"] == "verified":
+                abstract = (abstract + " " + b["text"]).strip()
+
+        prov = RecordProvenance(
+            path_used="verified_pdf",
+            tool="docling+pdfium-verifier",
+            tool_version=tool_version,
+            source_uri=pdf_path,
+            extracted_at=datetime.now().isoformat(),
+            per_part={
+                "metadata": {"tool": "docling", "status": "pdf-extracted, verify"},
+                "sections": {"tool": "docling+verifier", "status": f"{view['counts']['verified']} blocks pdf-verified, {view['counts']['held']} held"},
+                "figures": {"tool": "docling+verifier", "status": "image = pixel render of PDF region; captions verified"},
+                "tables": {"tool": "docling+verifier", "status": "cells verified against PDF text per cell"},
+                "equations": {"tool": "docling", "status": "held unless decoded and verified"},
+                "references": {"tool": "none", "status": "not-available (GROBID not run)"},
+                "reading_order": {"tool": "verifier", "status": "verified" if view["reading_order_verified"] else "needs review"},
+                "verified_view": {"tool": "verified-pdf-view/v1", "status": view["document_status"],
+                                  "path": str(conv_dir / "verified")},
+            },
+        )
+        sid = paper_input.get("source_id", "SRC-0000")
+        pid = paper_input.get("paper_id") or derive_paper_id(sid, title or sha256_val)
+        return PaperRecord(
+            source_id=sid,
+            paper_id=pid,
+            title=title or "Untitled",
+            authors=paper_input.get("authors", []),
+            year=paper_input.get("year"),
+            doi=paper_input.get("doi"),
+            urls={"pdf": pdf_path, "verified_view": str(conv_dir / "verified")},
+            completeness="pdf-verified" if view["document_status"] == "VERIFIED" else "pdf-extracted",
+            provenance=prov,
+            abstract=abstract,
+            sections=sections,
+            figures=figures,
+            tables=tables,
+            equations=equations,
+            references=[],
+            sha256=sha256_val,
+        )
+
+
+def agent_tool_md_table(rows: List[List[str]]) -> str:
+    from scripts.verified_pdf.agent_tool import _md_table
+    return _md_table(rows)
+
+
 class SourceRouter:
     """
     Extensible Router selecting the highest-priority plugin capable of handling a paper.
@@ -1495,6 +1706,7 @@ def create_default_router() -> SourceRouter:
     router.register_plugin(ArxivHtmlPlugin())
     router.register_plugin(LatexSourcePlugin())
     router.register_plugin(PublisherXmlPlugin())
+    router.register_plugin(VerifiedPdfPlugin())
     router.register_plugin(GrobidPdfPlugin())
     router.register_plugin(CrossrefOpenAlexPlugin())
     return router

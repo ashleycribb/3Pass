@@ -12,6 +12,7 @@ venv/
 cache/
 *.pdf
 tests/real/*.pdf
+!tests/fixtures/verified_pdf/sample_paper.pdf
 
 # Secrets & Credentials
 .env
