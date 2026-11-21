@@ -18,6 +18,7 @@ An agent never reads the raw converter output. It reads `verified/<name>.verifie
 | `reading_order_verified: false` | Block order may not match the page (for example, a title placed after section 2.1). Block contents are still correct. | Do not infer structure from order alone. |
 | `document_status: "VERIFIED"` | No open flags anywhere in the document. | Use it all. |
 | `document_status: "PARTIAL"` | At least one open flag. Each flag is listed. | Use only `verified` blocks. Respect the flags. |
+| block `fingerprints`, `inventory.document_fingerprint` | An identity for the block's content (see `anchors.json`): equal fingerprints mean equal content. A fingerprint says nothing about correctness. | Use it as a stable ID to cite or cache a block and to detect changes between conversions. Trust only `status`. |
 
 ## Required behaviour for the agent
 
