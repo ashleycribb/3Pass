@@ -16,6 +16,9 @@ Researcher Selection (via Scholar Explorer, S3A, or DOI list)
 Source Router (scripts/source_router.py)
   ├─ Path a: ArxivHtmlPlugin      (arXiv HTML at arxiv.org/html/<id> -> parses LaTeXML ltx_* classes)
   ├─ Path b: LatexSourcePlugin    (arXiv/LaTeX source -> compiles/parses via LaTeXML)
+  ├─ Path xml: PublisherXmlPlugin (publisher JATS XML -> full structure, 'jats-verified')
+  ├─ Path c+: VerifiedPdfPlugin   (PDF -> Docling text/tables/figures, every block checked against the
+  │                                PDF text layer; 'pdf-verified' or 'held, review'; needs Docling)
   ├─ Path c: GrobidPdfPlugin      (PDF only -> extracts via GROBID TEI XML, marks 'pdf-extracted, verify')
   └─ Path d: CrossrefOpenAlexPlugin (DOI/metadata only -> polite pool with mailto, backoff, disk cache)
   │
@@ -23,7 +26,7 @@ Source Router (scripts/source_router.py)
 Unified Record Schema (scripts/models.py)
   ├─ Metadata, URLs, abstract, sections, figures, tables, equations, references
   ├─ Provenance: path_used, tool, tool_version, per-part verification
-  └─ Completeness level: full | pdf-extracted | metadata-only
+  └─ Completeness level: full | pdf-verified | pdf-extracted | metadata-only
   │
   ├─────────────────────────────────────────────────┐
   ▼                                                 ▼
@@ -139,7 +142,26 @@ python scripts/query_engine.py --mode graph --theory "Learner Agency"
 python scripts/query_engine.py --mode hybrid --query "scaffolding agency"
 ```
 
-### 5. Run Automated Test Suite
+### 5. Verified PDF Path (text, tables and figures to Markdown + HTML)
+The router uses this path for any local PDF when Docling is installed; otherwise it falls through to GROBID.
+Each output block is checked against the PDF's own text layer (pypdfium2), independently of the converter.
+Blocks that fail are held, not published. See `docs/verified_pdf/AGENT_CONTRACT.md` for what an agent may rely on.
+```powershell
+pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
+pip install -r requirements-verified-pdf.txt
+# Convert + verify; writes <out>/<name>/{<name>.md,.html,images/,tables/,review/,verified/}
+python scripts/verified_pdf/agent_tool.py ingest paper.pdf --out cache/verified_pdf
+# Verified blocks only (held blocks show status + reason, never content)
+python scripts/verified_pdf/agent_tool.py blocks cache/verified_pdf/paper
+# Check a quote against the PDF text layer (exit 0 found, 3 not found)
+python scripts/verified_pdf/agent_tool.py check-quote paper.pdf "exact words to check"
+# Researcher review: open review/review.html, record your decisions in <dir>/decisions.json (with reviewer name), then rebuild
+python scripts/verified_pdf/agent_tool.py rebuild paper.pdf cache/verified_pdf/paper
+# MCP server for agents (tools: ingest_pdf, get_verified_blocks, check_quote_in_pdf)
+python scripts/verified_pdf/agent_tool.py mcp
+```
+
+### 6. Run Automated Test Suite
 ```powershell
 python -m pytest tests/ -v
 ```

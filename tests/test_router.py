@@ -260,15 +260,16 @@ def test_wiki_draft_page_facts_and_empty_researcher_notes(arxiv_html, tmp_path):
     assert "LA:" not in content
 
 def test_source_router_plugin_priority():
-    """Router prioritizes arXiv HTML > LaTeX source > Publisher XML > GROBID PDF > DOI metadata."""
+    """Router prioritizes arXiv HTML > LaTeX source > Publisher XML > Verified PDF > GROBID PDF > DOI metadata."""
     router = create_default_router()
     plugins = router.plugins
 
     assert plugins[0].name == "arxiv_html"
     assert plugins[1].name == "latex_source"
     assert plugins[2].name == "publisher_xml"
-    assert plugins[3].name == "grobid_pdf"
-    assert plugins[4].name == "doi_metadata"
+    assert plugins[3].name == "verified_pdf"
+    assert plugins[4].name == "grobid_pdf"
+    assert plugins[5].name == "doi_metadata"
 
 def test_s3a_round_trip_export(tmp_path):
     """S3A round-trip test: exports records, builds .s3a, inspects headers and tiles."""

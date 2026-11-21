@@ -279,6 +279,7 @@ def update_wiki_index(sources: List[Dict[str, Any]], wiki_dir: str):
     total = len(sources)
     full_count = sum(1 for s in sources if s.get("completeness") == "full")
     pdf_count = sum(1 for s in sources if s.get("completeness") == "pdf-extracted")
+    pdf_verified_count = sum(1 for s in sources if s.get("completeness") == "pdf-verified")
     meta_count = sum(1 for s in sources if s.get("completeness") == "metadata-only")
 
     content = f"""# Doctoral Research Corpus Wiki
@@ -302,7 +303,8 @@ Automated judgments and summaries are disabled; all evaluations are drafted by t
 ## Corpus Status & Statistics
 - **Total Registered Sources**: `{total}`
 - **Full Structure (arXiv LaTeXML / LaTeX)**: `{full_count}`
-- **PDF-Extracted (GROBID / TEI)**: `{pdf_count}`
+- **PDF-Verified (Docling + PDF verifier, every block checked against the PDF)**: `{pdf_verified_count}`
+- **PDF-Extracted (GROBID / TEI, or verified path with open review flags)**: `{pdf_count}`
 - **Metadata-Only (Crossref / OpenAlex)**: `{meta_count}`
 - **Active Backend**: S3A Native Hyper-Tile Storage Engine (`ledger/research_corpus.s3a`)
 

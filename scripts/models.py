@@ -4,6 +4,10 @@ Unified Academic Paper Record Schema
 Maintains a single record format across all extraction paths:
   - Path a: arXiv LaTeXML HTML (completeness: "full")
   - Path b: LaTeX Source -> LaTeXML (completeness: "full")
+  - Path c+: Verified PDF (Docling conversion, every block checked against the PDF text layer)
+      completeness: "pdf-verified" when no review flag is open, else "pdf-extracted";
+      part statuses: "pdf-verified" | "pdf-verified, confirm" | "pdf-verified, page incomplete" |
+      "held, review" (content withheld until a researcher reviews it)
   - Path c: GROBID PDF TEI XML (completeness: "pdf-extracted", all parts marked "pdf-extracted, verify")
   - Path d: Crossref / OpenAlex Metadata (completeness: "metadata-only")
 
@@ -72,7 +76,7 @@ class PartProvenance:
 
 @dataclass
 class RecordProvenance:
-    path_used: str  # "arxiv_html" | "latex_source" | "publisher_xml" | "grobid_pdf" | "doi_metadata"
+    path_used: str  # "arxiv_html" | "latex_source" | "publisher_xml" | "verified_pdf" | "grobid_pdf" | "doi_metadata"
     tool: str
     tool_version: str
     source_uri: str
@@ -89,7 +93,7 @@ class PaperRecord:
     doi: Optional[str] = None
     arxiv_id: Optional[str] = None
     urls: Dict[str, str] = field(default_factory=dict)
-    completeness: str = "full"  # "full" | "pdf-extracted" | "metadata-only"
+    completeness: str = "full"  # "full" | "pdf-verified" | "pdf-extracted" | "metadata-only"
     provenance: Optional[RecordProvenance] = None
     provenances: List[RecordProvenance] = field(default_factory=list)
     abstract: str = ""

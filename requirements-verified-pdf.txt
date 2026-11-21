@@ -1,0 +1,11 @@
+# Optional: Docling converter for the verified PDF path (scripts/verified_pdf, router path `verified_pdf`).
+# The verifier and the tests need only requirements.txt (pypdfium2 + Pillow); install this file to
+# convert new PDFs. CPU-only torch keeps the install small:
+#   pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
+#   pip install -r requirements-verified-pdf.txt
+docling==2.151.1
+docling-core==2.108.0
+docling-ibm-models==4.0.4
+docling-parse==7.27.0
+# MCP server (agent_tool.py mcp) uses FastMCP from the 1.x SDK
+mcp>=1.30.0,<2
