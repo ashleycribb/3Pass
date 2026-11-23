@@ -334,7 +334,9 @@ def _join_hyphens_known(s: str, bag) -> str:
             return compound
         return m.group(1) + " " + m.group(2)
     while True:
-        n = re.sub(r"(\w)[-–—][ \t]*(?:\r?\n\s*)?(\w)", repl, s)
+        # Join whole tokens (recom-mended), never two letters from a longer
+        # identifier just because "rt" happens to be a PDF word.
+        n = re.sub(r"(\w+)[-–—][ \t]*(?:\r?\n\s*)?(\w+)", repl, s)
         if n == s:
             return n
         s = n
