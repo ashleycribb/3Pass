@@ -65,11 +65,11 @@ def _decisions(conv_dir: Path):
     return out
 
 
-def build_verified_view(pdf_path: Path, conv_dir: Path, report=None) -> dict:
+def build_verified_view(pdf_path: Path, conv_dir: Path, report=None, profile=None) -> dict:
     """`report` may be a review.json just produced for these exact outputs (parallel.py);
     otherwise the conversion is verified here."""
     shutil.rmtree(conv_dir / "verified", ignore_errors=True)   # never leave a stale view behind
-    report = report or vc.verify(pdf_path, conv_dir)
+    report = report or vc.verify(pdf_path, conv_dir, profile=profile)
     decisions = _decisions(conv_dir)
     open_flags = [f for f in report["flags"] if f["id"] not in decisions or decisions[f["id"]]["decision"] == "corrected"]
     cleared = [f for f in report["flags"] if f not in open_flags]
@@ -197,6 +197,11 @@ def build_verified_view(pdf_path: Path, conv_dir: Path, report=None) -> dict:
     tmp = conv_dir / "verified.tmp"
     shutil.rmtree(tmp, ignore_errors=True)
     tmp.mkdir()
+    try:
+        from . import technical_manual as tm
+    except ImportError:
+        import technical_manual as tm
+    tm.enrich_verified_view(view, pdf, conv_dir, d, profile=profile, out_dir=tmp)
     leftover = None
     md = htm = None
     for _attempt in range(8):
@@ -453,7 +458,7 @@ def check_quote(pdf_path: Path, quote: str, page=None) -> dict:
             "note": "normalized = same letters and digits in the same order; punctuation/case/spacing may differ"}
 
 
-def ingest(pdfs, out: Path, ocr=False, grobid=None, parallel=False, workers=None) -> list:
+def ingest(pdfs, out: Path, ocr=False, grobid=None, parallel=False, workers=None, profile=None) -> list:
     try:
         from . import pdf_to_md_html as conv
     except ImportError:
@@ -470,7 +475,7 @@ def ingest(pdfs, out: Path, ocr=False, grobid=None, parallel=False, workers=None
                 v = par.run_shards(pdf, out, ocr=ocr, grobid=grobid, workers=workers)["view"]
             else:
                 conv.convert(pdf, out, ocr=ocr, grobid=grobid)
-                v = build_verified_view(pdf, out / pdf.stem)
+                v = build_verified_view(pdf, out / pdf.stem, profile=profile)
             results.append({"pdf": pdf.name, "status": v["document_status"], "counts": v["counts"],
                             "reading_order_verified": v["reading_order_verified"],
                             "incomplete_pages": [p["page"] for p in v["pages"] if not p["complete"]],
@@ -479,6 +484,24 @@ def ingest(pdfs, out: Path, ocr=False, grobid=None, parallel=False, workers=None
         except Exception as exc:
             results.append({"pdf": pdf.name, "status": "FAILED", "error": str(exc)})
     return results
+
+
+def get_held_crop(conv_dir: Path, block_id: str):
+    """Return the PNG path for a held block. Fails closed for verified, unknown, or bbox-less blocks."""
+    try:
+        from . import technical_manual as tm
+    except ImportError:
+        import technical_manual as tm
+    return tm.get_held_crop(conv_dir, block_id)
+
+
+def apply_cell_review(conv_dir, block_id, decision="approve", reviewer=None, **kwargs):
+    """Record a human review of a held table cell. Requires a reviewer; never auto-promotes."""
+    try:
+        from . import technical_manual as tm
+    except ImportError:
+        import technical_manual as tm
+    return tm.apply_cell_review(conv_dir, block_id, decision=decision, reviewer=reviewer, **kwargs)
 
 
 def get_blocks(conv_dir: Path, include_held=False) -> dict:
@@ -498,6 +521,9 @@ def build_parser():
     a1.add_argument("--parallel", action="store_true", help="page shards in parallel (see parallel.py); same outputs and checks")
     a1.add_argument("--workers", type=int, default=None,
                     help="max parallel Docling shards for --parallel (default: cpu_count). Use 2 on a 15 GB machine.")
+    a1.add_argument("--profile", choices=["academic", "technical_manual"], default=None,
+                    help="document profile. technical_manual skips GROBID, detects running folios, "
+                         "and records page triage and table-cell review fields.")
     a2 = sub.add_parser("blocks"); a2.add_argument("converted_dir", type=Path); a2.add_argument("--include-held", action="store_true")
     a3 = sub.add_parser("check-quote"); a3.add_argument("pdf", type=Path); a3.add_argument("quote"); a3.add_argument("--page", type=int)
     a4 = sub.add_parser("rebuild", help="re-verify and rebuild the verified view (e.g. after decisions.json)")
@@ -510,7 +536,8 @@ def main():
     ap = build_parser()
     a = ap.parse_args()
     if a.cmd == "ingest":
-        res = ingest(a.pdfs, a.out, a.ocr, a.grobid, a.parallel, getattr(a, "workers", None))
+        res = ingest(a.pdfs, a.out, a.ocr, a.grobid, a.parallel, getattr(a, "workers", None),
+                     profile=getattr(a, "profile", None))
         print(json.dumps(res, indent=2))
         sys.exit(1 if any(r["status"] == "FAILED" for r in res) else 0)
     if a.cmd == "blocks":

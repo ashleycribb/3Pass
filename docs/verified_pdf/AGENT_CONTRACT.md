@@ -51,3 +51,30 @@ An agent never reads the raw converter output. It reads `verified/<name>.verifie
 | table / figure / equation `verified` | same values | Held tables, figures and equations carry no content. |
 | reference `verified` | `pdf-verified` / `pdf-extracted, verify` | References come from GROBID. A reference is `pdf-verified` only if its title is found in the PDF text layer. Authors, venue and year are still GROBID's parse. |
 | `provenance.per_part.metadata` | | Title is checked against the PDF; authors, year and DOI are `pdf-extracted, verify`. |
+
+## New statuses and fields (technical_manual profile and cell review)
+
+| Status / field | What it guarantees | What the agent may do |
+|---|---|---|
+| `pages[].triage.class` | `born_digital`, `scanned`, or `broken_text_layer`, from pypdfium2 signals recorded in `pages[].triage.signals`. Classification only. | Treat `scanned` and `broken_text_layer` pages as unverifiable. There is no OCR or VLM tier in this path. |
+| `pages[].running_header` / `running_footer` | Repeating folio text and bbox, detected by position across nearby pages (`technical_manual` profile). Stripped from body and table text; kept as metadata. | Cite the printed page from this metadata. Do not treat the folio as body content. |
+| `profile: "technical_manual"` | The academic GROBID path (including O1) was not run. | Do not expect GROBID references or a GROBID title check. |
+| table `cells[]` | Per-cell status from the **cell-box check only**: the quote must match text-layer characters inside that cell's own bbox (plus the verifier's box tolerance). A stacked cell verifies when each line is a contiguous span inside the box. No bbox, or an empty value, stays `held`. A match elsewhere on the page is not enough. | Use a cell only when its `status` is `verified` or `human_verified`. |
+| cell `status: "human_verified"` | A named human reviewed the held cell and confirmed it. The record includes `reviewer`, `reviewed_at`, and `evidence` (`cell_quote_sha256` plus **human-confirmed** `paragraph_quote_sha256` values). | Use the cell and cite the reviewer and evidence hashes. The tool never creates this status by itself. |
+| cell `cross_references` | Ranked **candidate** paragraph links (`candidate: true`, `rank`, `overlap`, `region`, `quote_sha256`). Token overlap on the same or neighbouring pages produces candidates; they are **not** assertions that the paragraph is the correct match. A possible row/column conflict is labelled `role: "conflict"` as a hint for review, not a finding. Candidates never promote a cell to `verified`. | Show candidates to a human. Do not treat them as verified structure. |
+| table `html` / `markdown` / `crop` | Faithful HTML keeps the model's real `colspan`/`rowspan` only (nothing is invented). Markdown is a flattened grid. `crop` is the union of caption, table and footnote, padded (40–80 px) and clamped so neighbouring blocks are not swallowed. | Display the crop and the marked-up table. Still use cell `status` for what may be quoted. |
+| `get_held_crop(block_id)` | Returns the PNG crop of a **held** block. Rejects verified, unknown, and bbox-less blocks. | Show the crop in review. Do not invent a box. |
+
+## REVIEW-PROCEDURE
+
+This is the human procedure for checking table contents. Matching a paragraph to a table region is hard for automation, so the tool only proposes ranked candidates. A person decides.
+
+1. **For each held table cell, show the cell crop next to the ranked candidate paragraph spans.** Candidates are ordered by token-overlap evidence (`overlap`, `overlap_count`, `rank`). Each candidate includes the quote, `quote_sha256`, and a stored region (row/col range of the cells that share those tokens), not the whole table by default. A possible conflict (`role: "conflict"`) is a hint to look carefully; it is not an automated assertion.
+2. **The reviewer confirms or rejects which paragraph and region apply to that cell.** Unconfirmed candidates stay candidates. They are not evidence.
+3. **If the reviewer approves the cell,** record `status: "human_verified"` with:
+   - `reviewer` (required; approval without a reviewer field is rejected)
+   - `reviewed_at` (timestamp)
+   - `evidence.cell_quote_sha256`
+   - `evidence.paragraph_quote_sha256` — only the **human-confirmed** candidate hashes, never an auto-selected paragraph
+4. **A conflict stays held,** with the reason. It cannot be promoted to `human_verified`.
+5. **The tool never auto-promotes.** Verification remains the text-layer cell-box check. Cross-reference does not change a cell from `held` to `verified`. Only a named human can set `human_verified`.
