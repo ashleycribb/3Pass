@@ -182,9 +182,12 @@ def detect_folios(pdf) -> dict:
         return k >= max(2, (len(hits) + 1) // 2) if len(hits) > 1 else k == 1
 
     header_ok = confirmed(headers, same_text=True)
-    footer_ok = confirmed(footers, same_text=False) and all(
-        len(vc.words(f["text"])) <= 4 for f in footers.values()
-    )
+    # A running footer is a short line (printed page, change number) in the
+    # bottom band on a majority of pages. A single page whose bottom band also
+    # captured body text must not veto the document-wide footer.
+    short_footers = {p: f for p, f in footers.items() if len(vc.words(f["text"])) <= 4}
+    footer_ok = confirmed(short_footers, same_text=False)
+    footers = short_footers
     pages = {}
     for p in range(1, n + 1):
         item = {"page": p, "running_header": None, "running_footer": None}
