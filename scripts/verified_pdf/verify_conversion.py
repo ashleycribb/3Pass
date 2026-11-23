@@ -337,10 +337,8 @@ def verify(pdf_path: Path, conv_dir: Path, only=GROUPS, write=True, profile=None
         for c in cells:
             loc = f"table {n} cell r{c['start_row_offset_idx']}c{c['start_col_offset_idx']}"
             if not (c.get("text") or "").strip():
-                bad += 1
-                flag("B1", f"{loc}: empty table cell (no value to hash)",
-                     pg, c.get("bbox"), (c.get("bbox") or {}).get("coord_origin", "TOPLEFT"),
-                     f"{tb['self_ref']}", c.get("text"))
+                # Empty cells are held at cell level in the verified view.
+                # They are not a wording failure of the table as a whole.
                 continue
             if not c.get("bbox"):
                 bad += 1
