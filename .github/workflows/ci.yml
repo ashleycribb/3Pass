@@ -49,6 +49,7 @@ jobs:
           cache-dependency-path: |
             requirements.txt
             requirements-verified-pdf.txt
+            requirements-scan-agreement.txt
 
       - name: Install Python Dependencies
         run: |
@@ -56,6 +57,12 @@ jobs:
           pip install -r requirements.txt
           pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
           pip install -r requirements-verified-pdf.txt
+          pip install -r requirements-scan-agreement.txt
+
+      - name: Install Tesseract OCR
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y tesseract-ocr
 
       - name: Wait for GROBID Service
         run: |
@@ -104,6 +111,7 @@ jobs:
           cache-dependency-path: |
             requirements.txt
             requirements-verified-pdf.txt
+            requirements-scan-agreement.txt
 
       - name: Install Python Dependencies (CPU torch + Docling)
         run: |

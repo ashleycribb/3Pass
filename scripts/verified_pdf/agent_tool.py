@@ -65,7 +65,8 @@ def _decisions(conv_dir: Path):
     return out
 
 
-def build_verified_view(pdf_path: Path, conv_dir: Path, report=None, profile=None) -> dict:
+def build_verified_view(pdf_path: Path, conv_dir: Path, report=None, profile=None,
+                        scan_agreement_config=None) -> dict:
     """`report` may be a review.json just produced for these exact outputs (parallel.py);
     otherwise the conversion is verified here."""
     shutil.rmtree(conv_dir / "verified", ignore_errors=True)   # never leave a stale view behind
@@ -201,7 +202,8 @@ def build_verified_view(pdf_path: Path, conv_dir: Path, report=None, profile=Non
         from . import technical_manual as tm
     except ImportError:
         import technical_manual as tm
-    tm.enrich_verified_view(view, pdf, conv_dir, d, profile=profile, out_dir=tmp)
+    tm.enrich_verified_view(view, pdf, conv_dir, d, profile=profile, out_dir=tmp,
+                          pdf_path=pdf_path, scan_agreement_config=scan_agreement_config)
     leftover = None
     md = htm = None
     for _attempt in range(8):
@@ -244,6 +246,7 @@ def build_verified_view(pdf_path: Path, conv_dir: Path, report=None, profile=Non
                     held_any = hold_block(b2, why) or held_any
         view["counts"] = {"verified": sum(b["status"] == "verified" for b in view["blocks"]),
                           "held": sum(b["status"] == "held" for b in view["blocks"]),
+                          "scan_agreement": sum(b["status"] == "scan_agreement" for b in view["blocks"]),
                           "needs_confirmation": sum(bool(b.get("needs_confirmation")) for b in view["blocks"])}
         view["document_status"] = "VERIFIED" if not any(view.get("document_flags")) and view["counts"]["held"] == 0 and not leftover else "PARTIAL"
         if not held_any:
@@ -269,6 +272,52 @@ def _md_table(rows):
     return "\n".join(lines)
 
 
+
+def _render_scan_md(b, loc, rel):
+    status = b["status"]
+    label = "SCAN_AGREEMENT" if status == "scan_agreement" else (
+        "HUMAN_VERIFIED (scan)" if status == "human_verified" else "HELD (scan)"
+    )
+    lines = [f"> {label} ({loc}): not citable until reviewed." if status != "human_verified"
+             else f"> {label} ({loc}): reviewed by {b.get('reviewer') or 'a human'}."]
+    crop = b.get("crop")
+    if crop:
+        lines.append("")
+        lines.append(f"![scan crop]({rel(crop)})")
+    ocr = b.get("ocr") or []
+    if ocr:
+        headers = " | ".join(f"{e.get('name')} {e.get('version')}" for e in ocr)
+        lines += ["", f"| {headers} |", "|" + "|".join("---" for _ in ocr) + "|",
+                  "| " + " | ".join((e.get("text") or "").replace("|", "\\|").replace("\n", " ") for e in ocr) + " |"]
+    return lines
+
+
+def _render_scan_html(b, loc, rel):
+    status = b["status"]
+    if status == "scan_agreement":
+        label = f"SCAN_AGREEMENT ({loc}): not citable until reviewed."
+        cls = "scan-agreement"
+    elif status == "human_verified":
+        label = f"HUMAN_VERIFIED (scan) ({loc}): reviewed by {html.escape(str(b.get('reviewer') or 'a human'))}."
+        cls = "scan-agreement"
+    else:
+        label = f"HELD (scan) ({loc}): not citable until reviewed."
+        cls = "scan-agreement held-scan"
+    parts = [f'<div class="{cls}">', f'<div class="scan-label">{label}</div>']
+    crop = b.get("crop")
+    if crop:
+        parts.append(f'<p class="scan-crop"><img src="{html.escape(rel(crop))}" alt="scan crop"></p>')
+    ocr = b.get("ocr") or []
+    if ocr:
+        parts.append('<div class="ocr-pair">')
+        for e in ocr:
+            title = html.escape(f"{e.get('name') or ''} {e.get('version') or ''}".strip())
+            parts.append(f'<div class="ocr"><h4>{title}</h4><pre>{html.escape(e.get("text") or "")}</pre></div>')
+        parts.append("</div>")
+    parts.append("</div>")
+    return "".join(parts)
+
+
 def render(view, conv_dir: Path):
     rel = lambda p: "../" + p if p else ""
     md = [f"<!-- verified-pdf-view/v1 | source {view['source_pdf']} sha256 {view['source_sha256']} | "
@@ -276,6 +325,16 @@ def render(view, conv_dir: Path):
     hb = []
     for b in view["blocks"]:
         loc = f"p.{','.join(map(str, b['pages']))}"
+        if b["status"] in {"scan_agreement", "human_verified"} and b.get("ocr"):
+            md.extend(_render_scan_md(b, loc, rel))
+            hb.append(_render_scan_html(b, loc, rel))
+            md.append("")
+            continue
+        if b["status"] == "held" and b.get("ocr"):
+            md.extend(_render_scan_md(b, loc, rel))
+            hb.append(_render_scan_html(b, loc, rel))
+            md.append("")
+            continue
         if b["status"] == "held":
             md.append(f"> HELD ({loc}): content withheld until reviewed. " + "; ".join(r.split(':')[0] for r in b["held_reason"]))
             hb.append(f'<div class="held">HELD ({loc}): content withheld until reviewed.</div>')
@@ -307,7 +366,7 @@ def render(view, conv_dir: Path):
 <meta name="source-sha256" content="{view['source_sha256']}"><meta name="document-status" content="{view['document_status']}">
 <style>body{{max-width:820px;margin:2rem auto;font-family:system-ui,sans-serif;line-height:1.55;color:#222;padding:0 1rem}}
 table{{border-collapse:collapse}}td{{border:1px solid #bbb;padding:.25rem .5rem}}img{{max-width:100%}}
-.held{{background:#fff4e5;border-left:4px solid #d97706;padding:.4rem .6rem}}.cap{{font-style:normal;color:#444}}</style></head>
+.held{{background:#fff4e5;border-left:4px solid #d97706;padding:.4rem .6rem}}.scan-agreement{{background:#e8f4fc;border-left:4px solid #0369a1;padding:.6rem;margin:1rem 0}}.scan-agreement.held-scan{{background:#fff4e5;border-left-color:#d97706}}.scan-label{{font-weight:600;margin-bottom:.4rem}}.ocr-pair{{display:flex;gap:1rem;flex-wrap:wrap}}.ocr{{flex:1;min-width:12rem;background:#fff;border:1px solid #bbb;padding:.4rem}}.ocr h4{{margin:.2rem 0 .4rem;font-size:.95rem}} .ocr pre{{white-space:pre-wrap;margin:0}}.cap{{font-style:normal;color:#444}}</style></head>
 <body>{''.join(hb)}</body></html>"""
     return "\n".join(md), page
 
@@ -404,6 +463,44 @@ def _self_check_extras(txt, pdf_all, allowed):
     return never, surplus
 
 
+
+def _strip_scan_html(htm: str) -> str:
+    """Remove scan-agreement front-end blocks (nested divs) from HTML."""
+    out, i, n = [], 0, len(htm)
+    while True:
+        start = htm.find('<div class="scan-agreement', i)
+        if start < 0:
+            out.append(htm[i:])
+            break
+        out.append(htm[i:start])
+        depth, j = 0, start
+        while j < n:
+            nxt_open = htm.find("<div", j)
+            nxt_close = htm.find("</div>", j)
+            if nxt_close < 0:
+                j = n
+                break
+            if 0 <= nxt_open < nxt_close:
+                depth += 1
+                j = nxt_open + 4
+            else:
+                depth -= 1
+                j = nxt_close + 6
+                if depth == 0:
+                    break
+        i = j
+    return "".join(out)
+
+
+def _strip_scan_md(md: str) -> str:
+    """Remove scan-agreement quotes, crop images, and OCR tables from Markdown."""
+    return re.sub(
+        r"(?im)^> (?:SCAN_AGREEMENT|HUMAN_VERIFIED \(scan\)|HELD \(scan\)).*(?:\n(?!> |#).*)*",
+        " ",
+        md,
+    )
+
+
 def self_check(view, md, htm, pdf):
     """Return a Counter of invented words, or an empty Counter if the view is clean.
 
@@ -420,10 +517,14 @@ def self_check(view, md, htm, pdf):
         # already joined by norm_text.
         pdf_all.update(vc.words(pdf.page_text(p)))
     allowed = vc.Counter(vc.words("HELD content withheld until reviewed Figure p verified pdf view v1 source sha256 status "
-                                  "VERIFIED PARTIAL reading order true false " + view["source_pdf"] + " " + view["source_sha256"]))
+                                  "VERIFIED PARTIAL reading order true false SCAN_AGREEMENT not citable until reviewed "
+                                  "HUMAN_VERIFIED tesseract rapidocr OCR crop scan "
+                                  + view["source_pdf"] + " " + view["source_sha256"]))
     never_all, surplus_all = vc.Counter(), vc.Counter()
-    for kind, txt in (("verified Markdown", re.sub(r"!\[[^\]]*\]\([^)]*\)|<!--.*?-->|> HELD.*", " ", md)),
-                      ("verified HTML", html.unescape(re.sub(r"<[^>]+>", " ", re.sub(r"(?is)<head.*?</head>|<div class=\"held\">.*?</div>", " ", htm))))):
+    md_for_check = re.sub(r"!\[[^\]]*\]\([^)]*\)|<!--.*?-->|> HELD.*", " ", _strip_scan_md(md))
+    htm_for_check = re.sub(r"(?is)<head.*?</head>|<div class=\"held\">.*?</div>", " ", _strip_scan_html(htm))
+    for kind, txt in (("verified Markdown", md_for_check),
+                      ("verified HTML", html.unescape(re.sub(r"<[^>]+>", " ", htm_for_check)))):
         never, surplus = _self_check_extras(txt, pdf_all, allowed)
         never_all += never
         surplus_all += surplus
@@ -493,6 +594,14 @@ def get_held_crop(conv_dir: Path, block_id: str):
     except ImportError:
         import technical_manual as tm
     return tm.get_held_crop(conv_dir, block_id)
+
+
+def apply_scan_review(conv_dir, block_id, decision="approve", reviewer=None, **kwargs):
+    try:
+        from . import scan_agreement as sa
+    except ImportError:
+        import scan_agreement as sa
+    return sa.apply_scan_review(conv_dir, block_id, decision=decision, reviewer=reviewer, **kwargs)
 
 
 def apply_cell_review(conv_dir, block_id, decision="approve", reviewer=None, **kwargs):

@@ -1494,7 +1494,8 @@ class VerifiedPdfPlugin(BaseSourcePlugin):
     name = "verified_pdf"
     priority = 65
 
-    BLOCK_STATUS = {"verified": "pdf-verified", "held": "held, review"}
+    BLOCK_STATUS = {"verified": "pdf-verified", "held": "held, review",
+                    "scan_agreement": "scan_agreement", "human_verified": "human_verified"}
 
     def __init__(self, grobid_url: Optional[str] = None, out_root: Optional[str] = None):
         super().__init__()
@@ -1542,7 +1543,8 @@ class VerifiedPdfPlugin(BaseSourcePlugin):
 
         profile = paper_input.get("profile")
         if not live or view is None:
-            view = agent_tool.build_verified_view(Path(pdf_path), conv_dir, profile=profile)
+            view = agent_tool.build_verified_view(Path(pdf_path), conv_dir, profile=profile,
+                                                scan_agreement_config=paper_input.get("scan_agreement_config"))
         record = self._record_from_view(view, conv_dir, paper_input, pdf_path, sha256_val, tool_version)
 
         # Metadata + references from GROBID, if reachable. Never claim a GROBID run that did not happen.
@@ -1600,8 +1602,9 @@ class VerifiedPdfPlugin(BaseSourcePlugin):
             return st
 
         def worst(a, b):
-            order = ["pdf-verified", "pdf-verified, confirm", "pdf-verified, page incomplete", "held, review"]
-            return max(a, b, key=order.index)
+            order = ["pdf-verified", "pdf-verified, confirm", "pdf-verified, page incomplete",
+                     "human_verified", "scan_agreement", "held, review"]
+            return max(a, b, key=lambda s: order.index(s) if s in order else len(order))
 
         for b in blocks:
             st = status_of(b)
@@ -1633,7 +1636,14 @@ class VerifiedPdfPlugin(BaseSourcePlugin):
             if current is None:
                 current = SectionRecord(id="sec_1", title="Front matter", text="", level=1, verified="pdf-verified")
                 sections.append(current)
-            piece = b["text"] if b["status"] == "verified" else f"[HELD p.{pages}: content withheld until reviewed]"
+            if b["status"] == "verified":
+                piece = b["text"]
+            elif b["status"] == "human_verified":
+                piece = b.get("text") or " ".join(e.get("text") or "" for e in (b.get("ocr") or []))
+            elif b["status"] == "scan_agreement":
+                piece = f"[SCAN_AGREEMENT p.{pages}: not citable until human review]"
+            else:
+                piece = f"[HELD p.{pages}: content withheld until reviewed]"
             if b["type"] == "list_item":
                 piece = f"- {(b.get('marker') + ' ') if b.get('marker') else ''}{piece}"
             current.text = (current.text + "\n\n" + piece).strip()

@@ -1,0 +1,5 @@
+# CPU OCR engines for the scan-agreement tier (scripts/verified_pdf/scan_agreement.py).
+# The system package tesseract-ocr must also be installed (see .github/workflows/ci.yml).
+# These are independent engines: Tesseract LSTM and RapidOCR (Paddle ONNX).
+pytesseract==0.3.13
+rapidocr-onnxruntime==1.2.3
