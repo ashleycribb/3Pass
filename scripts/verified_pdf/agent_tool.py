@@ -329,10 +329,16 @@ def _join_hyphens_known(s: str, bag) -> str:
     s = unicodedata.normalize("NFKC", s or "")
     s = re.sub(r"[\u00ad\ufffe\x02]\s*", "", s)
     def repl(m):
-        compound = m.group(1) + m.group(2)
-        if bag[compound.lower()] > 0 or bag[compound] > 0:
+        left, right = m.group(1), m.group(2)
+        compound = left + right
+        # Same rule as sequential fragment pairing: only join if the compound
+        # is in the bag and at least one side is not already a known word.
+        # Otherwise "MIL-S" becomes "MILS" whenever "mils" happens to occur.
+        if (bag[compound.lower()] > 0 or bag[compound] > 0) and (
+            bag[left.lower()] == 0 or bag[right.lower()] == 0
+        ):
             return compound
-        return m.group(1) + " " + m.group(2)
+        return left + " " + right
     while True:
         # Join whole tokens (recom-mended), never two letters from a longer
         # identifier just because "rt" happens to be a PDF word.
