@@ -20,6 +20,7 @@ Rules the agent can rely on (see docs/verified_pdf/AGENT_CONTRACT.md):
 import argparse
 import hashlib
 import html
+import unicodedata
 import json
 import re
 import shutil
@@ -321,16 +322,19 @@ def _join_hyphens_known(s: str, bag) -> str:
 
     Greedy joining of the full Markdown/HTML document would glue a paragraph-final
     hyphen onto the next heading once HTML tags are stripped ('clas-' + 'CHAPTER'
-    -> 'claschapter'). That invented token is not in the PDF and is not a waiver.
+    -> 'claschapter'). Line-end joins must be bag-aware too: '012-\\n0528' is not
+    '0120528' unless that compound is in the PDF. When the compound is unknown,
+    replace the hyphen with a space so later norm_text/words() cannot invent it.
     """
-    s = vc.norm_text(s)
+    s = unicodedata.normalize("NFKC", s or "")
+    s = re.sub(r"[\u00ad\ufffe\x02]\s*", "", s)
     def repl(m):
         compound = m.group(1) + m.group(2)
         if bag[compound.lower()] > 0 or bag[compound] > 0:
             return compound
-        return m.group(0)
+        return m.group(1) + " " + m.group(2)
     while True:
-        n = re.sub(r"(\w)[-–—]\s*(\w)", repl, s)
+        n = re.sub(r"(\w)[-–—][ \t]*(?:\r?\n\s*)?(\w)", repl, s)
         if n == s:
             return n
         s = n
@@ -396,7 +400,12 @@ def self_check(view, md, htm, pdf):
     """
     pdf_all = vc.Counter()
     for p in range(1, len(pdf.doc) + 1):
-        pdf_all.update(vc.words(_join_hyphens(pdf.page_text(p))))
+        # Use the same tokenizer as markdown (norm_text + words). Greedy
+        # mid-line hyphen joining would merge "MIL-STD-1285" into one PDF
+        # token while markdown still has three, leaving "1285" as leftover
+        # with no block to hold. Line-end and discretionary hyphens are
+        # already joined by norm_text.
+        pdf_all.update(vc.words(pdf.page_text(p)))
     allowed = vc.Counter(vc.words("HELD content withheld until reviewed Figure p verified pdf view v1 source sha256 status "
                                   "VERIFIED PARTIAL reading order true false " + view["source_pdf"] + " " + view["source_sha256"]))
     never_all, surplus_all = vc.Counter(), vc.Counter()
