@@ -316,16 +316,35 @@ def _join_hyphens(s: str) -> str:
         s = n
 
 
+def _join_hyphens_known(s: str, bag) -> str:
+    """Join a hyphen only when the compound is already a word in the PDF bag.
+
+    Greedy joining of the full Markdown/HTML document would glue a paragraph-final
+    hyphen onto the next heading once HTML tags are stripped ('clas-' + 'CHAPTER'
+    -> 'claschapter'). That invented token is not in the PDF and is not a waiver.
+    """
+    s = vc.norm_text(s)
+    def repl(m):
+        compound = m.group(1) + m.group(2)
+        if bag[compound.lower()] > 0 or bag[compound] > 0:
+            return compound
+        return m.group(0)
+    while True:
+        n = re.sub(r"(\w)[-–—]\s*(\w)", repl, s)
+        if n == s:
+            return n
+        s = n
+
+
 def _self_check_extras(txt, pdf_all, allowed):
     """Return (never_in_pdf, surplus_of_known_words) after hyphen and fragment joins.
 
-    Local 3Pass change (unpushed) for Technical Order PDFs: pdfium records discretionary
-    hyphens as U+FFFE, which norm_text joins, while Docling markdown keeps ASCII hyphens
-    or splits a word across a heading. This is a tokenizer reconciliation, not a waiver
-    of invented vocabulary.
+    pdfium records discretionary hyphens as U+FFFE, which norm_text joins, while
+    Docling markdown keeps ASCII hyphens or splits a word across a heading. This
+    is a tokenizer reconciliation, not a waiver of invented vocabulary.
     """
     bag = (pdf_all + allowed).copy()
-    seq = vc.words(_join_hyphens(txt))
+    seq = vc.words(_join_hyphens_known(txt, bag))
     leftover = []
     i = 0
     while i < len(seq):
