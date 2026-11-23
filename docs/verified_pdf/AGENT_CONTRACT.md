@@ -85,6 +85,8 @@ Pages whose triage class is `scanned` or `broken_text_layer` are rasterized at 3
 
 The agreement threshold is the explicit config key `max_character_error_rate` (a number in `[0, 1]`). There is no silent default. Character error rate (CER) is `levenshtein(norm(a), norm(b)) / max(len(norm(a)), len(norm(b)))`, where `norm` is NFKC plus collapsed whitespace. Both-empty OCR is not agreement: the block stays `held`.
 
+When a page is triaged `scanned` and the converter's detected regions cover too little of the page's inked area, the scan tier adds a full-page or ink-bbox `scan_page` block and runs the same dual-OCR CER check on it. The coverage threshold is the explicit config key `min_inked_region_coverage` (a number in `[0, 1]`): the minimum fraction of inked pixels (grayscale value ≤ 250 on the 300 DPI deskewed raster) that detected regions must cover. There is no silent default. A missing key fails closed. This fallback does not apply to `broken_text_layer` pages. The new block is `held` unless CER is within `max_character_error_rate`; it is never `verified` and is never auto-promoted. It appears in the MD/HTML review output and packs as tile 52 like any other scan block.
+
 | Status / field | What it guarantees | What the agent may do |
 |---|---|---|
 | block `status: "scan_agreement"` | Two independent OCR engines agreed on the crop within `max_character_error_rate`. This is **never** `verified` and is **never citable** by the answer path. | Show the crop and both OCR readings for human review. Do not quote the text. Do not treat it as a text-layer verification. |

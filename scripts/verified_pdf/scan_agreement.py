@@ -11,6 +11,14 @@ both readings are non-empty and CER is at or below the caller-supplied
 `max_character_error_rate`. That threshold is required configuration: there
 is no silent default and no DEFAULT_MAX_CER.
 
+When a page is triaged `scanned` and the converter's detected regions cover
+less of the page's inked area than the required `min_inked_region_coverage`
+(a number in [0, 1]; no silent default), a full-page or ink-bbox `scan_page`
+block is added and run through the same dual-OCR CER check. A missing
+coverage key fails closed. The fallback is not auto-promoted: it is
+`scan_agreement` only within the CER threshold, otherwise `held`, and never
+`verified`. It does not apply to `broken_text_layer` pages.
+
 `scan_agreement` is never `verified` and is not citable by the answer path.
 It can become `human_verified` only through apply_scan_review (reviewer,
 timestamp, both OCR text sha256 values, crop sha256).
@@ -40,6 +48,10 @@ from PIL import Image
 SCAN_RASTER_DPI = 300
 ENGINE_A = "tesseract"
 ENGINE_B = "rapidocr"
+# A raster pixel is inked when its grayscale value is at most INK_GRAY_MAX.
+# This is the definition of "ink", not a coverage threshold and not a default
+# for min_inked_region_coverage.
+INK_GRAY_MAX = 250
 
 
 class ScanAgreementError(Exception):
@@ -91,18 +103,29 @@ def character_error_rate(a: str, b: str) -> float:
 
 
 def require_config(config) -> dict:
-    """Return a validated config. Missing or invalid threshold fails closed."""
+    """Return a validated config. Missing or invalid thresholds fail closed."""
     if not isinstance(config, dict):
         raise ScanAgreementError("scan_agreement_config is required and must be a mapping")
     if "max_character_error_rate" not in config:
         raise ScanAgreementError("scan_agreement_config.max_character_error_rate is required; there is no default")
+    if "min_inked_region_coverage" not in config:
+        raise ScanAgreementError("scan_agreement_config.min_inked_region_coverage is required; there is no default")
     try:
         thr = float(config["max_character_error_rate"])
     except (TypeError, ValueError) as exc:
         raise ScanAgreementError("max_character_error_rate must be a number in [0, 1]") from exc
     if not (0.0 <= thr <= 1.0) or isinstance(config["max_character_error_rate"], bool):
         raise ScanAgreementError("max_character_error_rate must be a number in [0, 1]")
-    return {"max_character_error_rate": thr}
+    try:
+        cov = float(config["min_inked_region_coverage"])
+    except (TypeError, ValueError) as exc:
+        raise ScanAgreementError("min_inked_region_coverage must be a number in [0, 1]") from exc
+    if not (0.0 <= cov <= 1.0) or isinstance(config["min_inked_region_coverage"], bool):
+        raise ScanAgreementError("min_inked_region_coverage must be a number in [0, 1]")
+    return {
+        "max_character_error_rate": thr,
+        "min_inked_region_coverage": cov,
+    }
 
 
 def classify_block(*, engine_a, engine_b, crop_bytes: bytes, config) -> dict:
@@ -329,6 +352,94 @@ def block_bbox(block) -> dict | None:
     return None
 
 
+
+def _gray(img: Image.Image):
+    """Return a 2-D uint8 grayscale array for ink measurements."""
+    import numpy as np
+    return np.asarray(img.convert("L"))
+
+
+def inked_region_coverage(img: Image.Image, region_boxes_px) -> float:
+    """Fraction of inked pixels that fall inside the union of region boxes.
+
+    Inked means grayscale value <= INK_GRAY_MAX. Boxes are (x0, y0, x1, y1)
+    in raster pixels, clipped to the image. If the page has no ink, coverage
+    is 1.0 (there is no missed ink to recover).
+    """
+    import numpy as np
+    arr = _gray(img)
+    ink = arr <= INK_GRAY_MAX
+    total = int(ink.sum())
+    if total == 0:
+        return 1.0
+    mask = np.zeros(arr.shape, dtype=bool)
+    h, w = arr.shape
+    for box in region_boxes_px or []:
+        x0, y0, x1, y1 = box
+        x0, x1 = int(max(0, min(w, x0))), int(max(0, min(w, x1)))
+        y0, y1 = int(max(0, min(h, y0))), int(max(0, min(h, y1)))
+        if x1 > x0 and y1 > y0:
+            mask[y0:y1, x0:x1] = True
+    return float((ink & mask).sum() / total)
+
+
+def ink_bbox_pdf_points(img: Image.Image, scale: float) -> dict | None:
+    """TOPLEFT PDF-point bbox of inked pixels, or None when the page has no ink."""
+    import numpy as np
+    arr = _gray(img)
+    ink = arr <= INK_GRAY_MAX
+    if not ink.any():
+        return None
+    ys, xs = np.where(ink)
+    pad = int(round(8 * scale / 2))
+    h, w = arr.shape
+    x0 = max(0, int(xs.min()) - pad)
+    y0 = max(0, int(ys.min()) - pad)
+    x1 = min(w, int(xs.max()) + 1 + pad)
+    y1 = min(h, int(ys.max()) + 1 + pad)
+    return {
+        "l": x0 / scale,
+        "t": y0 / scale,
+        "r": x1 / scale,
+        "b": y1 / scale,
+        "coord_origin": "TOPLEFT",
+    }
+
+
+def _page_triage_class(view, page_no: int) -> str | None:
+    for ps in view.get("pages") or []:
+        if ps.get("page") == page_no:
+            return (ps.get("triage") or {}).get("class")
+    return None
+
+
+def _has_page_scan_block(view, page_no: int) -> bool:
+    bid = f"#/pages/{page_no}/scan"
+    for b in view.get("blocks") or []:
+        if page_no not in (b.get("pages") or []):
+            continue
+        if b.get("type") == "scan_page" or b.get("id") == bid:
+            return True
+    return False
+
+
+def _detected_region_boxes(view, page_no: int, img: Image.Image) -> list:
+    """Converter region bboxes on this page, in raster pixels (not scan_page)."""
+    scale = SCAN_RASTER_DPI / 72.0
+    page_h_pt = img.size[1] / scale
+    boxes = []
+    for b in view.get("blocks") or []:
+        if b.get("type") == "scan_page" or (b.get("id") or "").startswith("#/pages/"):
+            continue
+        if page_no not in (b.get("pages") or []):
+            continue
+        bbox = block_bbox(b)
+        if not bbox:
+            continue
+        boxes.append(_bbox_to_px(bbox, scale, page_h_pt))
+    return boxes
+
+
 def apply_scan_pipeline(view, pdf_path, conv_dir, out_dir, config=None) -> None:
     """Run the scan pipeline on held blocks that sit on scanned/broken pages.
 
@@ -404,13 +515,35 @@ def apply_scan_pipeline(view, pdf_path, conv_dir, out_dir, config=None) -> None:
         del rec["crop_bytes"]
     # A scanned/broken page with no converter blocks still gets a full-page
     # crop so the page itself is rasterized, deskewed, and read.
+    # A scanned page whose detected regions cover too little of the ink also
+    # gets a full-page or ink-bbox crop. Coverage is compared to the required
+    # min_inked_region_coverage; there is no silent default.
     covered = {p for b in view.get("blocks") or [] for p in (b.get("pages") or []) if b.get("ocr") or (b.get("held_reason") and "scan agreement" in " ".join(b.get("held_reason") or []))}
     if cfg is not None:
         for page_no in sorted(scan_pages):
-            if page_no in covered:
+            if _has_page_scan_block(view, page_no):
                 continue
+            need_page_crop = page_no not in covered
+            if not need_page_crop and _page_triage_class(view, page_no) == "scanned":
+                if page_no not in cache:
+                    raster, info = rasterize_page(pdf_path, page_no)
+                    deskewed, skew = deskew(raster)
+                    cache[page_no] = {"image": deskewed, "info": info, "skew": skew}
+                img = cache[page_no]["image"]
+                boxes = _detected_region_boxes(view, page_no, img)
+                coverage = inked_region_coverage(img, boxes)
+                if coverage < cfg["min_inked_region_coverage"]:
+                    need_page_crop = True
+            if not need_page_crop:
+                continue
+            if page_no not in cache:
+                raster, info = rasterize_page(pdf_path, page_no)
+                deskewed, skew = deskew(raster)
+                cache[page_no] = {"image": deskewed, "info": info, "skew": skew}
+            scale = SCAN_RASTER_DPI / 72.0
+            ink_box = ink_bbox_pdf_points(cache[page_no]["image"], scale)
             try:
-                rec = process_block(pdf_path, page_no, None, cfg, page_cache=cache)
+                rec = process_block(pdf_path, page_no, ink_box, cfg, page_cache=cache)
             except ScanAgreementError as exc:
                 rec = {"status": "held", "held_reason": f"scan agreement failed closed: {exc}",
                        "ocr": [], "cer": None, "crop_sha256": None, "crop_image": None,
