@@ -260,12 +260,18 @@ def _crop_to_bytes(img: Image.Image) -> bytes:
     return buf.getvalue()
 
 
-def _bbox_to_px(bbox, scale: float) -> tuple[int, int, int, int]:
+def _bbox_to_px(bbox, scale: float, page_height_pt: float) -> tuple[int, int, int, int]:
+    l, t, r, b = float(bbox["l"]), float(bbox["t"]), float(bbox["r"]), float(bbox["b"])
+    origin = (bbox.get("coord_origin") or "TOPLEFT").upper()
+    if origin == "BOTTOMLEFT":
+        t, b = page_height_pt - t, page_height_pt - b
+    x0, x1 = min(l, r), max(l, r)
+    y0, y1 = min(t, b), max(t, b)
     return (
-        int(round(float(bbox["l"]) * scale)),
-        int(round(float(bbox["t"]) * scale)),
-        int(round(float(bbox["r"]) * scale)),
-        int(round(float(bbox["b"]) * scale)),
+        int(round(x0 * scale)),
+        int(round(y0 * scale)),
+        int(round(x1 * scale)),
+        int(round(y1 * scale)),
     )
 
 
@@ -281,7 +287,8 @@ def process_block(pdf_path, page_no, bbox, config, page_cache=None) -> dict:
     img = page["image"]
     scale = SCAN_RASTER_DPI / 72.0
     if bbox:
-        x0, y0, x1, y1 = _bbox_to_px(bbox, scale)
+        page_h_pt = img.size[1] / scale
+        x0, y0, x1, y1 = _bbox_to_px(bbox, scale, page_h_pt)
         pad = int(round(8 * scale / 2))  # a few pixels so glyphs are not clipped
         x0, y0 = max(0, x0 - pad), max(0, y0 - pad)
         x1, y1 = min(img.size[0], x1 + pad), min(img.size[1], y1 + pad)
@@ -390,6 +397,47 @@ def apply_scan_pipeline(view, pdf_path, conv_dir, out_dir, config=None) -> None:
             b.pop("held_reason", None)
         del rec["crop_image"]
         del rec["crop_bytes"]
+    # A scanned/broken page with no converter blocks still gets a full-page
+    # crop so the page itself is rasterized, deskewed, and read.
+    covered = {p for b in view.get("blocks") or [] for p in (b.get("pages") or []) if b.get("ocr") or (b.get("held_reason") and "scan agreement" in " ".join(b.get("held_reason") or []))}
+    if cfg is not None:
+        for page_no in sorted(scan_pages):
+            if page_no in covered:
+                continue
+            try:
+                rec = process_block(pdf_path, page_no, None, cfg, page_cache=cache)
+            except ScanAgreementError as exc:
+                rec = {"status": "held", "held_reason": f"scan agreement failed closed: {exc}",
+                       "ocr": [], "cer": None, "crop_sha256": None, "crop_image": None,
+                       "dpi": SCAN_RASTER_DPI, "skew": None}
+            bid = f"#/pages/{page_no}/scan"
+            blk = {
+                "id": bid,
+                "type": "scan_page",
+                "pages": [page_no],
+                "status": rec["status"],
+                "text": "",
+            }
+            if rec.get("ocr"):
+                name = f"pages-{page_no}-scan-crop.png"
+                dest = out_dir / name
+                dest.parent.mkdir(parents=True, exist_ok=True)
+                rec["crop_image"].save(dest)
+                blk["ocr"] = rec["ocr"]
+                blk["cer"] = rec["cer"]
+                blk["crop_sha256"] = rec["crop_sha256"]
+                blk["crop"] = str(Path("verified") / name)
+                blk["scan"] = {"dpi": rec.get("dpi"), "skew": rec.get("skew"),
+                               "engines": [{"name": e["name"], "version": e["version"]} for e in rec["ocr"]]}
+            if rec["status"] == "held":
+                reasons = []
+                if rec.get("held_reason"):
+                    reasons.append(rec["held_reason"])
+                blk["held_reason"] = reasons or ["scan agreement failed closed"]
+            if rec.get("crop_image") is not None:
+                del rec["crop_image"]
+            view["blocks"].append(blk)
+
     apply_scan_decisions(view, conv_dir)
 
 
