@@ -189,7 +189,7 @@ def _csv_covers_model(flat_model: Counter, flat_csv: Counter) -> bool:
 
 
 
-def verify(pdf_path: Path, conv_dir: Path, only=GROUPS, write=True):
+def verify(pdf_path: Path, conv_dir: Path, only=GROUPS, write=True, profile=None):
     """Run the checks. `only` selects check groups (see CHECK_GROUP) so they can run in
     parallel; the union of all groups is exactly the full verification."""
     only = set(only)
@@ -198,6 +198,11 @@ def verify(pdf_path: Path, conv_dir: Path, only=GROUPS, write=True):
     stem, d = load_doc(conv_dir)
     reach = reachable_refs(d)
     pdf = Pdf(pdf_path)
+    if profile == "technical_manual":
+        from . import technical_manual as tm
+        folios = tm.detect_folios(pdf)
+    else:
+        folios = None
     md = (conv_dir / f"{stem}.md").read_text(encoding="utf-8")
     htm = (conv_dir / f"{stem}.html").read_text(encoding="utf-8")
     md_j = joined(html.unescape(md))   # Markdown escapes < and & as entities; they render correctly
@@ -330,11 +335,20 @@ def verify(pdf_path: Path, conv_dir: Path, only=GROUPS, write=True):
             continue
         bad = 0
         for c in cells:
+            loc = f"table {n} cell r{c['start_row_offset_idx']}c{c['start_col_offset_idx']}"
+            if not (c.get("text") or "").strip():
+                # Empty cells are held at cell level in the verified view.
+                # They are not a wording failure of the table as a whole.
+                continue
+            if not c.get("bbox"):
+                bad += 1
+                flag("B1", f"{loc}: table cell has no bbox",
+                     pg, pr["bbox"], pr["bbox"]["coord_origin"], f"{tb['self_ref']}", c.get("text"))
+                continue
             src = pdf.box_text(pg, c["bbox"], c["bbox"]["coord_origin"])
             if joined(src) != joined(c["text"]):
                 bad += 1
-                flag("B1", f"table {n} cell r{c['start_row_offset_idx']}c{c['start_col_offset_idx']}: "
-                     f"output '{c['text']}' vs PDF '{src.strip()}'",
+                flag("B1", f"{loc}: output '{c['text']}' vs PDF '{src.strip()}'",
                      pg, c["bbox"], c["bbox"]["coord_origin"], f"{tb['self_ref']}", c["text"])
         if not cells:
             flag("B1", f"table {n} has no recognised cells", pg, pr["bbox"], pr["bbox"]["coord_origin"], tb["self_ref"])
@@ -412,7 +426,8 @@ def verify(pdf_path: Path, conv_dir: Path, only=GROUPS, write=True):
     if want("B4"):
         _check_b4(d, md, htm, flag, passed)
     if DOC:
-        _check_document(pdf, conv_dir, md, htm_plain, n_pages, no_text_layer, page_covered, flag, passed)
+        _check_document(pdf, conv_dir, md, htm_plain, n_pages, no_text_layer, page_covered, flag, passed,
+                        profile=profile, folios=folios)
     flags = sort_flags(flags)
     if not write:
         return {"flags": flags, "checks_passed": dict(passed)}
@@ -446,7 +461,8 @@ def _check_b4(d, md, htm, flag, passed):
                 passed["B4"] += 1
 
 
-def _check_document(pdf, conv_dir, md, htm_plain, n_pages, no_text_layer, page_covered, flag, passed):
+def _check_document(pdf, conv_dir, md, htm_plain, n_pages, no_text_layer, page_covered, flag, passed,
+                    profile=None, folios=None):
     # M1: the final .md / .html contain no words that are absent from the PDF
     pdf_all = Counter()
     for p in range(1, n_pages + 1):
@@ -475,11 +491,20 @@ def _check_document(pdf, conv_dir, md, htm_plain, n_pages, no_text_layer, page_c
         else:
             flag("F2", f"{'Table' if is_tab else 'Figure'} {num} caption is in the PDF but not in the output", p)
 
-    # T3 recall per page
+    # T3 recall per page. Under technical_manual, running folio text is page
+    # metadata and is excluded from the page bag so it is not flagged as missing.
+    try:
+        from . import technical_manual as tm
+    except ImportError:
+        import technical_manual as tm  # noqa: F401
     for p in range(1, n_pages + 1):
         if p in no_text_layer:
             continue
-        pdf_w = Counter(words(pdf.page_text(p)))
+        if profile == "technical_manual" and folios:
+            layer = tm.text_excluding_regions(pdf, p, tm.folio_regions_bl(folios, p))
+        else:
+            layer = pdf.page_text(p)
+        pdf_w = Counter(words(layer))
         missing = pdf_w - page_covered[p]
         if missing:
             listing = " ".join(f"{w}x{c}" if c > 1 else w for w, c in sorted(missing.items())[:40])
@@ -487,8 +512,10 @@ def _check_document(pdf, conv_dir, md, htm_plain, n_pages, no_text_layer, page_c
         else:
             passed["T3"] += 1
 
-    # O1 reading order of title (needs GROBID TEI)
+    # O1 reading order of title (needs GROBID TEI). Skipped for technical_manual.
     tei = next(conv_dir.glob("*.tei.xml"), None)
+    if profile == "technical_manual":
+        tei = None
     if tei:
         from lxml import etree
         ns = {"t": "http://www.tei-c.org/ns/1.0"}
@@ -594,3 +621,12 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+def triage_page(pdf_path, page_no, pdf=None):
+    """Classify one page: born_digital, scanned, or broken_text_layer."""
+    try:
+        from . import technical_manual as tm
+    except ImportError:
+        import technical_manual as tm
+    return tm.triage_page(pdf_path, page_no, pdf=pdf)

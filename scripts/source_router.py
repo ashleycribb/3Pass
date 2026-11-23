@@ -1540,11 +1540,15 @@ class VerifiedPdfPlugin(BaseSourcePlugin):
             manifest = json.loads((conv_dir / "manifest.json").read_text(encoding="utf-8"))
             tool_version = f"docling {manifest['tools']['docling']} + 3Pass verifier (pdfium)"
 
+        profile = paper_input.get("profile")
         if not live or view is None:
-            view = agent_tool.build_verified_view(Path(pdf_path), conv_dir)
+            view = agent_tool.build_verified_view(Path(pdf_path), conv_dir, profile=profile)
         record = self._record_from_view(view, conv_dir, paper_input, pdf_path, sha256_val, tool_version)
 
         # Metadata + references from GROBID, if reachable. Never claim a GROBID run that did not happen.
+        # The technical_manual profile skips the academic GROBID path.
+        if profile == "technical_manual":
+            return record
         grobid = GrobidPdfPlugin(grobid_url=self.grobid_url)
         tei_rec = None
         if paper_input.get("tei_fixture"):
