@@ -353,7 +353,16 @@ def apply_scan_pipeline(view, pdf_path, conv_dir, out_dir, config=None) -> None:
             continue
         page_no = pages[0]
         bbox = block_bbox(b)
-        rec = process_block(pdf_path, page_no, bbox, cfg, page_cache=cache)
+        try:
+            rec = process_block(pdf_path, page_no, bbox, cfg, page_cache=cache)
+        except ScanAgreementError as exc:
+            b["status"] = "held"
+            reasons = list(b.get("held_reason") or [])
+            msg = f"scan agreement failed closed: {exc}"
+            if msg not in reasons:
+                reasons.append(msg)
+            b["held_reason"] = reasons
+            continue
         name = f"{b['id'].replace('/', '-').replace('#', '')}-scan-crop.png"
         dest = out_dir / name
         dest.parent.mkdir(parents=True, exist_ok=True)
