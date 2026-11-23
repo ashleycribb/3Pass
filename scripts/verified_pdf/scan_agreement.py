@@ -15,13 +15,18 @@ is no silent default and no DEFAULT_MAX_CER.
 It can become `human_verified` only through apply_scan_review (reviewer,
 timestamp, both OCR text sha256 values, crop sha256).
 
-s3a-pack-to cannot currently store status, engine names and versions, both
-text hashes, and the crop hash. pack_scan_agreement_record fails closed
-rather than writing a lossy record; a separate s3a-storage PR is required.
+pack_scan_agreement_record emits a tile 52 (`to_scan_agreement`) payload
+that links to an existing section or cell by id and carries status, both
+OCR engine names and versions, both text hashes, the crop hash, CER, and
+the required `max_character_error_rate`. Missing required fields fail
+closed; there is no silent default. `scan_agreement` is never packed as
+`verified`.
 """
 from __future__ import annotations
 
 import hashlib
+import math
+import struct
 import io
 import json
 import re
@@ -502,15 +507,193 @@ def apply_scan_decisions(view, conv_dir) -> None:
         b.pop("held_reason", None)
 
 
-def pack_scan_agreement_record(rec) -> None:
-    """Refuse to pack: s3a-pack-to has no fields for these values."""
-    raise ScanAgreementPackError(
-        "s3a-pack-to cannot carry scan_agreement records without a schema change. "
-        "Missing fields on existing tiles (to_section / to_spec_cell / to_figure_anchor / "
-        "to_wcn): status (scan_agreement or held), OCR engine names and versions, "
-        "both OCR text sha256 hashes, and the crop sha256. "
-        "A lossy record will not be written. A separate s3a-storage PR is required."
+TO_SCAN_AGREEMENT_TILE = 52
+TO_SCAN_AGREEMENT_NAME = "to_scan_agreement"
+TO_SCAN_AGREEMENT_SIZE = 384
+_SCAN_STATUS_CODES = {
+    "verified": 1,
+    "held": 2,
+    "scan_agreement": 3,
+    "human_verified": 4,
+}
+_TO_TARGET_TILES = frozenset({41, 42, 43, 44, 45, 46, 49, 50, 51})
+_SCAN_FLAG_CER_PRESENT = 1
+
+
+def _require_id16(value, field: str) -> bytes:
+    if value is None or value == "":
+        raise ScanAgreementPackError(f"missing {field}")
+    if isinstance(value, (bytes, bytearray)):
+        raw = bytes(value)
+    else:
+        text = str(value).replace("0x", "").replace("-", "")
+        try:
+            raw = bytes.fromhex(text)
+        except ValueError as exc:
+            raise ScanAgreementPackError(f"invalid {field}") from exc
+    if len(raw) != 16 or raw == b"\x00" * 16:
+        raise ScanAgreementPackError(f"missing or invalid {field}")
+    return raw
+
+
+def _require_sha32(value, field: str) -> bytes:
+    if value is None or value == "":
+        raise ScanAgreementPackError(f"missing {field}")
+    if isinstance(value, (bytes, bytearray)):
+        raw = bytes(value)
+    else:
+        try:
+            raw = bytes.fromhex(str(value))
+        except ValueError as exc:
+            raise ScanAgreementPackError(f"invalid {field}") from exc
+    if len(raw) != 32 or raw == b"\x00" * 32:
+        raise ScanAgreementPackError(f"missing {field}")
+    return raw
+
+
+def _pad_utf8(value, size: int, field: str) -> bytes:
+    if value is None or value == "":
+        raise ScanAgreementPackError(f"missing {field}")
+    raw = value.encode("utf-8") if isinstance(value, str) else bytes(value)
+    if not raw:
+        raise ScanAgreementPackError(f"missing {field}")
+    if len(raw) > size:
+        raise ScanAgreementPackError(f"{field} exceeds {size} bytes")
+    return raw.ljust(size, b"\x00")
+
+
+def pack_scan_agreement_record(rec) -> dict:
+    """Encode a tile-52 to_scan_agreement payload. Fail closed on missing fields."""
+    if not isinstance(rec, dict):
+        raise ScanAgreementPackError("missing pack record")
+    status_name = rec.get("status")
+    if status_name not in _SCAN_STATUS_CODES:
+        raise ScanAgreementPackError("missing or unknown status")
+    status_code = _SCAN_STATUS_CODES[status_name]
+    if "max_character_error_rate" not in rec or rec.get("max_character_error_rate") is None:
+        raise ScanAgreementPackError("missing required max_character_error_rate threshold")
+    try:
+        threshold = float(rec["max_character_error_rate"])
+    except (TypeError, ValueError) as exc:
+        raise ScanAgreementPackError("invalid max_character_error_rate threshold") from exc
+    if not math.isfinite(threshold) or not 0.0 <= threshold <= 1.0:
+        raise ScanAgreementPackError("invalid max_character_error_rate threshold")
+
+    ocr = rec.get("ocr") or []
+    if len(ocr) != 2:
+        raise ScanAgreementPackError("both OCR engine readings are required")
+    names_versions = []
+    hashes = []
+    for i, engine in enumerate(ocr, start=1):
+        if not isinstance(engine, dict):
+            raise ScanAgreementPackError("invalid OCR engine record")
+        name = engine.get("name")
+        version = engine.get("version")
+        if not name or not version:
+            raise ScanAgreementPackError("missing OCR engine name or version")
+        names_versions.append((str(name), str(version)))
+        hashes.append(_require_sha32(engine.get("text_sha256"), f"ocr text sha256 {i}"))
+    crop = _require_sha32(rec.get("crop_sha256"), "crop sha256")
+    source_id = _require_id16(rec.get("source_id"), "source_id")
+    origin_ptr = _require_id16(rec.get("origin_ptr"), "origin_ptr")
+    doc_id = _require_id16(rec.get("doc_id"), "doc_id")
+    target_source_id = _require_id16(rec.get("target_source_id"), "target_source_id")
+    try:
+        target_tile_type = int(rec.get("target_tile_type"))
+    except (TypeError, ValueError) as exc:
+        raise ScanAgreementPackError("missing or invalid target_tile_type") from exc
+    if target_tile_type not in _TO_TARGET_TILES:
+        raise ScanAgreementPackError(f"target_tile_type {target_tile_type} is not a pack-to section or cell tile")
+
+    cer = rec.get("cer")
+    if cer is None:
+        if status_code == 3:
+            raise ScanAgreementPackError("scan_agreement requires a CER")
+        flags = 0
+        cer_bits = b"\x00" * 8
+    else:
+        try:
+            cer_value = float(cer)
+        except (TypeError, ValueError) as exc:
+            raise ScanAgreementPackError("invalid CER") from exc
+        if not math.isfinite(cer_value):
+            raise ScanAgreementPackError("invalid CER")
+        if status_code == 3 and cer_value > threshold:
+            raise ScanAgreementPackError("CER exceeds max_character_error_rate threshold")
+        flags = _SCAN_FLAG_CER_PRESENT
+        cer_bits = struct.pack("<d", cer_value)
+
+    reviewer = rec.get("reviewer")
+    reviewed_at = rec.get("reviewed_at")
+    if status_code == 4:
+        if not reviewer:
+            raise ScanAgreementPackError("human_verified requires a reviewer")
+        if reviewed_at is None or reviewed_at == "":
+            raise ScanAgreementPackError("human_verified requires a timestamp")
+        try:
+            reviewed_at_v = int(reviewed_at)
+        except (TypeError, ValueError) as exc:
+            raise ScanAgreementPackError("human_verified requires a timestamp") from exc
+        if reviewed_at_v == 0:
+            raise ScanAgreementPackError("human_verified requires a timestamp")
+        reviewer_f = _pad_utf8(reviewer, 32, "reviewer")
+    else:
+        if reviewer not in (None, "", b"") or reviewed_at not in (None, "", 0):
+            raise ScanAgreementPackError("reviewer evidence is only valid on human_verified")
+        reviewed_at_v = 0
+        reviewer_f = b"\x00" * 32
+
+    (a_name, a_ver), (b_name, b_ver) = names_versions
+    content = (
+        a_name.encode("utf-8")
+        + b"\x1f"
+        + a_ver.encode("utf-8")
+        + b"\x1f"
+        + b_name.encode("utf-8")
+        + b"\x1f"
+        + b_ver.encode("utf-8")
+        + b"\x1f"
+        + hashes[0]
+        + hashes[1]
+        + crop
     )
+    payload = (
+        source_id
+        + bytes.fromhex(_sha(content))
+        + origin_ptr
+        + doc_id
+        + target_source_id
+        + int(target_tile_type).to_bytes(4, "little")
+        + bytes([status_code, flags, 0, 0])
+        + _pad_utf8(a_name, 32, "engine A name")
+        + _pad_utf8(a_ver, 16, "engine A version")
+        + _pad_utf8(b_name, 32, "engine B name")
+        + _pad_utf8(b_ver, 16, "engine B version")
+        + hashes[0]
+        + hashes[1]
+        + crop
+        + cer_bits
+        + struct.pack("<d", threshold)
+        + int(reviewed_at_v).to_bytes(8, "little")
+        + reviewer_f
+        + b"\x00" * 32
+    )
+    if len(payload) != TO_SCAN_AGREEMENT_SIZE:
+        raise ScanAgreementPackError(
+            f"internal pack size {len(payload)} != {TO_SCAN_AGREEMENT_SIZE}"
+        )
+    return {
+        "tile_type": TO_SCAN_AGREEMENT_TILE,
+        "tile_name": TO_SCAN_AGREEMENT_NAME,
+        "record_size": TO_SCAN_AGREEMENT_SIZE,
+        "status": status_name,
+        "status_code": status_code,
+        "payload": payload,
+        "engines": [
+            {"name": a_name, "version": a_ver},
+            {"name": b_name, "version": b_ver},
+        ],
+    }
 
 
 def refresh_counts(view) -> None:

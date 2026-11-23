@@ -92,7 +92,7 @@ The agreement threshold is the explicit config key `max_character_error_rate` (a
 | block `crop` / `crop_sha256` | PNG crop of the block (or page) after the 300 DPI raster and deskew, with its SHA-256. | Show the crop in the MD/HTML front end. |
 | block `status: "human_verified"` (scan) | A named human approved a `scan_agreement` or held scan block. Evidence is both OCR texts' sha256 and the crop sha256. | Cite the reviewer and evidence hashes. The tool never creates this status by itself. |
 
-s3a-pack-to records cannot currently store `status`, OCR engine names and versions, both text hashes, and the crop hash. Packing these blocks fails closed; a separate s3a-storage PR is required rather than a lossy tile.
+Packing a scanned block writes s3a-pack-to tile 52 (`to_scan_agreement`, 384 bytes), an adjunct that links to an existing section or cell record by id and carries `status`, both OCR engine names and versions, both text sha256s, the crop sha256, the CER, and the required `max_character_error_rate`. Existing tiles 41..=51 are not resized. `scan_agreement` is never packed as `verified`. `human_verified` requires a reviewer, a timestamp, and the three evidence hashes. Missing required pack fields fail closed; there is no silent default.
 
 ## REVIEW-PROCEDURE (scanned blocks)
 
