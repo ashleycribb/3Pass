@@ -139,6 +139,56 @@ def sort_flags(flags):
     return sorted(flags, key=lambda f: (CHECK_ORDER.index(f["check"]), f["page"] or 0, f["ref"] or "", f["id"]))
 
 
+def _column_alignment_exempt(cell, cells) -> bool:
+    """Centered column headers and single-cell group labels (AMP:, Burndy:) do not
+    share an x-range with left-aligned data in the same column. They are still
+    checked for leftover PDF text (B2) and per-cell wording (B1)."""
+    if cell.get("column_header") or cell.get("row_section"):
+        return True
+    text = (cell.get("text") or "").strip()
+    if text.endswith(":") and len(text) <= 40:
+        row = cell["start_row_offset_idx"]
+        nonempty = [c for c in cells
+                    if c.get("start_row_offset_idx") == row and (c.get("text") or "").strip()]
+        if len(nonempty) == 1:
+            return True
+    return False
+
+
+def _peel_csv_cell(cell: str, parts: list):
+    """Consume model leftovers that concatenate exactly to one CSV cell."""
+    if cell == "":
+        return True, parts
+    for i, part in enumerate(parts):
+        if not part:
+            continue
+        if cell == part:
+            return True, parts[:i] + parts[i + 1:]
+        if cell.startswith(part):
+            ok, rest = _peel_csv_cell(cell[len(part):], parts[:i] + parts[i + 1:])
+            if ok:
+                return True, rest
+    return False, parts
+
+
+def _csv_covers_model(flat_model: Counter, flat_csv: Counter) -> bool:
+    """Every model cell is present in the CSV, either as its own cell or as a
+    contiguous piece of a longer CSV cell (header merged with a group label).
+    A CSV value that cannot be partitioned into leftover model cells fails closed.
+    """
+    if not (flat_model - flat_csv):
+        return True
+    leftover_csv = list((flat_csv - flat_model).elements())
+    leftover_model = list((flat_model - flat_csv).elements())
+    parts = leftover_model
+    for cell in leftover_csv:
+        ok, parts = _peel_csv_cell(cell, parts)
+        if not ok:
+            return False
+    return not parts
+
+
+
 def verify(pdf_path: Path, conv_dir: Path, only=GROUPS, write=True):
     """Run the checks. `only` selects check groups (see CHECK_GROUP) so they can run in
     parallel; the union of all groups is exactly the full verification."""
@@ -211,14 +261,45 @@ def verify(pdf_path: Path, conv_dir: Path, only=GROUPS, write=True):
                 flag("E1", "equation was not decoded to text", pr and pr["page_no"],
                      pr and pr["bbox"], pr and pr["bbox"]["coord_origin"], t["self_ref"])
             continue
-        for pr in t.get("prov", []):
+        provs = t.get("prov", [])
+        segs = []
+        for pr in provs:
+            seg = text[pr["charspan"][0]:pr["charspan"][1]] if len(provs) > 1 else text
+            segs.append((pr, seg))
+        for i, (pr, seg) in enumerate(segs):
             pg = pr["page_no"]
-            seg = text[pr["charspan"][0]:pr["charspan"][1]] if len(t.get("prov", [])) > 1 else text
             page_covered[pg].update(words(seg) + words(t.get("marker") or ""))
             if pg in no_text_layer or not want("T2"):
                 continue
             src_j = joined(pdf.box_text(pg, pr["bbox"], pr["bbox"]["coord_origin"]))
-            missing = [w for w in words(seg) if w not in src_j]
+            missing = []
+            seg_words = words(seg)
+            for wi, w in enumerate(seg_words):
+                if w in src_j:
+                    continue
+                # A word split across adjacent provenance boxes (page or column
+                # break) is a fragment in this box and the rest in the neighbour.
+                # Accept the edge fragment only when the compound is in the
+                # combined PDF boxes — do not invent a completion.
+                compound_ok = False
+                if wi == len(seg_words) - 1 and i + 1 < len(segs):
+                    nxt_pr, nxt_seg = segs[i + 1]
+                    nxt_words = words(nxt_seg)
+                    if nxt_words:
+                        combined = src_j + joined(pdf.box_text(
+                            nxt_pr["page_no"], nxt_pr["bbox"], nxt_pr["bbox"]["coord_origin"]))
+                        if (w + nxt_words[0]) in combined:
+                            compound_ok = True
+                if wi == 0 and i > 0:
+                    prev_pr, prev_seg = segs[i - 1]
+                    prev_words = words(prev_seg)
+                    if prev_words:
+                        combined = src_j + joined(pdf.box_text(
+                            prev_pr["page_no"], prev_pr["bbox"], prev_pr["bbox"]["coord_origin"]))
+                        if (prev_words[-1] + w) in combined:
+                            compound_ok = True
+                if not compound_ok:
+                    missing.append(w)
             if missing:
                 flag("T2", f"words not found in the PDF at this location: {' '.join(missing[:25])}",
                      pg, pr["bbox"], pr["bbox"]["coord_origin"], t["self_ref"], seg[:500])
@@ -277,9 +358,12 @@ def verify(pdf_path: Path, conv_dir: Path, only=GROUPS, write=True):
         for axis, key, span in (("row", "start_row_offset_idx", "row_span"), ("column", "start_col_offset_idx", "col_span")):
             groups = {}
             for c in cells:
-                if c.get("bbox") and c[span] == 1 and c["text"].strip():
-                    l, t, r, b = tl(c["bbox"])
-                    groups.setdefault(c[key], []).append((t, b) if axis == "row" else (l, r))
+                if not (c.get("bbox") and c[span] == 1 and c["text"].strip()):
+                    continue
+                if axis == "column" and _column_alignment_exempt(c, cells):
+                    continue
+                l, t0, r, b = tl(c["bbox"])
+                groups.setdefault(c[key], []).append((t0, b) if axis == "row" else (l, r))
             for idx, iv in groups.items():
                 if any(not overlap(iv[0], x) for x in iv[1:]):
                     problems.append(f"cells in {axis} {idx} do not line up on the page")
@@ -296,7 +380,7 @@ def verify(pdf_path: Path, conv_dir: Path, only=GROUPS, write=True):
             rows = list(csv.reader(csv_path.open(encoding="utf-8")))
             flat_csv = Counter(joined(x) for r in rows for x in r if joined(x))
             flat_model = Counter(joined(c["text"]) for c in cells if joined(c["text"]))
-            if flat_model - flat_csv:
+            if not _csv_covers_model(flat_model, flat_csv):
                 flag("B3", f"table {n}: CSV is missing cell values {list((flat_model - flat_csv))[:10]}", ref=tb["self_ref"])
             else:
                 passed["B3"] += 1
