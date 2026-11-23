@@ -51,7 +51,11 @@ from tests.fixtures.verified_pdf.make_scan_agreement_pdf import (  # noqa: E402
 )
 
 # Tests pass the threshold explicitly. The production code must not invent one.
-AGREE_CONFIG = {"max_character_error_rate": 0.15}
+AGREE_CONFIG = {"max_character_error_rate": 0.15, "min_inked_region_coverage": 0.5}
+# min_inked_region_coverage is now a required scan_agreement_config key (see
+# tests/test_scan_full_page_fallback.py). 0.5 is a general half-the-ink
+# threshold; existing fixtures already cover the body ink, so their
+# assertions are unchanged.
 
 
 def _sha(s: str) -> str:
@@ -93,10 +97,15 @@ def test_threshold_config_is_required_and_has_no_silent_default():
         sa.require_config({"max_character_error_rate": -0.1})
     with pytest.raises((ValueError, sa.ScanAgreementError, KeyError, TypeError)):
         sa.require_config({"max_character_error_rate": 1.5})
-    cfg = sa.require_config({"max_character_error_rate": 0.15})
+    # Coverage threshold is also required; a CER-only mapping is no longer complete.
+    with pytest.raises((ValueError, sa.ScanAgreementError, KeyError, TypeError)):
+        sa.require_config({"max_character_error_rate": 0.15})
+    cfg = sa.require_config({"max_character_error_rate": 0.15, "min_inked_region_coverage": 0.5})
     assert cfg["max_character_error_rate"] == 0.15
+    assert cfg["min_inked_region_coverage"] == 0.5
     # No hidden default constant may be used in place of a missing key.
     assert not hasattr(sa, "DEFAULT_MAX_CER") or sa.DEFAULT_MAX_CER is None
+    assert not hasattr(sa, "DEFAULT_MIN_INKED_REGION_COVERAGE") or sa.DEFAULT_MIN_INKED_REGION_COVERAGE is None
 
 
 def test_classify_within_threshold_is_scan_agreement_never_verified():
