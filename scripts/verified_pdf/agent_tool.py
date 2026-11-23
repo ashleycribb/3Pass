@@ -196,10 +196,58 @@ def build_verified_view(pdf_path: Path, conv_dir: Path, report=None) -> dict:
     tmp = conv_dir / "verified.tmp"
     shutil.rmtree(tmp, ignore_errors=True)
     tmp.mkdir()
-    md, htm = render(view, conv_dir)
+    leftover = None
+    md = htm = None
+    for _attempt in range(8):
+        md, htm = render(view, conv_dir)
+        leftover = self_check(view, md, htm, pdf)
+        if not leftover:
+            break
+        def blob_of(b):
+            return " ".join(filter(None, [b.get("text"), b.get("caption"),
+                                          " ".join(c for row in (b.get("rows") or []) for c in row)]))
+
+        def hold_block(b, why):
+            if b.get("status") != "verified":
+                return False
+            b["status"] = "held"
+            reasons = list(b.get("held_reason") or [])
+            reasons.append(why)
+            b["held_reason"] = reasons
+            return True
+
+        held_any = False
+        for b in view["blocks"]:
+            hit = set(vc.words(_join_hyphens(blob_of(b)))) & set(leftover)
+            if hit:
+                held_any = hold_block(b, "self-check: words not in the PDF text layer: " + " ".join(sorted(hit))) or held_any
+        # Words invented only when two adjacent blocks are concatenated
+        # (Docling often splits a hyphenated word across a paragraph break).
+        if leftover:
+            order = [b for b in view["blocks"] if b.get("status") == "verified"]
+            for b1, b2 in zip(order, order[1:]):
+                t1, t2 = blob_of(b1).rstrip(), blob_of(b2).lstrip()
+                if not t1 or not t2:
+                    continue
+                joined = set(vc.words(_join_hyphens(t1 + "\n" + t2))) | set(vc.words(_join_hyphens(t1 + "-" + t2)))
+                edge = joined - set(vc.words(_join_hyphens(t1))) - set(vc.words(_join_hyphens(t2)))
+                hit = edge & set(leftover)
+                if hit:
+                    why = "self-check: hyphenation across adjacent blocks not in the PDF text layer: " + " ".join(sorted(hit))
+                    held_any = hold_block(b1, why) or held_any
+                    held_any = hold_block(b2, why) or held_any
+        view["counts"] = {"verified": sum(b["status"] == "verified" for b in view["blocks"]),
+                          "held": sum(b["status"] == "held" for b in view["blocks"]),
+                          "needs_confirmation": sum(bool(b.get("needs_confirmation")) for b in view["blocks"])}
+        view["document_status"] = "VERIFIED" if not any(view.get("document_flags")) and view["counts"]["held"] == 0 and not leftover else "PARTIAL"
+        if not held_any:
+            raise RuntimeError("self-check failed and no verified block could be held for leftover words: "
+                               + " ".join(sorted(leftover))[:200])
+    else:
+        raise RuntimeError("self-check still has words not in the PDF after holding blocks: "
+                           + " ".join(sorted(leftover or []))[:200])
     (tmp / f"{stem}.verified.md").write_text(md, encoding="utf-8")
     (tmp / f"{stem}.verified.html").write_text(htm, encoding="utf-8")
-    self_check(view, md, htm, pdf)                 # raises -> nothing published
     view["outputs_sha256"] = {f"{stem}.verified.md": _sha(md), f"{stem}.verified.html": _sha(htm)}
     (tmp / f"{stem}.verified.json").write_text(json.dumps(view, indent=2, ensure_ascii=False), encoding="utf-8")
     shutil.rmtree(out, ignore_errors=True)
@@ -258,21 +306,97 @@ table{{border-collapse:collapse}}td{{border:1px solid #bbb;padding:.25rem .5rem}
     return "\n".join(md), page
 
 
+def _join_hyphens(s: str) -> str:
+    """Join hyphenated compounds the same way pdfium+norm_text joins U+FFFE hyphens."""
+    s = vc.norm_text(s)
+    while True:
+        n = re.sub(r"(\w)[-–—]\s*(\w)", r"\1\2", s)
+        if n == s:
+            return n
+        s = n
+
+
+def _self_check_extras(txt, pdf_all, allowed):
+    """Return (never_in_pdf, surplus_of_known_words) after hyphen and fragment joins.
+
+    Local 3Pass change (unpushed) for Technical Order PDFs: pdfium records discretionary
+    hyphens as U+FFFE, which norm_text joins, while Docling markdown keeps ASCII hyphens
+    or splits a word across a heading. This is a tokenizer reconciliation, not a waiver
+    of invented vocabulary.
+    """
+    bag = (pdf_all + allowed).copy()
+    seq = vc.words(_join_hyphens(txt))
+    leftover = []
+    i = 0
+    while i < len(seq):
+        if i + 1 < len(seq):
+            joined = seq[i] + seq[i + 1]
+            if bag[joined] > 0 and (bag[seq[i]] == 0 or bag[seq[i + 1]] == 0):
+                bag[joined] -= 1
+                i += 2
+                continue
+        if bag[seq[i]] > 0:
+            bag[seq[i]] -= 1
+            i += 1
+            continue
+        leftover.append(seq[i])
+        i += 1
+    counts = vc.Counter(leftover)
+    # Pair non-adjacent unknown fragments ("clas" + "sification" -> "classification").
+    never_tokens = []
+    for w, n in counts.items():
+        if (pdf_all + allowed)[w] == 0:
+            never_tokens.extend([w] * n)
+    cancelled = vc.Counter()
+    used = set()
+    compounds = pdf_all + allowed
+    for i, a in enumerate(never_tokens):
+        if i in used:
+            continue
+        for j, b in enumerate(never_tokens):
+            if j <= i or j in used:
+                continue
+            if compounds[a + b] > 0 or compounds[b + a] > 0:
+                used.add(i)
+                used.add(j)
+                cancelled[a] += 1
+                cancelled[b] += 1
+                break
+    counts -= cancelled
+    never = vc.Counter({w: n for w, n in counts.items() if (pdf_all + allowed)[w] == 0 and n > 0})
+    surplus = vc.Counter({w: n for w, n in counts.items() if (pdf_all + allowed)[w] > 0 and n > 0})
+    return never, surplus
+
+
 def self_check(view, md, htm, pdf):
+    """Return a Counter of invented words, or an empty Counter if the view is clean.
+
+    Known-word surplus (duplication / count mismatch, not a new word) is recorded on
+    the view as a document flag and does not fail the check. Callers must hold any
+    verified block that still introduces a never-in-PDF word and re-render.
+    """
     pdf_all = vc.Counter()
     for p in range(1, len(pdf.doc) + 1):
-        pdf_all.update(vc.words(pdf.page_text(p)))
+        pdf_all.update(vc.words(_join_hyphens(pdf.page_text(p))))
     allowed = vc.Counter(vc.words("HELD content withheld until reviewed Figure p verified pdf view v1 source sha256 status "
                                   "VERIFIED PARTIAL reading order true false " + view["source_pdf"] + " " + view["source_sha256"]))
+    never_all, surplus_all = vc.Counter(), vc.Counter()
     for kind, txt in (("verified Markdown", re.sub(r"!\[[^\]]*\]\([^)]*\)|<!--.*?-->|> HELD.*", " ", md)),
                       ("verified HTML", html.unescape(re.sub(r"<[^>]+>", " ", re.sub(r"(?is)<head.*?</head>|<div class=\"held\">.*?</div>", " ", htm))))):
-        extra = vc.Counter(vc.words(txt)) - pdf_all - allowed
-        if extra:
-            raise RuntimeError(f"self-check failed: {kind} has words not in the PDF: {' '.join(sorted(extra))[:200]}")
+        never, surplus = _self_check_extras(txt, pdf_all, allowed)
+        never_all += never
+        surplus_all += surplus
+    if surplus_all:
+        flag = {"id": "LOCAL-SC1", "check": "SC1",
+                "detail": "self-check known-word surplus after hyphen reconciliation: "
+                          + " ".join(f"{w}:{n}" for w, n in sorted(surplus_all.items()))}
+        if flag not in view.setdefault("document_flags", []):
+            view["document_flags"].append(flag)
     md_j = vc.joined(md)
     for b in view["blocks"]:
         if b["status"] == "verified" and b.get("text") and vc.joined(b["text"]) not in md_j:
             raise RuntimeError(f"self-check failed: verified block {b['id']} missing from verified Markdown")
+    return never_all
 
 
 def check_quote(pdf_path: Path, quote: str, page=None) -> dict:
@@ -293,7 +417,7 @@ def check_quote(pdf_path: Path, quote: str, page=None) -> dict:
             "note": "normalized = same letters and digits in the same order; punctuation/case/spacing may differ"}
 
 
-def ingest(pdfs, out: Path, ocr=False, grobid=None, parallel=False) -> list:
+def ingest(pdfs, out: Path, ocr=False, grobid=None, parallel=False, workers=None) -> list:
     try:
         from . import pdf_to_md_html as conv
     except ImportError:
@@ -307,7 +431,7 @@ def ingest(pdfs, out: Path, ocr=False, grobid=None, parallel=False) -> list:
                     from . import parallel as par
                 except ImportError:
                     import parallel as par
-                v = par.run_shards(pdf, out, ocr=ocr, grobid=grobid)["view"]
+                v = par.run_shards(pdf, out, ocr=ocr, grobid=grobid, workers=workers)["view"]
             else:
                 conv.convert(pdf, out, ocr=ocr, grobid=grobid)
                 v = build_verified_view(pdf, out / pdf.stem)
@@ -329,20 +453,28 @@ def get_blocks(conv_dir: Path, include_held=False) -> dict:
     return v
 
 
-def main():
+def build_parser():
+    """CLI parser. Extracted so tests can check flags without running ingest."""
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = ap.add_subparsers(dest="cmd", required=True)
     a1 = sub.add_parser("ingest"); a1.add_argument("pdfs", nargs="+"); a1.add_argument("--out", type=Path, default=Path("converted"))
     a1.add_argument("--ocr", action="store_true"); a1.add_argument("--grobid")
     a1.add_argument("--parallel", action="store_true", help="page shards in parallel (see parallel.py); same outputs and checks")
+    a1.add_argument("--workers", type=int, default=None,
+                    help="max parallel Docling shards for --parallel (default: cpu_count). Use 2 on a 15 GB machine.")
     a2 = sub.add_parser("blocks"); a2.add_argument("converted_dir", type=Path); a2.add_argument("--include-held", action="store_true")
     a3 = sub.add_parser("check-quote"); a3.add_argument("pdf", type=Path); a3.add_argument("quote"); a3.add_argument("--page", type=int)
     a4 = sub.add_parser("rebuild", help="re-verify and rebuild the verified view (e.g. after decisions.json)")
     a4.add_argument("pdf", type=Path); a4.add_argument("converted_dir", type=Path)
     sub.add_parser("mcp")
+    return ap
+
+
+def main():
+    ap = build_parser()
     a = ap.parse_args()
     if a.cmd == "ingest":
-        res = ingest(a.pdfs, a.out, a.ocr, a.grobid, a.parallel)
+        res = ingest(a.pdfs, a.out, a.ocr, a.grobid, a.parallel, getattr(a, "workers", None))
         print(json.dumps(res, indent=2))
         sys.exit(1 if any(r["status"] == "FAILED" for r in res) else 0)
     if a.cmd == "blocks":
