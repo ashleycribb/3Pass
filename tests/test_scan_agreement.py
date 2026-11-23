@@ -361,7 +361,7 @@ def _content_hash(rec) -> str:
         + bytes.fromhex(b["text_sha256"])
         + bytes.fromhex(rec["crop_sha256"])
     )
-    return _sha(src)
+    return hashlib.sha256(src).hexdigest()
 
 
 def test_pack_scan_agreement_record_emits_tile_52_roundtrip():
