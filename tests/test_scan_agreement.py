@@ -19,9 +19,11 @@ used. Rules this file pins down:
 * If CER is above the threshold, or OCR fails, the block stays `held`.
 * The MD/HTML front end labels scan_agreement (and held scan) blocks, shows
   the page crop, and shows both OCR readings side by side.
-* s3a-pack-to packing of these records must carry status, engine names and
-  versions, both text hashes, and the crop hash. If the current pack-to
-  schema cannot, packing fails closed and does not write a lossy record.
+* s3a-pack-to packing of these records uses tile 52 (`to_scan_agreement`),
+  an adjunct that links to an existing section or cell by id and carries
+  status, engine names and versions, both text hashes, the crop hash, CER,
+  and the required threshold. scan_agreement never packs as verified.
+  Missing required pack fields fail closed; no silent defaults.
 """
 from __future__ import annotations
 
@@ -319,12 +321,131 @@ def test_answer_path_does_not_cite_scan_agreement_as_verified(tmp_path):
         assert "pdf-verified" not in (fig.verified or "")
 
 
-def test_pack_to_fails_closed_when_schema_cannot_carry_scan_fields():
+def _id16(tag: int) -> str:
+    raw = bytes([0xA1, 0x70]) + bytes(13) + bytes([tag])
+    return raw.hex()
+
+
+def _pack_rec(**overrides):
+    rec = {
+        "status": "scan_agreement",
+        "source_id": _id16(0x30),
+        "origin_ptr": "fe" * 16,
+        "doc_id": "39" * 16,
+        "target_source_id": _id16(0x01),
+        "target_tile_type": 41,
+        "max_character_error_rate": 0.15,
+        "ocr": [
+            {"name": "tesseract", "version": "5.5.0", "text": "ALPHA-937", "text_sha256": _sha("ALPHA-937")},
+            {"name": "rapidocr", "version": "1.2.3", "text": "ALPHA-937", "text_sha256": _sha("ALPHA-937")},
+        ],
+        "crop_sha256": "ab" * 32,
+        "cer": 0.0,
+    }
+    rec.update(overrides)
+    return rec
+
+
+def _content_hash(rec) -> str:
+    a, b = rec["ocr"]
+    src = (
+        a["name"].encode("utf-8")
+        + b"\x1f"
+        + a["version"].encode("utf-8")
+        + b"\x1f"
+        + b["name"].encode("utf-8")
+        + b"\x1f"
+        + b["version"].encode("utf-8")
+        + b"\x1f"
+        + bytes.fromhex(a["text_sha256"])
+        + bytes.fromhex(b["text_sha256"])
+        + bytes.fromhex(rec["crop_sha256"])
+    )
+    return hashlib.sha256(src).hexdigest()
+
+
+def test_pack_scan_agreement_record_emits_tile_52_roundtrip():
+    rec = _pack_rec()
+    out = sa.pack_scan_agreement_record(rec)
+    assert out["tile_type"] == 52
+    assert out["tile_name"] == "to_scan_agreement"
+    assert out["record_size"] == 384
+    assert out["status"] == "scan_agreement"
+    assert out["status_code"] == 3
+    payload = out["payload"]
+    assert isinstance(payload, (bytes, bytearray))
+    assert len(payload) == 384
+    assert payload[0:16] == bytes.fromhex(rec["source_id"])
+    assert payload[16:48] == bytes.fromhex(_content_hash(rec))
+    assert payload[48:64] == bytes.fromhex(rec["origin_ptr"])
+    assert payload[64:80] == bytes.fromhex(rec["doc_id"])
+    assert payload[80:96] == bytes.fromhex(rec["target_source_id"])
+    assert int.from_bytes(payload[96:100], "little") == 41
+    assert payload[100] == 3
+    assert payload[100] != 1
+    assert payload[101] == 1  # SCAN_FLAG_CER_PRESENT
+    assert payload[102:104] == b"\x00\x00"
+    assert payload[104:136].rstrip(b"\x00") == b"tesseract"
+    assert payload[136:152].rstrip(b"\x00") == b"5.5.0"
+    assert payload[152:184].rstrip(b"\x00") == b"rapidocr"
+    assert payload[184:200].rstrip(b"\x00") == b"1.2.3"
+    assert payload[200:232] == bytes.fromhex(rec["ocr"][0]["text_sha256"])
+    assert payload[232:264] == bytes.fromhex(rec["ocr"][1]["text_sha256"])
+    assert payload[264:296] == bytes.fromhex(rec["crop_sha256"])
+    import struct
+    assert struct.unpack_from("<d", payload, 296)[0] == 0.0
+    assert struct.unpack_from("<d", payload, 304)[0] == 0.15
+    assert int.from_bytes(payload[312:320], "little") == 0
+    assert payload[320:352] == b"\x00" * 32
+    assert payload[352:384] == b"\x00" * 32
+    assert out["engines"] == [
+        {"name": "tesseract", "version": "5.5.0"},
+        {"name": "rapidocr", "version": "1.2.3"},
+    ]
+
+
+def test_pack_scan_agreement_never_writes_verified_status():
+    out = sa.pack_scan_agreement_record(_pack_rec())
+    assert out["status"] == "scan_agreement"
+    assert out["status_code"] == 3
+    assert out["status_code"] != 1
+    assert out["payload"][100] == 3
+    assert out["payload"][100] != 1
+
+
+def test_pack_human_verified_requires_reviewer_timestamp_and_evidence_hashes():
+    base = dict(
+        status="human_verified",
+        reviewer="reviewer-fixture",
+        reviewed_at=1_700_000_000,
+    )
+    with pytest.raises(sa.ScanAgreementPackError):
+        sa.pack_scan_agreement_record(_pack_rec(status="human_verified", reviewed_at=1_700_000_000))
+    with pytest.raises(sa.ScanAgreementPackError):
+        sa.pack_scan_agreement_record(_pack_rec(status="human_verified", reviewer="reviewer-fixture"))
+    with pytest.raises(sa.ScanAgreementPackError):
+        sa.pack_scan_agreement_record(_pack_rec(**base, ocr=[
+            {"name": "tesseract", "version": "5.5.0", "text": "ALPHA-937", "text_sha256": "00" * 32},
+            {"name": "rapidocr", "version": "1.2.3", "text": "ALPHA-937", "text_sha256": _sha("ALPHA-937")},
+        ]))
+    with pytest.raises(sa.ScanAgreementPackError):
+        sa.pack_scan_agreement_record(_pack_rec(**base, crop_sha256="00" * 32))
+    out = sa.pack_scan_agreement_record(_pack_rec(**base))
+    assert out["status"] == "human_verified"
+    assert out["status_code"] == 4
+    assert out["status_code"] != 1
+    assert out["payload"][100] == 4
+    assert out["payload"][320:352].rstrip(b"\x00") == b"reviewer-fixture"
+    import struct
+    assert int.from_bytes(out["payload"][312:320], "little") == 1_700_000_000
+
+
+def test_pack_fails_closed_when_required_pack_fields_are_missing():
     rec = {
         "status": "scan_agreement",
         "ocr": [
-            {"name": "tesseract", "version": "5.0", "text": "ALPHA-937", "text_sha256": _sha("ALPHA-937")},
-            {"name": "rapidocr", "version": "1.0", "text": "ALPHA-937", "text_sha256": _sha("ALPHA-937")},
+            {"name": "tesseract", "version": "5.5.0", "text": "ALPHA-937", "text_sha256": _sha("ALPHA-937")},
+            {"name": "rapidocr", "version": "1.2.3", "text": "ALPHA-937", "text_sha256": _sha("ALPHA-937")},
         ],
         "crop_sha256": "ab" * 32,
         "cer": 0.0,
@@ -332,7 +453,10 @@ def test_pack_to_fails_closed_when_schema_cannot_carry_scan_fields():
     with pytest.raises(sa.ScanAgreementPackError) as ei:
         sa.pack_scan_agreement_record(rec)
     msg = str(ei.value).lower()
-    # The error must name the fields pack-to cannot currently store.
-    for needle in ("status", "engine", "sha256", "crop"):
-        assert needle in msg
-    assert "s3a-pack-to" in msg or "pack-to" in msg
+    assert "max_character_error_rate" in msg or "threshold" in msg
+    # A complete rec except the link to a section/cell also fails closed.
+    with pytest.raises(sa.ScanAgreementPackError) as ei:
+        sa.pack_scan_agreement_record(_pack_rec(target_source_id="00" * 16))
+    assert "target" in str(ei.value).lower()
+    with pytest.raises(sa.ScanAgreementPackError):
+        sa.pack_scan_agreement_record(_pack_rec(cer=0.21))
