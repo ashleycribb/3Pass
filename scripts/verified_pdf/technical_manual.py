@@ -730,7 +730,8 @@ def apply_human_decisions(cells, table_id, conv_dir):
 
 
 
-def enrich_verified_view(view, pdf, conv_dir, docling, profile=None, out_dir=None):
+def enrich_verified_view(view, pdf, conv_dir, docling, profile=None, out_dir=None,
+                         pdf_path=None, scan_agreement_config=None):
     """Add triage, folio metadata, per-cell status, candidates, HTML/MD/crops."""
     out_dir = Path(out_dir or (Path(conv_dir) / "verified"))
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -871,15 +872,20 @@ def enrich_verified_view(view, pdf, conv_dir, docling, profile=None, out_dir=Non
 
     write_held_crops(pdf, out_dir, held_entries, page_images)
 
+    from . import scan_agreement as sa
+    path = pdf_path or getattr(pdf, "path", None)
+    sa.apply_scan_pipeline(view, path, conv_dir, out_dir, config=scan_agreement_config)
+
     view["counts"] = {
         "verified": sum(b["status"] == "verified" for b in view["blocks"]),
         "held": sum(b["status"] == "held" for b in view["blocks"]),
+        "scan_agreement": sum(b["status"] == "scan_agreement" for b in view["blocks"]),
         "needs_confirmation": sum(bool(b.get("needs_confirmation")) for b in view["blocks"]),
         "human_verified_cells": sum(
             1 for b in view["blocks"] if b.get("type") == "table"
             for c in b.get("cells") or [] if c.get("status") == "human_verified"
         ),
     }
-    if view["counts"]["held"] or view.get("document_flags"):
+    if view["counts"]["held"] or view["counts"]["scan_agreement"] or view.get("document_flags"):
         if view["document_status"] == "VERIFIED":
             view["document_status"] = "PARTIAL"

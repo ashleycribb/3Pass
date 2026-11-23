@@ -17,7 +17,7 @@ An agent never reads the raw converter output. It reads `verified/<name>.verifie
 | `pages[].text_layer: false` | Scanned page. It cannot be verified automatically. | Treat everything on that page as unverified. |
 | `reading_order_verified: false` | Block order may not match the page (for example, a title placed after section 2.1). Block contents are still correct. | Do not infer structure from order alone. |
 | `document_status: "VERIFIED"` | No open flags anywhere in the document. | Use it all. |
-| `document_status: "PARTIAL"` | At least one open flag. Each flag is listed. | Use only `verified` blocks. Respect the flags. |
+| `document_status: "PARTIAL"` | At least one open flag. Each flag is listed. | Use only `verified` (or `human_verified`) blocks. `scan_agreement` is never citable. Respect the flags. |
 | block `fingerprints`, `inventory.document_fingerprint` | An identity for the block's content (see `anchors.json`): equal fingerprints mean equal content. A fingerprint says nothing about correctness. | Use it as a stable ID to cite or cache a block and to detect changes between conversions. Trust only `status`. |
 
 ## Required behaviour for the agent
@@ -47,7 +47,7 @@ An agent never reads the raw converter output. It reads `verified/<name>.verifie
 | Record part | Status values | Meaning |
 |---|---|---|
 | `completeness` | `pdf-verified` / `pdf-extracted` | `pdf-verified` only when `document_status` is `VERIFIED` (no open flag). |
-| section `verified` | `pdf-verified`, `pdf-verified, confirm`, `pdf-verified, page incomplete`, `held, review` | Worst status of the blocks in the section. Held text is replaced by `[HELD p.N: ...]`. |
+| section `verified` | `pdf-verified`, `pdf-verified, confirm`, `pdf-verified, page incomplete`, `human_verified`, `scan_agreement`, `held, review` | Worst status of the blocks in the section. Held text is replaced by `[HELD p.N: ...]`. `scan_agreement` text is replaced by `[SCAN_AGREEMENT p.N: not citable until human review]` and is never citable. |
 | table / figure / equation `verified` | same values | Held tables, figures and equations carry no content. |
 | reference `verified` | `pdf-verified` / `pdf-extracted, verify` | References come from GROBID. A reference is `pdf-verified` only if its title is found in the PDF text layer. Authors, venue and year are still GROBID's parse. |
 | `provenance.per_part.metadata` | | Title is checked against the PDF; authors, year and DOI are `pdf-extracted, verify`. |
@@ -56,7 +56,7 @@ An agent never reads the raw converter output. It reads `verified/<name>.verifie
 
 | Status / field | What it guarantees | What the agent may do |
 |---|---|---|
-| `pages[].triage.class` | `born_digital`, `scanned`, or `broken_text_layer`, from pypdfium2 signals recorded in `pages[].triage.signals`. Classification only. | Treat `scanned` and `broken_text_layer` pages as unverifiable. There is no OCR or VLM tier in this path. |
+| `pages[].triage.class` | `born_digital`, `scanned`, or `broken_text_layer`, from pypdfium2 signals recorded in `pages[].triage.signals`. Classification only. | Treat `scanned` and `broken_text_layer` pages as unverifiable by the text layer. The scan-agreement tier may still run; its output is never `verified`. |
 | `pages[].running_header` / `running_footer` | Repeating folio text and bbox, detected by position across nearby pages (`technical_manual` profile). Stripped from body and table text; kept as metadata. | Cite the printed page from this metadata. Do not treat the folio as body content. |
 | `profile: "technical_manual"` | The academic GROBID path (including O1) was not run. | Do not expect GROBID references or a GROBID title check. |
 | table `cells[]` | Per-cell status from the **cell-box check only**: the quote must match text-layer characters inside that cell's own bbox (plus the verifier's box tolerance). A stacked cell verifies when each line is a contiguous span inside the box. No bbox, or an empty value, stays `held`. A match elsewhere on the page is not enough. | Use a cell only when its `status` is `verified` or `human_verified`. |
@@ -78,3 +78,31 @@ This is the human procedure for checking table contents. Matching a paragraph to
    - `evidence.paragraph_quote_sha256` — only the **human-confirmed** candidate hashes, never an auto-selected paragraph
 4. **A conflict stays held,** with the reason. It cannot be promoted to `human_verified`.
 5. **The tool never auto-promotes.** Verification remains the text-layer cell-box check. Cross-reference does not change a cell from `held` to `verified`. Only a named human can set `human_verified`.
+
+## Scan agreement (scanned and broken text-layer pages)
+
+Pages whose triage class is `scanned` or `broken_text_layer` are rasterized at 300 DPI (`SCAN_RASTER_DPI`), deskewed, and read by two independent OCR engines: Tesseract and RapidOCR (`rapidocr-onnxruntime`). Engine names and versions are stored on the block. A missing engine or invalid configuration fails closed (the block stays `held` and the reason is reported). There is no VLM path.
+
+The agreement threshold is the explicit config key `max_character_error_rate` (a number in `[0, 1]`). There is no silent default. Character error rate (CER) is `levenshtein(norm(a), norm(b)) / max(len(norm(a)), len(norm(b)))`, where `norm` is NFKC plus collapsed whitespace. Both-empty OCR is not agreement: the block stays `held`.
+
+| Status / field | What it guarantees | What the agent may do |
+|---|---|---|
+| block `status: "scan_agreement"` | Two independent OCR engines agreed on the crop within `max_character_error_rate`. This is **never** `verified` and is **never citable** by the answer path. | Show the crop and both OCR readings for human review. Do not quote the text. Do not treat it as a text-layer verification. |
+| block `ocr[]` | Each entry has `name`, `version`, `text`, and `text_sha256`. | Display both readings side by side. |
+| block `crop` / `crop_sha256` | PNG crop of the block (or page) after the 300 DPI raster and deskew, with its SHA-256. | Show the crop in the MD/HTML front end. |
+| block `status: "human_verified"` (scan) | A named human approved a `scan_agreement` or held scan block. Evidence is both OCR texts' sha256 and the crop sha256. | Cite the reviewer and evidence hashes. The tool never creates this status by itself. |
+
+s3a-pack-to records cannot currently store `status`, OCR engine names and versions, both text hashes, and the crop hash. Packing these blocks fails closed; a separate s3a-storage PR is required rather than a lossy tile.
+
+## REVIEW-PROCEDURE (scanned blocks)
+
+This is the human procedure for scan-agreement and held scan blocks, in addition to the table-cell steps above.
+
+1. **Show the page crop next to both OCR readings**, labelled `SCAN_AGREEMENT` or `HELD (scan)` in the MD/HTML front end. The readings are side by side, with engine name and version.
+2. **The reviewer confirms or rejects the crop and the readings.** Unconfirmed OCR text is not evidence and is not citable.
+3. **If the reviewer approves the block,** record `status: "human_verified"` with:
+   - `reviewer` (required; approval without a reviewer field is rejected)
+   - `reviewed_at` (timestamp)
+   - `evidence.ocr_text_sha256` — both OCR texts' hashes
+   - `evidence.crop_sha256`
+4. **The tool never auto-promotes.** Dual-OCR agreement never sets `verified`. Only a named human can set `human_verified`.
