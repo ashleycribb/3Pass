@@ -372,3 +372,44 @@ def test_b3_still_flags_a_csv_cell_whose_value_is_not_in_the_model(tmp_path):
         csv.writer(fh).writerows(rows)
     report = vc.verify(pdf_path, conv, only=("tables",), write=False)
     assert "B3" in _checks(report)
+
+
+def test_self_check_does_not_join_line_end_number_hyphen_unless_in_pdf(tmp_path):
+    """A wrapped '012-\\n0528' must not invent leftover '0120528' when the PDF has 012-0528 as two tokens."""
+    pdf_path = _pdf_lines(tmp_path / "nsn.pdf", ["part 012-0528 recommended"])
+    pdf = vc.Pdf(pdf_path)
+    view = {
+        "source_pdf": "synthetic-nsn.pdf",
+        "source_sha256": "c" * 64,
+        "blocks": [
+            {"id": "p1", "status": "verified", "text": "part 012-0528 recommended"},
+        ],
+        "document_flags": [],
+    }
+    md = "part 012-\n0528 recommended\n"
+    htm = "<p>part 012-\n0528 recommended</p>"
+    leftover = at.self_check(view, md, htm, pdf)
+    assert "0120528" not in leftover, leftover
+    assert leftover == vc.Counter()
+
+
+def test_self_check_keeps_hyphenated_mil_std_identifiers(tmp_path):
+    """'MIL-STD-1285' in markdown and in the PDF must not leave leftover '1285'/'std'.
+
+    Greedy mid-line hyphen joining of the PDF bag would merge the identifier into
+    one token ('milstd1285') while markdown still has three tokens.
+    """
+    pdf_path = _pdf_lines(tmp_path / "milstd.pdf", ["See MIL-STD-1285 Symbol"])
+    pdf = vc.Pdf(pdf_path)
+    view = {
+        "source_pdf": "synthetic-milstd.pdf",
+        "source_sha256": "d" * 64,
+        "blocks": [{"id": "p1", "status": "verified", "text": "See MIL-STD-1285 Symbol"}],
+        "document_flags": [],
+    }
+    leftover = at.self_check(
+        view, "See MIL-STD-1285 Symbol\n", "<p>See MIL-STD-1285 Symbol</p>", pdf
+    )
+    assert "1285" not in leftover, leftover
+    assert "std" not in leftover, leftover
+    assert leftover == vc.Counter()
