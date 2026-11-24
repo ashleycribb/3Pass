@@ -77,7 +77,7 @@ def distinctive_tokens(text: str) -> set[str]:
 # ---------------------------------------------------------------------------
 
 def triage_page(pdf_path, page_no, pdf=None) -> dict:
-    """Classify one 1-based page as born_digital, scanned, or broken_text_layer."""
+    """Classify one 1-based page as born_digital, blank, scanned, or broken_text_layer."""
     close = False
     if pdf is None:
         pdf = vc.Pdf(pdf_path)
@@ -101,7 +101,9 @@ def triage_page(pdf_path, page_no, pdf=None) -> dict:
         "nul_chars": n_null,
         "min_text_chars_threshold": vc.MIN_TEXT_CHARS,
     }
-    if n_chars < vc.MIN_TEXT_CHARS:
+    if n_chars < vc.MIN_TEXT_CHARS and pdf.is_blank(page_no):
+        klass = "blank"          # no text and nothing visible: complete, nothing to OCR
+    elif n_chars < vc.MIN_TEXT_CHARS:
         klass = "scanned"
     elif alnum_ratio < ALNUM_RATIO_MIN or n_replace > 0 or n_null > 0:
         klass = "broken_text_layer"

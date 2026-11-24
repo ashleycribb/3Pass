@@ -15,6 +15,7 @@ An agent never reads the raw converter output. It reads `verified/<name>.verifie
 | `needs_confirmation` | The content is verified, but a person still has to confirm something (for example, a figure with no caption). | Use the content, and note that it is unconfirmed. |
 | `page_complete: false` / `pages[].complete: false` | Something on that page is missing from the output (T3 recall, or T5: an item outside the reading tree). What is present is still correct. | Do not claim that the page says nothing about a topic. Ask for review or use `check-quote`. |
 | `pages[].text_layer: false` | Scanned page. It cannot be verified automatically. | Treat everything on that page as unverified. |
+| `pages[].triage.class: "blank"` | The page has no text and renders as a single colour: nothing is on it. It counts as complete. Any visible mark makes a page `scanned` instead. | Treat it as an intentionally blank page. |
 | `reading_order_verified: false` | Block order may not match the page (for example, a title placed after section 2.1). Block contents are still correct. | Do not infer structure from order alone. |
 | `document_status: "VERIFIED"` | No open flags anywhere in the document. | Use it all. |
 | `document_status: "PARTIAL"` | At least one open flag. Each flag is listed. | Use only `verified` (or `human_verified`) blocks. `scan_agreement` is never citable. Respect the flags. |
