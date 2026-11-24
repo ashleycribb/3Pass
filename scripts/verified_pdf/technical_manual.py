@@ -872,7 +872,10 @@ def enrich_verified_view(view, pdf, conv_dir, docling, profile=None, out_dir=Non
 
     write_held_crops(pdf, out_dir, held_entries, page_images)
 
-    from . import scan_agreement as sa
+    try:
+        from . import scan_agreement as sa
+    except ImportError:  # run as a script: python scripts/verified_pdf/agent_tool.py ...
+        import scan_agreement as sa
     path = pdf_path or getattr(pdf, "path", None)
     sa.apply_scan_pipeline(view, path, conv_dir, out_dir, config=scan_agreement_config)
 
