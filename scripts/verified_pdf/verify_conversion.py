@@ -420,12 +420,15 @@ def verify(pdf_path: Path, conv_dir: Path, only=GROUPS, write=True, profile=None
             problems.append(f"PDF text inside the table not assigned to any cell: {' '.join(sorted(leftover))[:200]}")
         def overlap(a, b):
             return min(a[1], b[1]) - max(a[0], b[0]) > 0
+        lone_header = _lone_header_cells(cells)
         for axis, key, span in (("row", "start_row_offset_idx", "row_span"), ("column", "start_col_offset_idx", "col_span")):
             groups = {}
             for c in cells:
                 if not (c.get("bbox") and c[span] == 1 and c["text"].strip()):
                     continue
                 if axis == "column" and _column_alignment_exempt(c, cells):
+                    continue
+                if axis == "row" and id(c) in lone_header:
                     continue
                 l, t0, r, b = tl(c["bbox"])
                 groups.setdefault(c[key], []).append((t0, b) if axis == "row" else (l, r))
@@ -486,6 +489,27 @@ def verify(pdf_path: Path, conv_dir: Path, only=GROUPS, write=True, profile=None
     if not write:
         return {"flags": flags, "checks_passed": dict(passed)}
     return write_report(pdf_path, conv_dir, stem, flags, passed)
+
+
+def _lone_header_cells(cells):
+    """Header cells that are the only header text in their column of a stacked (multi-row) header.
+    Such a cell labels its column whichever header row the model put it in (parts lists: "#",
+    "Description", "Item Number" centred beside "Quantity Per Model" over model numbers), so it
+    is left out of the row-alignment test. Its column, text and the leftover-text test still apply."""
+    rows = sorted({c["start_row_offset_idx"] for c in cells})
+    header = []
+    for r in rows:
+        if not any(c.get("column_header") for c in cells if c["start_row_offset_idx"] == r):
+            break
+        header.append(r)
+    if len(header) < 2:
+        return set()
+    in_header = [c for c in cells if c["start_row_offset_idx"] in header and c["text"].strip()]
+    per_col = Counter()
+    for c in in_header:
+        for k in range(c["start_col_offset_idx"], c["start_col_offset_idx"] + c.get("col_span", 1)):
+            per_col[k] += 1
+    return {id(c) for c in in_header if c.get("col_span", 1) == 1 and per_col[c["start_col_offset_idx"]] == 1}
 
 
 def _html_grid(table):
