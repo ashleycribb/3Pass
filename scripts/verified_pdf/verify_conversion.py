@@ -430,7 +430,10 @@ def verify(pdf_path: Path, conv_dir: Path, only=GROUPS, write=True, profile=None
                 l, t0, r, b = tl(c["bbox"])
                 groups.setdefault(c[key], []).append((t0, b) if axis == "row" else (l, r))
             for idx, iv in groups.items():
-                if any(not overlap(iv[0], x) for x in iv[1:]):
+                # every cell must overlap the row's (column's) widest extent: a wrapped entry
+                # (number on line 1, title on lines 1-2, page on line 2) lines up through its title
+                big = max(iv, key=lambda x: x[1] - x[0])
+                if any(not overlap(big, x) for x in iv if x is not big):
                     problems.append(f"cells in {axis} {idx} do not line up on the page")
             centres = [sum(a + b for a, b in groups[i]) / (2 * len(groups[i])) for i in sorted(groups)]
             if any(b <= a for a, b in zip(centres, centres[1:])):
