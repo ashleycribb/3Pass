@@ -159,9 +159,9 @@ def figure_worker(pdf: str, figures, scale: float):
     return {"images": out, "seconds": round(time.time() - t0, 1)}
 
 
-def verify_worker(pdf: str, conv_dir: str, groups):
+def verify_worker(pdf: str, conv_dir: str, groups, profile=None):
     t0 = time.time()
-    r = vc.verify(Path(pdf), Path(conv_dir), only=groups, write=False)
+    r = vc.verify(Path(pdf), Path(conv_dir), only=groups, write=False, profile=profile)
     r["seconds"] = round(time.time() - t0, 1)
     return r
 
@@ -226,7 +226,8 @@ def shard_worker(pdf: str, first: int, last: int, ocr: bool, scale: float, threa
             "seconds": round(time.time() - t0, 1)}
 
 
-def run_shards(pdf: Path, out_root: Path, ocr=False, scale=2.0, grobid=None, workers=None) -> dict:
+def run_shards(pdf: Path, out_root: Path, ocr=False, scale=2.0, grobid=None, workers=None, profile=None,
+               scan_agreement_config=None) -> dict:
     """Split the PDF into contiguous page ranges, convert each with the unchanged serial pipeline in
     its own process, join them in page order, then run the check groups in parallel."""
     import pypdfium2 as pdfium
@@ -254,19 +255,22 @@ def run_shards(pdf: Path, out_root: Path, ocr=False, scale=2.0, grobid=None, wor
         "mode": f"parallel (page shards: {[(cuts[i] + 1, cuts[i + 1]) for i in range(n)]})",
         "tools": {k: version(k) for k in ("docling", "docling-core", "docling-ibm-models", "pypdfium2")},
     })
-    return _verify_and_view(pdf, out, manifest, timings, t0, ctx, workers, list(vc.GROUPS), [])
+    return _verify_and_view(pdf, out, manifest, timings, t0, ctx, workers, list(vc.GROUPS), [],
+                            profile=profile, scan_agreement_config=scan_agreement_config)
 
 
-def _verify_and_view(pdf, out, manifest, timings, t0, ctx, workers, groups, extra_parts):
+def _verify_and_view(pdf, out, manifest, timings, t0, ctx, workers, groups, extra_parts, profile=None,
+                     scan_agreement_config=None):
     t4 = time.time()
     with ProcessPoolExecutor(max_workers=min(len(groups), workers), mp_context=ctx) as pool:
         parts = list(pool.map(verify_worker, [str(pdf)] * len(groups), [str(out)] * len(groups),
-                              [[g] for g in groups])) + extra_parts
+                              [[g] for g in groups], [profile] * len(groups))) + extra_parts
     flags = vc.sort_flags([f for p in parts for f in p["flags"]])
     passed = sum((Counter(p["checks_passed"]) for p in parts), Counter())
     report = vc.write_report(pdf, out, pdf.stem, flags, passed)
     timings["4_verify"] = round(time.time() - t4, 1)
-    view = at.build_verified_view(pdf, out, report=report)
+    view = at.build_verified_view(pdf, out, report=report, profile=profile,
+                                  scan_agreement_config=scan_agreement_config)
     timings["total"] = round(time.time() - t0, 1)
     manifest["timings"] = timings
     (out / "manifest.json").write_text(json.dumps(manifest, indent=2), encoding="utf-8")

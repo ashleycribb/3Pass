@@ -559,7 +559,22 @@ def check_quote(pdf_path: Path, quote: str, page=None) -> dict:
             "note": "normalized = same letters and digits in the same order; punctuation/case/spacing may differ"}
 
 
-def ingest(pdfs, out: Path, ocr=False, grobid=None, parallel=False, workers=None, profile=None) -> list:
+def load_scan_config(path):
+    """Read a scan-agreement config JSON file. The thresholds are the caller's choice; there is
+    no default. The file is validated here so a bad value stops ingest before any conversion."""
+    if path is None:
+        return None
+    try:
+        from . import scan_agreement as sa
+    except ImportError:
+        import scan_agreement as sa
+    cfg = json.loads(Path(path).read_text(encoding="utf-8"))
+    sa.require_config(cfg)
+    return cfg
+
+
+def ingest(pdfs, out: Path, ocr=False, grobid=None, parallel=False, workers=None, profile=None,
+           scan_agreement_config=None) -> list:
     try:
         from . import pdf_to_md_html as conv
     except ImportError:
@@ -573,10 +588,12 @@ def ingest(pdfs, out: Path, ocr=False, grobid=None, parallel=False, workers=None
                     from . import parallel as par
                 except ImportError:
                     import parallel as par
-                v = par.run_shards(pdf, out, ocr=ocr, grobid=grobid, workers=workers)["view"]
+                v = par.run_shards(pdf, out, ocr=ocr, grobid=grobid, workers=workers, profile=profile,
+                                   scan_agreement_config=scan_agreement_config)["view"]
             else:
                 conv.convert(pdf, out, ocr=ocr, grobid=grobid)
-                v = build_verified_view(pdf, out / pdf.stem, profile=profile)
+                v = build_verified_view(pdf, out / pdf.stem, profile=profile,
+                                        scan_agreement_config=scan_agreement_config)
             results.append({"pdf": pdf.name, "status": v["document_status"], "counts": v["counts"],
                             "reading_order_verified": v["reading_order_verified"],
                             "incomplete_pages": [p["page"] for p in v["pages"] if not p["complete"]],
@@ -633,10 +650,15 @@ def build_parser():
     a1.add_argument("--profile", choices=["academic", "technical_manual"], default=None,
                     help="document profile. technical_manual skips GROBID, detects running folios, "
                          "and records page triage and table-cell review fields.")
+    scan_help = ("JSON file with the scan-agreement thresholds max_character_error_rate and "
+                 "min_inked_region_coverage (no defaults). Without it, scanned pages stay held.")
+    a1.add_argument("--scan-config", type=Path, default=None, help=scan_help)
     a2 = sub.add_parser("blocks"); a2.add_argument("converted_dir", type=Path); a2.add_argument("--include-held", action="store_true")
     a3 = sub.add_parser("check-quote"); a3.add_argument("pdf", type=Path); a3.add_argument("quote"); a3.add_argument("--page", type=int)
     a4 = sub.add_parser("rebuild", help="re-verify and rebuild the verified view (e.g. after decisions.json)")
     a4.add_argument("pdf", type=Path); a4.add_argument("converted_dir", type=Path)
+    a4.add_argument("--profile", choices=["academic", "technical_manual"], default=None)
+    a4.add_argument("--scan-config", type=Path, default=None, help=scan_help)
     sub.add_parser("mcp")
     return ap
 
@@ -646,7 +668,8 @@ def main():
     a = ap.parse_args()
     if a.cmd == "ingest":
         res = ingest(a.pdfs, a.out, a.ocr, a.grobid, a.parallel, getattr(a, "workers", None),
-                     profile=getattr(a, "profile", None))
+                     profile=getattr(a, "profile", None),
+                     scan_agreement_config=load_scan_config(a.scan_config))
         print(json.dumps(res, indent=2))
         sys.exit(1 if any(r["status"] == "FAILED" for r in res) else 0)
     if a.cmd == "blocks":
@@ -656,7 +679,8 @@ def main():
         print(json.dumps(r, indent=2))
         sys.exit(0 if r["found"] else 3)
     if a.cmd == "rebuild":
-        v = build_verified_view(a.pdf, a.converted_dir)
+        v = build_verified_view(a.pdf, a.converted_dir, profile=a.profile,
+                                scan_agreement_config=load_scan_config(a.scan_config))
         print(json.dumps({"status": v["document_status"], "counts": v["counts"]}, indent=2))
     if a.cmd == "mcp":
         from mcp.server.fastmcp import FastMCP
