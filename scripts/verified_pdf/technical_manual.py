@@ -269,7 +269,7 @@ def check_cell_box(pdf, page_no, cell: dict) -> dict:
         result["status"] = "held"
         result["held_reason"] = "table cell has no bbox"
         return result
-    src = pdf.box_text(page_no, bbox, bbox.get("coord_origin") or "TOPLEFT")
+    src = pdf.cell_text(page_no, bbox, bbox.get("coord_origin") or "TOPLEFT")
     lines = [ln.strip() for ln in re.split(r"[\r\n]+", src) if ln.strip()]
     result["line_checks"] = [
         {"line": ln, "found": bool(vc.joined(ln)) and vc.joined(ln) in vc.joined(src),
