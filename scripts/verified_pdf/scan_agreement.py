@@ -52,6 +52,13 @@ ENGINE_B = "rapidocr"
 # This is the definition of "ink", not a coverage threshold and not a default
 # for min_inked_region_coverage.
 INK_GRAY_MAX = 250
+# How the two readings are compared. "text" (the original rule): the whole crop as one string.
+# "labels": each text line is matched to the other engine's lines by position and compared on its
+# own, for drawings, floor plans and other pages of scattered labels (see classify_labels).
+COMPARISONS = {"text", "labels"}
+# In "labels" mode Tesseract runs in sparse-text mode ("find as much text as possible in no
+# particular order"), the mode Tesseract documents for this kind of page.
+TESSERACT_LABELS_CONFIG = "--psm 11"
 
 
 class ScanAgreementError(Exception):
@@ -122,9 +129,13 @@ def require_config(config) -> dict:
         raise ScanAgreementError("min_inked_region_coverage must be a number in [0, 1]") from exc
     if not (0.0 <= cov <= 1.0) or isinstance(config["min_inked_region_coverage"], bool):
         raise ScanAgreementError("min_inked_region_coverage must be a number in [0, 1]")
+    comparison = config.get("comparison", "text")
+    if comparison not in COMPARISONS:
+        raise ScanAgreementError(f"comparison must be one of {sorted(COMPARISONS)}")
     return {
         "max_character_error_rate": thr,
         "min_inked_region_coverage": cov,
+        "comparison": comparison,
     }
 
 
@@ -216,6 +227,144 @@ def run_engine(name: str, image) -> dict:
         text = _parse_rapidocr(result)
         return {"name": ENGINE_B, "version": rapidocr_version(), "text": text.strip()}
     raise ScanAgreementError(f"unknown OCR engine {name!r}")
+
+
+def engine_lines(name: str, image) -> dict:
+    """Run one OCR engine and return its text lines with pixel boxes:
+    {"name", "version", "config", "lines": [(x0, y0, x1, y1, text), ...]}. Missing engines fail closed."""
+    if name == ENGINE_A:
+        try:
+            import pytesseract
+        except ImportError as exc:
+            raise ScanAgreementError("pytesseract is not installed") from exc
+        try:
+            d = pytesseract.image_to_data(image, config=TESSERACT_LABELS_CONFIG,
+                                          output_type=pytesseract.Output.DICT)
+            ver = tesseract_version()
+        except Exception as exc:
+            raise ScanAgreementError(f"tesseract failed: {exc}") from exc
+        groups = {}
+        for i, t in enumerate(d["text"]):
+            if not (t or "").strip():
+                continue
+            key = (d["block_num"][i], d["par_num"][i], d["line_num"][i])
+            x, y, w, h = d["left"][i], d["top"][i], d["width"][i], d["height"][i]
+            groups.setdefault(key, []).append((x, y, x + w, y + h, t.strip()))
+        lines = []
+        for ws in groups.values():
+            ws.sort()
+            lines.append((min(w[0] for w in ws), min(w[1] for w in ws), max(w[2] for w in ws),
+                          max(w[3] for w in ws), " ".join(w[4] for w in ws)))
+        return {"name": ENGINE_A, "version": ver, "config": TESSERACT_LABELS_CONFIG, "lines": lines}
+    if name == ENGINE_B:
+        try:
+            import numpy as np
+            from rapidocr_onnxruntime import RapidOCR
+        except ImportError as exc:
+            raise ScanAgreementError("rapidocr-onnxruntime is not installed") from exc
+        try:
+            result = RapidOCR()(np.array(image.convert("RGB")))
+        except Exception as exc:
+            raise ScanAgreementError(f"rapidocr failed: {exc}") from exc
+        data = result[0] if isinstance(result, tuple) else result
+        lines = []
+        for item in data or []:
+            quad, text = item[0], item[1]
+            if not str(text).strip():
+                continue
+            xs, ys = [float(p[0]) for p in quad], [float(p[1]) for p in quad]
+            lines.append((min(xs), min(ys), max(xs), max(ys), str(text).strip()))
+        return {"name": ENGINE_B, "version": rapidocr_version(), "config": "", "lines": lines}
+    raise ScanAgreementError(f"unknown OCR engine {name!r}")
+
+
+def _boxes_intersect(a, b) -> bool:
+    return min(a[2], b[2]) > max(a[0], b[0]) and min(a[3], b[3]) > max(a[1], b[1])
+
+
+def _reading_order(lines):
+    return " ".join(x[4] for x in sorted(lines, key=lambda z: (z[1], z[0])))
+
+
+def match_labels(lines_a, lines_b) -> list:
+    """Group the two engines' lines into labels: lines whose boxes intersect a line of the other
+    engine join one label (connected components, so one engine's "1001 137sf" can meet the other's
+    "1001" + "137sf"). No overlap threshold: boxes either intersect or not. Returns
+    [{"box": (x0, y0, x1, y1), "a": [...lines], "b": [...lines]}] in reading order."""
+    nodes = [("a", x) for x in lines_a] + [("b", x) for x in lines_b]
+    parent = list(range(len(nodes)))
+
+    def find(i):
+        while parent[i] != i:
+            parent[i] = parent[parent[i]]
+            i = parent[i]
+        return i
+    for i in range(len(nodes)):
+        for j in range(i + 1, len(nodes)):
+            if nodes[i][0] != nodes[j][0] and _boxes_intersect(nodes[i][1], nodes[j][1]):
+                parent[find(i)] = find(j)
+    comps = {}
+    for i, n in enumerate(nodes):
+        comps.setdefault(find(i), []).append(n)
+    out = []
+    for comp in comps.values():
+        boxes = [x for _, x in comp]
+        out.append({"box": (min(x[0] for x in boxes), min(x[1] for x in boxes),
+                            max(x[2] for x in boxes), max(x[3] for x in boxes)),
+                    "a": [x for k, x in comp if k == "a"], "b": [x for k, x in comp if k == "b"]})
+    return sorted(out, key=lambda c: (c["box"][1], c["box"][0]))
+
+
+def classify_labels(*, engine_a, engine_b, crop_bytes: bytes, config, to_points) -> dict:
+    """Label-by-label agreement. Every label must be read by both engines and agree within
+    max_character_error_rate; a label read by only one engine, or none at all, keeps the block
+    held. Each label carries its own status. The block's cer is the worst label CER (None when a
+    label is one-sided). to_points maps a pixel box to a TOPLEFT PDF-point bbox dict."""
+    cfg = require_config(config)
+    thr = cfg["max_character_error_rate"]
+    labels = []
+    for comp in match_labels(engine_a["lines"], engine_b["lines"]):
+        ta, tb = _reading_order(comp["a"]), _reading_order(comp["b"])
+        if _norm(ta) and _norm(tb):
+            cer = character_error_rate(ta, tb)
+            status = "scan_agreement" if cer <= thr else "held"
+            reason = None if status == "scan_agreement" else f"CER {cer:.4f} exceeds {thr}"
+        else:
+            cer, status = None, "held"
+            reason = f"read by {engine_a['name'] if _norm(ta) else engine_b['name']} only"
+        lab = {"bbox": to_points(comp["box"]), "text_a": ta, "text_b": tb, "cer": cer, "status": status}
+        if reason:
+            lab["held_reason"] = reason
+        labels.append(lab)
+    ta = _reading_order(engine_a["lines"])
+    tb = _reading_order(engine_b["lines"])
+    held = [x for x in labels if x["status"] != "scan_agreement"]
+    if not labels:
+        status, reason, cer = "held", "one or both OCR engines produced empty text", None
+    elif held:
+        one_sided = sum(1 for x in held if x["cer"] is None)
+        status = "held"
+        reason = (f"{len(held)} of {len(labels)} labels not agreed "
+                  f"({one_sided} read by one engine only, {len(held) - one_sided} over "
+                  f"max_character_error_rate {thr})")
+        cer = None if one_sided else max(x["cer"] for x in labels)
+    else:
+        status, reason, cer = "scan_agreement", None, max(x["cer"] for x in labels)
+    rec = {
+        "status": status,
+        "cer": cer,
+        "comparison": "labels",
+        "labels": labels,
+        "ocr": [
+            {"name": e["name"], "version": e.get("version") or "", "config": e.get("config") or "",
+             "text": t, "text_sha256": _sha(t)}
+            for e, t in ((engine_a, ta), (engine_b, tb))
+        ],
+        "crop_sha256": _sha(crop_bytes),
+    }
+    if reason:
+        rec["held_reason"] = reason
+    return rec
 
 
 def _parse_rapidocr(result) -> str:
@@ -324,11 +473,19 @@ def process_block(pdf_path, page_no, bbox, config, page_cache=None) -> dict:
             raise ScanAgreementError(f"block crop is empty on page {page_no}")
         crop = img.crop((x0, y0, x1, y1))
     else:
+        x0 = y0 = 0
         crop = img
     crop_bytes = _crop_to_bytes(crop)
-    engine_a = run_engine(ENGINE_A, crop)
-    engine_b = run_engine(ENGINE_B, crop)
-    rec = classify_block(engine_a=engine_a, engine_b=engine_b, crop_bytes=crop_bytes, config=config)
+    if require_config(config)["comparison"] == "labels":
+        def to_points(box, ox=x0, oy=y0):
+            return {"l": (box[0] + ox) / scale, "t": (box[1] + oy) / scale, "r": (box[2] + ox) / scale,
+                    "b": (box[3] + oy) / scale, "coord_origin": "TOPLEFT"}
+        rec = classify_labels(engine_a=engine_lines(ENGINE_A, crop), engine_b=engine_lines(ENGINE_B, crop),
+                              crop_bytes=crop_bytes, config=config, to_points=to_points)
+    else:
+        engine_a = run_engine(ENGINE_A, crop)
+        engine_b = run_engine(ENGINE_B, crop)
+        rec = classify_block(engine_a=engine_a, engine_b=engine_b, crop_bytes=crop_bytes, config=config)
     rec["crop_image"] = crop
     rec["crop_bytes"] = crop_bytes
     rec["skew"] = page["skew"]
@@ -495,6 +652,8 @@ def apply_scan_pipeline(view, pdf_path, conv_dir, out_dir, config=None) -> None:
         b["cer"] = rec["cer"]
         b["crop_sha256"] = rec["crop_sha256"]
         b["crop"] = str(Path("verified") / name)
+        if rec.get("labels") is not None:
+            b["labels"] = rec["labels"]
         b["scan"] = {
             "dpi": rec["dpi"],
             "skew": rec["skew"],
@@ -565,6 +724,8 @@ def apply_scan_pipeline(view, pdf_path, conv_dir, out_dir, config=None) -> None:
                 blk["cer"] = rec["cer"]
                 blk["crop_sha256"] = rec["crop_sha256"]
                 blk["crop"] = str(Path("verified") / name)
+                if rec.get("labels") is not None:
+                    blk["labels"] = rec["labels"]
                 blk["scan"] = {"dpi": rec.get("dpi"), "skew": rec.get("skew"),
                                "engines": [{"name": e["name"], "version": e["version"]} for e in rec["ocr"]]}
             if rec["status"] == "held":
