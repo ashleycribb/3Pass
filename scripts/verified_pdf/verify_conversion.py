@@ -80,6 +80,15 @@ class Pdf:
     def page_text(self, page_no):
         return self.textpage(page_no).get_text_range()
 
+    def is_blank(self, page_no, scale=0.25):
+        """True only if the page has no text and renders as one single colour (nothing visible).
+        Any mark at all (a speck, a stamp, a faint scan) makes it not blank."""
+        if self.page_text(page_no).strip():
+            return False
+        img = self.doc[page_no - 1].render(scale=scale).to_pil().convert("L")
+        lo, hi = img.getextrema()
+        return lo == hi
+
     def box_text(self, page_no, bbox, origin):
         l, t, r, b = bbox["l"], bbox["t"], bbox["r"], bbox["b"]
         if origin == "TOPLEFT":
@@ -129,7 +138,7 @@ GROUPS = ("text", "tables", "figures", "document")
 CHECK_GROUP = {"T2": "text", "E1": "text",
                "B1": "tables", "B2": "tables", "B3": "tables", "B4": "tables",
                "F1": "figures", "F3": "figures",
-               "T1": "document", "T3": "document", "T4": "document", "T4-in-image": "document",
+               "T1": "document", "T1-blank": "document", "T3": "document", "T4": "document", "T4-in-image": "document",
                "T5": "document", "F2": "document", "M1": "document", "O1": "document"}
 CHECK_ORDER = ["T1", "T5", "T2", "E1", "T4", "B1", "B2", "B3", "B4", "F1", "F3", "M1", "F2", "T3", "O1"]
 
@@ -240,7 +249,9 @@ def verify(pdf_path: Path, conv_dir: Path, only=GROUPS, write=True, profile=None
 
     # T1
     for p in range(1, n_pages + 1):
-        if len(pdf.page_text(p).strip()) < MIN_TEXT_CHARS:
+        if len(pdf.page_text(p).strip()) < MIN_TEXT_CHARS and pdf.is_blank(p):
+            passed["T1-blank"] += 1      # intentionally blank page: nothing on it to lose
+        elif len(pdf.page_text(p).strip()) < MIN_TEXT_CHARS:
             no_text_layer.add(p)
             flag("T1", "page has no usable text layer (scanned/image page); content cannot be verified automatically", p)
         else:
