@@ -88,6 +88,43 @@ class Pdf:
         bottom, top = min(t, b), max(t, b)
         return self.textpage(page_no).get_text_bounded(l - PAD, bottom - PAD, r + PAD, top + PAD)
 
+    def _words(self, page_no):
+        """Words on the page in text order: (text, starts_new_line, [(x, y) char centres])."""
+        cache = self.__dict__.setdefault("_word_cache", {})
+        if page_no not in cache:
+            tp = self.textpage(page_no)
+            out, cur, newline = [], [], False
+            for i in range(tp.count_chars()):
+                ch = tp.get_text_range(i, 1)
+                if not ch.strip():
+                    if cur:
+                        out.append(("".join(c for c, _ in cur), newline, [p for _, p in cur]))
+                        cur, newline = [], False
+                    newline = newline or ch in "\r\n"
+                    continue
+                l, b, r, t = tp.get_charbox(i)
+                cur.append((ch, ((l + r) / 2, (b + t) / 2)))
+            if cur:
+                out.append(("".join(c for c, _ in cur), newline, [p for _, p in cur]))
+            cache[page_no] = out
+        return cache[page_no]
+
+    def cell_text(self, page_no, bbox, origin):
+        """PDF text that belongs to a table cell: every word with more than half of its character
+        centres inside the cell box. Unlike box_text, glyph fragments of neighbouring lines that
+        merely touch the box are not included, and a word is never cut at the box edge."""
+        l, t, r, b = bbox["l"], bbox["t"], bbox["r"], bbox["b"]
+        if origin == "TOPLEFT":
+            h = self.height(page_no)
+            t, b = h - t, h - b
+        lo, hi = min(t, b), max(t, b)
+        parts = []
+        for word, newline, centres in self._words(page_no):
+            inside = sum(1 for x, y in centres if l <= x <= r and lo <= y <= hi)
+            if inside * 2 > len(centres):
+                parts.append(("\n" if newline and parts else " " if parts else "") + word)
+        return "".join(parts)
+
     def crop(self, page_no, bbox, origin, out_path, scale=2.0):
         page = self.doc[page_no - 1]
         w, h = page.get_width(), page.get_height()
@@ -348,7 +385,7 @@ def verify(pdf_path: Path, conv_dir: Path, only=GROUPS, write=True, profile=None
                 flag("B1", f"{loc}: table cell has no bbox",
                      pg, pr["bbox"], pr["bbox"]["coord_origin"], f"{tb['self_ref']}", c.get("text"))
                 continue
-            src = pdf.box_text(pg, c["bbox"], c["bbox"]["coord_origin"])
+            src = pdf.cell_text(pg, c["bbox"], c["bbox"]["coord_origin"])
             if joined(src) != joined(c["text"]):
                 bad += 1
                 flag("B1", f"{loc}: output '{c['text']}' vs PDF '{src.strip()}'",
