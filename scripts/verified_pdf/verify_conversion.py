@@ -511,6 +511,9 @@ def _html_grid(table):
 def _check_b4(d, md, htm, flag, passed):
     # B4: tables in the final .md and .html equal the verified table model, cell by cell
     model = [[[joined(c["text"]) for c in row] for row in tb["data"]["grid"]] for tb in d["tables"]]
+    # Markdown has no spans: a table may also be written with each cell once, in its top-left slot
+    origin = [[[joined(c["text"]) if (c.get("start_row_offset_idx"), c.get("start_col_offset_idx")) == (r, k) else ""
+                for k, c in enumerate(row)] for r, row in enumerate(tb["data"]["grid"])] for tb in d["tables"]]
     md_tables, cur = [], []
     for line in md.splitlines() + [""]:
         if line.lstrip().startswith("|"):
@@ -525,7 +528,7 @@ def _check_b4(d, md, htm, flag, passed):
         if len(got) != len(model):
             flag("B4", f"{kind} has {len(got)} tables but {len(model)} were verified")
         for n, (a, b) in enumerate(zip(model, got), 1):
-            if a != b:
+            if a != b and not (kind == "Markdown" and origin[n - 1] == b):
                 flag("B4", f"table {n} in the {kind} output differs from the verified cells", ref=f"#/tables/{n - 1}",
                      extracted=json.dumps(b)[:400])
             else:

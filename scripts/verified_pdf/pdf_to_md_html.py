@@ -17,7 +17,9 @@ so vector charts are captured as rendered crops, not just embedded bitmaps.
 Nothing is generated or summarised: all text is what the PDF contains.
 """
 import argparse
+import csv
 import hashlib
+import html
 import json
 import sys
 import time
@@ -61,6 +63,58 @@ def convert(pdf: Path, out_root: Path, ocr=False, scale=2.0, grobid=None) -> dic
     return write_outputs(result.document, pdf, out, warnings, t0, ocr, scale, grobid)
 
 
+def header_rows(item) -> int:
+    """Number of leading grid rows that hold column headers."""
+    n = 0
+    for row in item.data.grid:
+        if not any(c.column_header for c in row):
+            break
+        n += 1
+    return n
+
+
+def origin_grid(item) -> list:
+    """The table grid with each cell's text written once, in its top-left slot; slots a spanned
+    cell merely covers are empty. Used where the format has no spans (Markdown, CSV) and the
+    table has a stacked header, so no header text is repeated, joined or invented."""
+    return [[c.text if (c.start_row_offset_idx, c.start_col_offset_idx) == (r, k) else ""
+             for k, c in enumerate(row)] for r, row in enumerate(item.data.grid)]
+
+
+def _md_cell(text: str) -> str:
+    return html.escape(" ".join(text.split()), quote=False).replace("|", "&#124;")
+
+
+def markdown_table(grid: list) -> str:
+    lines = ["| " + " | ".join(_md_cell(x) for x in row) + " |" for row in grid]
+    lines.insert(1, "|" + "|".join("---" for _ in grid[0]) + "|")
+    return "\n".join(lines)
+
+
+def replace_markdown_tables(md: str, replacements: dict) -> str:
+    """Replace the n-th Markdown table block (0-based) with replacements[n]."""
+    out, block, n = [], [], 0
+    for line in md.split("\n") + [None]:
+        if line is not None and line.lstrip().startswith("|"):
+            block.append(line)
+            continue
+        if block:
+            out.extend([replacements[n]] if n in replacements else block)
+            block, n = [], n + 1
+        if line is not None:
+            out.append(line)
+    return "\n".join(out)
+
+
+def _md_table_blocks(md: str):
+    prev = False
+    for line in md.split("\n"):
+        cur = line.lstrip().startswith("|")
+        if cur and not prev:
+            yield line
+        prev = cur
+
+
 def write_outputs(doc, pdf: Path, out: Path, warnings, t0, ocr, scale, grobid=None, extra=None) -> dict:
     """Write .md, .html, .docling.json, images/, tables/*.csv and manifest.json for a DoclingDocument.
     Shared by the serial converter and the anchor-and-workers path (parallel.py)."""
@@ -75,14 +129,22 @@ def write_outputs(doc, pdf: Path, out: Path, warnings, t0, ocr, scale, grobid=No
     doc.save_as_json(out / f"{pdf.stem}.docling.json", artifacts_dir=Path("images"),
                      image_mode=ImageRefMode.REFERENCED)
 
-    pictures, tables = [], []
+    pictures, tables, md_fix = [], [], {}
     for item, _ in doc.iterate_items():
         prov = item.prov[0] if getattr(item, "prov", None) else None
         where = {"page": prov.page_no, "bbox": prov.bbox.as_tuple()} if prov else {}
         if isinstance(item, TableItem):
             n = len(tables) + 1
             df = item.export_to_dataframe(doc=doc)
-            df.to_csv(out / "tables" / f"table-{n}.csv", index=False)
+            if header_rows(item) > 1:
+                # Docling folds stacked headers into one row ("Quantity Per Model - 351RCPG12NL"),
+                # repeating and joining header text. Write the grid rows as they are instead.
+                grid = origin_grid(item)
+                with (out / "tables" / f"table-{n}.csv").open("w", encoding="utf-8", newline="") as fh:
+                    csv.writer(fh).writerows(grid)
+                md_fix[n - 1] = markdown_table(grid)
+            else:
+                df.to_csv(out / "tables" / f"table-{n}.csv", index=False)
             caption = item.caption_text(doc)
             tables.append({"n": n, **where, "rows": int(df.shape[0]), "cols": int(df.shape[1]),
                            "caption": caption})
@@ -98,6 +160,12 @@ def write_outputs(doc, pdf: Path, out: Path, warnings, t0, ocr, scale, grobid=No
             warnings.append(f"GROBID step failed: {exc}")
 
     md = (out / f"{pdf.stem}.md").read_text(encoding="utf-8")
+    if md_fix:
+        if sum(1 for _ in _md_table_blocks(md)) == len(tables):
+            md = replace_markdown_tables(md, md_fix)
+            (out / f"{pdf.stem}.md").write_text(md, encoding="utf-8")
+        else:
+            warnings.append("stacked table headers left as Docling wrote them: Markdown table count differs")
     manifest = {
         "source_pdf": pdf.name,
         "source_sha256": hashlib.sha256(pdf.read_bytes()).hexdigest(),
