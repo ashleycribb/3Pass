@@ -134,6 +134,41 @@ class Pdf:
                 parts.append(("\n" if newline and parts else " " if parts else "") + word)
         return "".join(parts)
 
+    def table_cell_texts(self, page_no, boxes, region):
+        """PDF text of every cell of one table. Each word whose centre lies in the table region is
+        given to exactly one cell: the cell holding most of its character centres, or, when no cell
+        holds any (model cell boxes a few points off the glyphs), the nearest cell; between cells
+        that hold it equally, the one whose box centre is nearest. Exact ties go to no cell. A word is never shared, so a word placed in the wrong cell still shows up as a
+        mismatch. boxes: list of (bbox, origin); region: (l, top, r, bottom) top-left coordinates."""
+        h = self.height(page_no)
+        tl = []
+        for bb, origin in boxes:
+            l, t, r, b = bb["l"], bb["t"], bb["r"], bb["b"]
+            if origin != "TOPLEFT":
+                t, b = h - t, h - b
+            tl.append((l, min(t, b), r, max(t, b)))
+        parts = [[] for _ in boxes]
+        for word, newline, centres in self._words(page_no):
+            pts = [(x, h - y) for x, y in centres]
+            cx, cy = sum(p[0] for p in pts) / len(pts), sum(p[1] for p in pts) / len(pts)
+            if not (region[0] <= cx <= region[2] and region[1] <= cy <= region[3]):
+                continue
+            def score(bx):
+                inside = sum(1 for x, y in pts if bx[0] <= x <= bx[2] and bx[1] <= y <= bx[3])
+                dx = max(bx[0] - cx, 0, cx - bx[2])
+                dy = max(bx[1] - cy, 0, cy - bx[3])
+                mx, my = (bx[0] + bx[2]) / 2 - cx, (bx[1] + bx[3]) / 2 - cy
+                # most centres inside, then nearest box, then nearest box centre (an oversized box
+                # that also covers the next line loses the word to that line's own cell)
+                return (inside, -(dx * dx + dy * dy), -(mx * mx + my * my))
+            scores = [score(bx) for bx in tl]
+            best = max(scores)
+            if scores.count(best) != 1:
+                continue
+            k = scores.index(best)
+            parts[k].append(("\n" if newline and parts[k] else " " if parts[k] else "") + word)
+        return ["".join(p) for p in parts]
+
     def crop(self, page_no, bbox, origin, out_path, scale=2.0):
         page = self.doc[page_no - 1]
         w, h = page.get_width(), page.get_height()
@@ -385,6 +420,14 @@ def verify(pdf_path: Path, conv_dir: Path, only=GROUPS, write=True, profile=None
         if not want("B1"):
             continue
         bad = 0
+        boxed = [c for c in cells if c.get("bbox")]
+        if boxed:
+            h = pdf.height(pg)
+            tls = [(c["bbox"]["l"], *sorted((c["bbox"]["t"], c["bbox"]["b"]) if c["bbox"]["coord_origin"] == "TOPLEFT"
+                    else (h - c["bbox"]["t"], h - c["bbox"]["b"])), c["bbox"]["r"]) for c in boxed]
+            region = (min(x[0] for x in tls), min(x[1] for x in tls), max(x[3] for x in tls), max(x[2] for x in tls))
+            texts = pdf.table_cell_texts(pg, [(c["bbox"], c["bbox"]["coord_origin"]) for c in boxed], region)
+            cell_src = {id(c): t for c, t in zip(boxed, texts)}
         for c in cells:
             loc = f"table {n} cell r{c['start_row_offset_idx']}c{c['start_col_offset_idx']}"
             if not (c.get("text") or "").strip():
@@ -396,7 +439,7 @@ def verify(pdf_path: Path, conv_dir: Path, only=GROUPS, write=True, profile=None
                 flag("B1", f"{loc}: table cell has no bbox",
                      pg, pr["bbox"], pr["bbox"]["coord_origin"], f"{tb['self_ref']}", c.get("text"))
                 continue
-            src = pdf.cell_text(pg, c["bbox"], c["bbox"]["coord_origin"])
+            src = cell_src[id(c)]
             if joined(src) != joined(c["text"]):
                 bad += 1
                 flag("B1", f"{loc}: output '{c['text']}' vs PDF '{src.strip()}'",

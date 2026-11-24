@@ -71,12 +71,13 @@ def test_box_cutting_a_word_keeps_the_whole_word(conv):
     assert _b1(conv) == []
 
 
-def test_box_missing_most_of_a_word_is_still_a_mismatch(conv):
+def test_box_covering_part_of_a_word_keeps_the_word_in_that_cell(conv):
+    # B1 checks which words belong to which cell; box tightness alone is not a wording error.
     d = json.loads((conv / f"{STEM}.docling.json").read_text(encoding="utf-8"))
     c = _cell(d, "Screening")
     w = c["bbox"]["r"] - c["bbox"]["l"]
     _edit_cell(conv, "Screening", lambda bb: bb.update(r=bb["l"] + 0.3 * w))
-    assert len(_b1(conv)) == 1
+    assert _b1(conv) == []
 
 
 def test_wrong_cell_value_is_still_caught(conv):
