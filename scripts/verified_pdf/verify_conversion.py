@@ -199,7 +199,10 @@ def verify(pdf_path: Path, conv_dir: Path, only=GROUPS, write=True, profile=None
     reach = reachable_refs(d)
     pdf = Pdf(pdf_path)
     if profile == "technical_manual":
-        from . import technical_manual as tm
+        try:
+            from . import technical_manual as tm
+        except ImportError:  # run as a script
+            import technical_manual as tm
         folios = tm.detect_folios(pdf)
     else:
         folios = None
