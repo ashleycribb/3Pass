@@ -73,6 +73,11 @@ def header_rows(item) -> int:
     return n
 
 
+def has_spans(item) -> bool:
+    """True when any cell spans more than one row or column."""
+    return any(c.row_span > 1 or c.col_span > 1 for c in item.data.table_cells)
+
+
 def origin_grid(item) -> list:
     """The table grid with each cell's text written once, in its top-left slot; slots a spanned
     cell merely covers are empty. Used where the format has no spans (Markdown, CSV) and the
@@ -136,9 +141,10 @@ def write_outputs(doc, pdf: Path, out: Path, warnings, t0, ocr, scale, grobid=No
         if isinstance(item, TableItem):
             n = len(tables) + 1
             df = item.export_to_dataframe(doc=doc)
-            if header_rows(item) > 1:
-                # Docling folds stacked headers into one row ("Quantity Per Model - 351RCPG12NL"),
-                # repeating and joining header text. Write the grid rows as they are instead.
+            if header_rows(item) > 1 or has_spans(item):
+                # Docling folds stacked headers into one row ("Quantity Per Model - 351RCPG12NL") and
+                # repeats a spanned cell's text in every slot it covers ("LIST OF TABLES" x3), so the
+                # output holds words the PDF prints once. Write each cell once instead.
                 grid = origin_grid(item)
                 with (out / "tables" / f"table-{n}.csv").open("w", encoding="utf-8", newline="") as fh:
                     csv.writer(fh).writerows(grid)
