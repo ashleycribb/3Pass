@@ -485,6 +485,29 @@ def verify(pdf_path: Path, conv_dir: Path, only=GROUPS, write=True, profile=None
     return write_report(pdf_path, conv_dir, stem, flags, passed)
 
 
+def _html_grid(table):
+    """An HTML table as a full grid: a cell with colspan/rowspan fills every grid slot it covers,
+    so the result is comparable slot by slot with the verified grid whether or not the exporter
+    merged spanned cells."""
+    grid, pending = [], {}          # pending[(row, col)] = text carried down by rowspan
+    for r, tr in enumerate(table.xpath(".//tr")):
+        row, c = [], 0
+        for td in tr.xpath("./th|./td"):
+            while (r, c) in pending:
+                row.append(pending.pop((r, c))); c += 1
+            text = joined(td.text_content())
+            cs, rs = int(td.get("colspan") or 1), int(td.get("rowspan") or 1)
+            for dc in range(cs):
+                row.append(text)
+                for dr in range(1, rs):
+                    pending[(r + dr, c + dc)] = text
+            c += cs
+        while (r, c) in pending:
+            row.append(pending.pop((r, c))); c += 1
+        grid.append(row)
+    return grid
+
+
 def _check_b4(d, md, htm, flag, passed):
     # B4: tables in the final .md and .html equal the verified table model, cell by cell
     model = [[[joined(c["text"]) for c in row] for row in tb["data"]["grid"]] for tb in d["tables"]]
@@ -497,15 +520,12 @@ def _check_b4(d, md, htm, flag, passed):
             md_tables.append(cur); cur = []
     from lxml import html as lh
     tree = lh.fromstring(htm)
-    html_tables = [[[joined(td.text_content()) for td in tr.xpath("./th|./td")] for tr in t.xpath(".//tr")]
-                   for t in tree.xpath("//table")]
+    html_tables = [_html_grid(t) for t in tree.xpath("//table")]
     for kind, got in (("Markdown", md_tables), ("HTML", html_tables)):
         if len(got) != len(model):
             flag("B4", f"{kind} has {len(got)} tables but {len(model)} were verified")
         for n, (a, b) in enumerate(zip(model, got), 1):
-            # HTML merges spanned cells; compare the distinct cell values per row
-            norm_a = [[x for i, x in enumerate(r) if kind == "Markdown" or i == 0 or x != r[i - 1]] for r in a]
-            if (a if kind == "Markdown" else norm_a) != b:
+            if a != b:
                 flag("B4", f"table {n} in the {kind} output differs from the verified cells", ref=f"#/tables/{n - 1}",
                      extracted=json.dumps(b)[:400])
             else:
